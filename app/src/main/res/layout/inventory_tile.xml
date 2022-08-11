@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/item_tile">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/style_inventory_tile"
+        android:orientation="horizontal"
+        >
+
+        <CheckBox
+            android:id="@+id/item_needful_checkbox"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="10dp"
+            />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="7"
+            android:layout_margin="10dp"
+            android:layout_height="100dp"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/item_title"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1.5"
+                android:inputType="none"
+                android:text="Sample Item Title"
+                android:maxLines="1"
+                android:maxLength="17"
+                android:hint="Title"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                >
+
+                <EditText
+                    android:id="@+id/item_date_text"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:hint="Date"
+                    android:text="Date"
+                    android:textSize="11sp"
+
+                    />
+
+                <EditText
+                    android:id="@+id/item_quantity"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:hint="Quantity"
+                    android:text="Qty"
+                    android:textSize="11sp"
+
+                    />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/item_progressbar"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:indeterminate="false"
+            android:layout_gravity="center"
+
+            />
+
+        <ImageButton
+            android:id="@+id/item_edit_btn"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_edit_default"
+            android:layout_gravity="center"
+            android:background="@null"
+            android:scaleType="fitCenter"
+            />
+
+        <ImageButton
+            android:id="@+id/item_delete_btn"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:background="@null"
+            android:src="@drawable/ic_delete_default"
+            android:scaleType="fitCenter"
+            />
+
+        <ImageButton
+            android:id="@+id/item_reorder_btn"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:background="@null"
+            android:src="@drawable/ic_reorder_default"
+            android:scaleType="fitCenter"
+            android:layout_marginEnd="10dp"
+            />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

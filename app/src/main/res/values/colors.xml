@@ -1,10 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="royal_purple">#4e2abb</color>
+    <color name="royal_purple_monoA">#9B7EF2</color>
+    <color name="royal_purple_monoB">#6335F0</color>
+    <color name="royal_purple_monoC">#3A2770</color>
+    <color name="royal_purple_monoD">#4E2ABD</color>
+    <color name="royal_purple_complA">#7D52FF</color>
+    <color name="royal_purple_complB">#6335F0</color>
+    <color name="royal_purple_compound">#32158A</color>
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
     <color name="purple_700">#FF3700B3</color>
+    <color name="dark_theme_purple">#FF432272</color>
+    <color name="dark_theme_text_purle">#68546c</color>
+
+    <color name="melodic_blue">#84A3F0</color>
+
+    <color name="royal_yellow1">#FFF052</color>
+    <color name="royal_yellow2">#6E650D</color>
+    <color name="royal_yellow3">#BAAD29</color>
+
+    <color name="off_white">#bfbfbf</color>
+
+    <color name="riyah_dark_theme_grey">#ff5b5b5b</color>
+    <color name="dark_theme_background_grey">#2b2b2b</color>
+    <color name="dark_theme_foreground_grey">#3a3f43</color>
+    <color name="dark_theme_complementary_grey">#3a3f43</color>
+    <color name="dark_theme_def_btn_filler">#787878</color>
+    <color name="dark_theme_def_btn_accent">#E6E6E6</color>
+    <color name="accent_grey">#C4CDE0</color>
+
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
+    <color name="ui_blue">#ff285386</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 </resources>
