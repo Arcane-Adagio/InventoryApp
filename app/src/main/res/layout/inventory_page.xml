@@ -2,10 +2,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    >
+
+    <ImageButton
+        android:id="@+id/add_item_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_add_default"
+        android:layout_gravity="center"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        />
 
     <FrameLayout
-        android:id="@+id/rv_container"
+        android:id="@+id/rv_container2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"

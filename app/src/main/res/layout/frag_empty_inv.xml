@@ -24,13 +24,13 @@
         android:layout_marginBottom="8dp"
         android:text="Lets Get Started"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/button3"
-        app:layout_constraintEnd_toEndOf="@+id/button3"
+        app:layout_constraintBottom_toTopOf="@+id/CreateInventoryBtn"
+        app:layout_constraintEnd_toEndOf="@+id/CreateInventoryBtn"
         app:layout_constraintHorizontal_bias="0.51"
-        app:layout_constraintStart_toStartOf="@+id/button3" />
+        app:layout_constraintStart_toStartOf="@+id/CreateInventoryBtn" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/CreateInventoryBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="140dp"
