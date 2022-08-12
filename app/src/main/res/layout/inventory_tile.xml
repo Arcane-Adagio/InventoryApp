@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="5dp"
     android:id="@+id/item_tile">
 
     <LinearLayout
@@ -23,15 +24,19 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_weight="7"
-            android:layout_margin="10dp"
-            android:layout_height="100dp"
+            android:layout_marginHorizontal="10dp"
+            android:layout_marginVertical="5dp"
+            android:layout_height="60dp"
             android:orientation="vertical">
 
             <EditText
                 android:id="@+id/item_title"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:layout_gravity="bottom"
+                android:layout_marginTop="0dp"
                 android:layout_weight="1.5"
+                android:textSize="12sp"
                 android:inputType="none"
                 android:text="Sample Item Title"
                 android:maxLines="1"
@@ -50,9 +55,12 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_marginTop="-8dp"
                     android:hint="Date"
                     android:text="Date"
-                    android:textSize="11sp"
+                    android:textColor="@color/black"
+                    android:textSize="8sp"
 
                     />
 
@@ -60,10 +68,12 @@
                     android:id="@+id/item_quantity"
                     android:layout_width="0dp"
                     android:layout_weight="1"
+                    android:layout_gravity="bottom"
                     android:layout_height="wrap_content"
                     android:hint="Quantity"
                     android:text="Qty"
-                    android:textSize="11sp"
+                    android:layout_marginTop="-8dp"
+                    android:textSize="8sp"
 
                     />
 

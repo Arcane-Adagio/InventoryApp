@@ -80,6 +80,7 @@ public class InventoryActivity extends AppCompatActivity {
     }
 
     public void RecyclerViewFragment(Bundle savedInstanceState){
+        /*
         if(savedInstanceState == null)
             fragment = new RecyclerViewFragment();
         else
@@ -89,6 +90,11 @@ public class InventoryActivity extends AppCompatActivity {
         }
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.rv_container2, fragment, LIST_FRAG_TAG)
+                .commit();
+         */
+        
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.rv_container2, new RecyclerViewFragment(), LIST_FRAG_TAG)
                 .commit();
     }
 }

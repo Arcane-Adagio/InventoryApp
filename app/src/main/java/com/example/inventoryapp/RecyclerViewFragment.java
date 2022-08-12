@@ -55,6 +55,7 @@ public class RecyclerViewFragment extends Fragment {
         Log.d("life", "RV: onStart");
         inventory_rv = (RecyclerView) HostActivity.findViewById(R.id.inventory_recycleview);
         inventory_rv.addOnScrollListener(rv_FAB_listener);
+        rv_fab = (FloatingActionButton) HostActivity.findViewById(R.id.frame_fab);
         rv_fab.setOnClickListener(fab_onClick);
         RecyclerViewAdapter adapter_items;
 
@@ -104,7 +105,7 @@ public class RecyclerViewFragment extends Fragment {
     public static void AddNewItem(){
         Toast.makeText(inventory_rv.getContext(), "New Item Test Button", Toast.LENGTH_SHORT).show();
         // Popup Dialog
-        InventoryItem a = new InventoryItem();
+        InventoryItem a = new InventoryItem("Sample Item", "Date", "4");
         RecyclerViewAdapter.AddItem(a);
         inventory_rv.smoothScrollToPosition(recyclerAdapter.getItemCount());
     }
@@ -148,8 +149,23 @@ public class RecyclerViewFragment extends Fragment {
         }
 
         public static void AddItem(InventoryItem item){
+            /*
+            if(items.size() == 0){
+                items.add(item);
+                recyclerAdapter = new RecyclerViewFragment.RecyclerViewAdapter(items);
+                inventory_rv.setAdapter(recyclerAdapter);
+            }
+            else{
+                items.add(item);
+                recyclerAdapter.notifyItemInserted(items.size() -1);
+            }*/
             items.add(item);
-            recyclerAdapter.notifyItemInserted(items.size() - 1);
+            if(recyclerAdapter == null){
+                recyclerAdapter = new RecyclerViewFragment.RecyclerViewAdapter(items);
+                inventory_rv.setAdapter(recyclerAdapter);
+            }
+            else
+                recyclerAdapter.notifyItemInserted(items.size() -1);
         }
 
         @Override

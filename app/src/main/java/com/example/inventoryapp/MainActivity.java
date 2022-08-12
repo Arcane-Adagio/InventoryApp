@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -27,9 +28,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if(emptyList){
-            SetupInitFragment();
-        }
+        //if(emptyList){
+            //SetupInitFragment();
+        //}
         //else
            // RecyclerViewFragment (savedInstanceState);
     }
@@ -37,9 +38,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         Log.d("life", "HomeActivity: onStart");
-        //GlobalActions.SetupToolbar(this, R.id.home_toolbar);
-        //EditText editText = (EditText) findViewById(R.id.search_edittext);
-        //btn_search = (ImageButton) findViewById(R.id.btn_search);
         super.onStart();
     }
 
@@ -98,10 +96,18 @@ public class MainActivity extends AppCompatActivity {
                 .commit();
     }*/
 
+    /*
     public void SetupInitFragment(){
         fragment = new InitFragment();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.rv_container, fragment, EMPTY_FRAG_TAG)
                 .commit();
+    }
+     */
+
+    public void Testb(View view){
+        Intent intent = new Intent(this, InventoryActivity.class);
+        intent.putExtra("name","Sample Inventory");
+        startActivity(intent);
     }
 }

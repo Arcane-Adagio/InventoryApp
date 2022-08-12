@@ -5,6 +5,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="Testb"/>
+
+
     <FrameLayout
         android:id="@+id/rv_container"
         android:layout_width="match_parent"

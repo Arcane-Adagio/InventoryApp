@@ -43,6 +43,12 @@ public class InventoryItem {
         }
     }
 
+    public InventoryItem (String name, String data, String quantity){
+        itemName = name;
+        itemData = data;
+        itemQuantity = quantity;
+    }
+
     public String getItemName() {
         return itemName != null ? itemName : null;
     }
