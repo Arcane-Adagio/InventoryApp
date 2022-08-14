@@ -77,14 +77,20 @@ public class InitFragment extends Fragment {
                 new Callable<Void>() {
                     @Override
                     public Void call() {
+                        MainActivity a = (MainActivity) getActivity();
+                        View view = getActivity().getLayoutInflater().inflate(layout,null);
+                        a.Testb(view);
+                        /*
                         //get the context of the dialog view, and use that to find the edit text
                         View view = getActivity().getLayoutInflater().inflate(layout,null);
                         final EditText eT = (EditText) view.findViewById(R.id.newInventoryNameEditText);
                         String inventoryName = String.valueOf(eT.getText());
                         //use the text entered as the header for a new activity
                         Intent intent = new Intent(HostActivity, InventoryActivity.class);
+                        Toast.makeText(HostActivity, inventoryName, Toast.LENGTH_SHORT).show();
                         intent.putExtra("name","Sample Inventory");
                         startActivity(intent);
+                         */
                         return null;
                     }
                 });

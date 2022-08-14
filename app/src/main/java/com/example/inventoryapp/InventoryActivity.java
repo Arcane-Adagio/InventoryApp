@@ -24,16 +24,16 @@ public class InventoryActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         Log.d("life", "onCreate: alive");
         setContentView(R.layout.inventory_page);
         HandleExtras();
-        FragmentManager fm = getSupportFragmentManager();
         RecyclerViewFragment(savedInstanceState);
-        super.onCreate(savedInstanceState);
     }
 
     @Override
     protected void onStart() {
+        super.onStart();
         addItem_btn = (ImageButton) findViewById(R.id.add_item_btn);
         addItem_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -41,11 +41,10 @@ public class InventoryActivity extends AppCompatActivity {
                 AddSampleTask();
             }
         });
-        super.onStart();
     }
 
     private void AddSampleTask(){
-
+        RecyclerViewFragment.AddNewItem();
     }
 
     public void HandleExtras(){
@@ -61,7 +60,6 @@ public class InventoryActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        //.makeText(this, "here", Toast.LENGTH_SHORT).show();
         super.onResume();
     }
 
@@ -80,21 +78,13 @@ public class InventoryActivity extends AppCompatActivity {
     }
 
     public void RecyclerViewFragment(Bundle savedInstanceState){
-        /*
+
         if(savedInstanceState == null)
             fragment = new RecyclerViewFragment();
         else
-        {
-            Log.d("error","bulsh");
             fragment = getSupportFragmentManager().findFragmentByTag(LIST_FRAG_TAG);
-        }
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.rv_container2, fragment, LIST_FRAG_TAG)
-                .commit();
-         */
-        
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.rv_container2, new RecyclerViewFragment(), LIST_FRAG_TAG)
                 .commit();
     }
 }

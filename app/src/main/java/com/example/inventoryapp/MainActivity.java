@@ -16,6 +16,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,13 +24,14 @@ public class MainActivity extends AppCompatActivity {
     private static final String EMPTY_FRAG_TAG = "EmptyRV";
     private static final String LIST_FRAG_TAG = "ListRV";
     private static boolean emptyList = true;
+    EditText dialogEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //if(emptyList){
-            //SetupInitFragment();
+        if(emptyList)
+            SetupInitFragment();
         //}
         //else
            // RecyclerViewFragment (savedInstanceState);
@@ -38,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         Log.d("life", "HomeActivity: onStart");
+
         super.onStart();
     }
 
@@ -85,29 +88,22 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /*
-    public void RecyclerViewFragment(Bundle savedInstanceState){
-        if(savedInstanceState == null)
-            fragment = new RecyclerViewFragment();
-        else
-            fragment = getSupportFragmentManager().findFragmentByTag(EMPTY_FRAG_TAG);
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.rv_container, fragment, EMPTY_FRAG_TAG)
-                .commit();
-    }*/
-
-    /*
     public void SetupInitFragment(){
         fragment = new InitFragment();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.rv_container, fragment, EMPTY_FRAG_TAG)
                 .commit();
     }
-     */
 
     public void Testb(View view){
+        dialogEditText = (EditText) view.findViewById(R.id.newInventoryNameEditText);
+        String inventoryName = String.valueOf(dialogEditText.getText());
+        Toast.makeText(this, inventoryName, Toast.LENGTH_SHORT).show();
+        //use the text entered as the header for a new activity
         Intent intent = new Intent(this, InventoryActivity.class);
+        Toast.makeText(this, inventoryName, Toast.LENGTH_SHORT).show();
         intent.putExtra("name","Sample Inventory");
         startActivity(intent);
     }
+
 }

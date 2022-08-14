@@ -103,7 +103,6 @@ public class RecyclerViewFragment extends Fragment {
     }
 
     public static void AddNewItem(){
-        Toast.makeText(inventory_rv.getContext(), "New Item Test Button", Toast.LENGTH_SHORT).show();
         // Popup Dialog
         InventoryItem a = new InventoryItem("Sample Item", "Date", "4");
         RecyclerViewAdapter.AddItem(a);
