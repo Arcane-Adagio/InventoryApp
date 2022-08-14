@@ -72,6 +72,7 @@
                     android:layout_height="wrap_content"
                     android:hint="Quantity"
                     android:text="Qty"
+                    android:inputType="numberDecimal"
                     android:layout_marginTop="-8dp"
                     android:textSize="8sp"
 
@@ -96,7 +97,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
-            android:src="@drawable/ic_edit_default"
+            android:src="@drawable/ic_save_default"
             android:layout_gravity="center"
             android:background="@null"
             android:scaleType="fitCenter"

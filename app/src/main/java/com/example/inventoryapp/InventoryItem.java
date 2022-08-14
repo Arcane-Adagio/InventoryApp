@@ -1,5 +1,6 @@
 package com.example.inventoryapp;
 
+import android.text.InputType;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
@@ -13,11 +14,17 @@ public class InventoryItem {
 
     public enum ItemState{ Full, Good, Half, Low, Empty, NA}
 
-    public static String itemName;
-    private static boolean itemNeedful = false;
-    private static String itemData;
-    private static String itemQuantity;
-    private static ItemState itemStatus;
+    public static String mItemName;
+    private static boolean mItemNeedful = false;
+    private static String mItemDate;
+    private static String mItemQuantity;
+    private static ItemState mItemStatus;
+    private static boolean mEditMode = true;
+
+    public String toString()
+    {
+        return "--"+mItemName+"--";
+    }
 
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
@@ -41,31 +48,71 @@ public class InventoryItem {
             deleteBtn = (ImageButton) view.findViewById(R.id.item_delete_btn);
             reorderBtn = (ImageButton) view.findViewById(R.id.item_reorder_btn);
         }
+
+
+
+        public void ToggleEditMode_VH(){
+            if (itemNameTV.isFocusable()){
+                //User clicked save and shouldnt be able to edit anymore
+                itemNameTV.setFocusable(false);
+                itemDataTV.setFocusable(false);
+                itemQuantityTV.setFocusable(false);
+                //Update Icon
+                editBtn.setImageDrawable(GlobalActions.GetDrawableFromInt(editBtn.getContext(), R.drawable.ic_edit_default));
+            }
+            else {
+                //User Clicked Edit and wants to give input
+                itemNameTV.setInputType(InputType.TYPE_CLASS_TEXT);
+                itemDataTV.setInputType(InputType.TYPE_DATETIME_VARIATION_DATE);
+                itemQuantityTV.setInputType(InputType.TYPE_CLASS_NUMBER);
+                itemNameTV.setFocusableInTouchMode(true);
+                itemDataTV.setFocusableInTouchMode(true);
+                itemQuantityTV.setFocusableInTouchMode(true);
+                //update Icon
+                editBtn.setImageDrawable(GlobalActions.GetDrawableFromInt(editBtn.getContext(), R.drawable.ic_save_default));
+            }
+        }
+    }
+
+    public void ToggleEditMode(){
+        mEditMode = !mEditMode;
+    }
+
+    public boolean isInEditMode(){
+        return mEditMode;
     }
 
     public InventoryItem (String name, String data, String quantity){
-        itemName = name;
-        itemData = data;
-        itemQuantity = quantity;
+        mItemName = name;
+        mItemDate = data;
+        mItemQuantity = quantity;
     }
 
+    public void setItemName(String itemName) {mItemName = itemName;}
+
+    public void setItemDate(String ItemDate) {mItemDate = ItemDate;}
+
+    public void setItemQuantity(String ItemQuantity) {mItemQuantity = ItemQuantity;}
+
+    public void setItemNeedful(boolean ItemNeedful) {mItemNeedful = ItemNeedful;}
+
     public String getItemName() {
-        return itemName != null ? itemName : null;
+        return mItemName != null ? mItemName : null;
     }
 
     public boolean isItemNeedful(){
-        return itemNeedful;
+        return mItemNeedful;
     }
 
     public String getItemData(){
-        return itemData != null ? itemData : null;
+        return mItemDate != null ? mItemDate : null;
     }
 
     public String getItemQuantity(){
-        return itemQuantity != null ? itemQuantity : null;
+        return mItemQuantity != null ? mItemQuantity : null;
     }
 
     public ItemState getItemStatus(){
-        return itemStatus != null ? itemStatus : null;
+        return mItemStatus != null ? mItemStatus : null;
     }
 }

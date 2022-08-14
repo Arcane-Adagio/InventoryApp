@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
@@ -110,5 +112,9 @@ public class GlobalActions {
         for (String key : b.keySet()) {
             Log.e("debug", key + " : " + (b.get(key) != null ? b.get(key) : "NULL"));
         }
+    }
+
+    public static Drawable GetDrawableFromInt(Context c, int id){
+        return AppCompatResources.getDrawable(c, id);
     }
 }
