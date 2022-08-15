@@ -21,7 +21,7 @@ public class SQLiteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.page_createaccount);
         mydatabase = openOrCreateDatabase("Account", MODE_PRIVATE, null);
-        mydatabase.execSQL("CREATE TABLE IF NOT EXISTS Users(Username VARCHAR, Password VARCHAR);");
+        GlobalActions.CreateTableInDatabase(mydatabase,"Users","(Username VARCHAR, Password VARCHAR)");
         Refresh();
         //DBDelete("Patrick");
     }
@@ -54,49 +54,19 @@ public class SQLiteActivity extends AppCompatActivity {
     }
 
     public void DBinsert(View view){
-        /* Reads Username and Password from Create Account page
-        *  then adds account if account isn't already in the database
-        *  */
         EditText username = (EditText) findViewById(R.id.username_editText);
         EditText password = (EditText) findViewById(R.id.password_edittext);
         String uname = username.getText().toString();
         String pass = password.getText().toString();
-        Cursor resultSet = mydatabase.rawQuery("select * from Users where Username='"+uname+"'",null);
-        if(resultSet.getCount()>0){
-            Toast.makeText(this, "Username already exists", Toast.LENGTH_SHORT).show();
-        }
-        else{
-            mydatabase.execSQL("INSERT INTO Users VALUES('"+uname+"','"+pass+"');");
-            Toast.makeText(this, "Account Created", Toast.LENGTH_SHORT).show();
-        }
-        resultSet.close();
-        dataAdapter.changeCursor(getAllUsers());
+        GlobalActions.AddUserToDatabase(mydatabase, "Users", dataAdapter, uname, pass, this);
     }
 
     public void DBDelete(String username){
-        /* Deletes user from database when provided with username */
-
-        Cursor resultSet = mydatabase.rawQuery("select * from Users where Username='"+username+"'",null);
-        if(resultSet.getCount()>0){
-            mydatabase.execSQL("DELETE FROM Users WHERE Username='"+username+"';");
-            Toast.makeText(this, "Account Deleted", Toast.LENGTH_SHORT).show();
-            dataAdapter.changeCursor(getAllUsers());
-        }
-        Toast.makeText(this, "Username does not exists", Toast.LENGTH_SHORT).show();
+        GlobalActions.RemoveUserFromDatabase(mydatabase,"Users", dataAdapter, username, this);
     }
 
     private Cursor getAllUsers(){
-        /* SimpleCursorAdapter requires that the cursor;s result set must include a column
-        * name exactly "_id". Don't hast to change schema if you didn't define the "_id" column
-        * in your table. SQLite automatically added a hidden column called "rowid" for every table.
-        * All you need to do is that - just select rowid explicitly and alias it as '_id' */
-        Cursor resultSet = mydatabase.rawQuery("select rowid _id,* from Users;",null);
-        if (resultSet.moveToFirst()){
-            do {
-                //DisplayUser(resultSet);
-            } while (resultSet.moveToNext());
-        }
-        return resultSet;
+        return GlobalActions.GetAllUsersFromDatabase(mydatabase, "Users");
     }
 
     @Override
