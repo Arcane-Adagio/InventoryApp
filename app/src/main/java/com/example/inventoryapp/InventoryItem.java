@@ -6,6 +6,7 @@ import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -47,7 +48,18 @@ public class InventoryItem {
             editBtn = (ImageButton) view.findViewById(R.id.item_edit_btn);
             deleteBtn = (ImageButton) view.findViewById(R.id.item_delete_btn);
             reorderBtn = (ImageButton) view.findViewById(R.id.item_reorder_btn);
+            
+            deleteBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    RecyclerViewFragment.recyclerAdapter.RemoveItem(getAdapterPosition());
+                }
+            });
+
+
         }
+        
+        
 
 
 

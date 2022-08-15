@@ -1,7 +1,6 @@
 package com.example.inventoryapp;
 
 import android.app.Activity;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,10 +9,9 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,7 +22,7 @@ import java.util.List;
 
 public class RecyclerViewFragment extends Fragment {
     private Activity HostActivity;
-    private static RecyclerViewAdapter recyclerAdapter;
+    public static RecyclerViewAdapter recyclerAdapter;
     private static FloatingActionButton rv_fab;
     private static RecyclerView inventory_rv;
     private static List<InventoryItem> itemList;
@@ -33,7 +31,7 @@ public class RecyclerViewFragment extends Fragment {
         @Override
         public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
-            if(dy > 0 && rv_fab.isShown())
+            if (dy > 0 && rv_fab.isShown())
                 rv_fab.hide();
             else if (dy < 0 && !rv_fab.isShown())
                 rv_fab.show();
@@ -47,11 +45,35 @@ public class RecyclerViewFragment extends Fragment {
     };
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d("life", "RV: onCreate");
         HostActivity = getActivity();
+
+        //Add drag logic to RV
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        itemTouchHelper.attachToRecyclerView(inventory_rv);
         return inflater.inflate(R.layout.frag_inventorylist, container, false);
     }
+
+    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(
+
+            ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.START | ItemTouchHelper.END, 0) {
+
+        @Override
+
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            Toast.makeText(HostActivity, "onMove", Toast.LENGTH_SHORT).show();
+            return false;
+
+        }
+
+        @Override
+
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            Toast.makeText(HostActivity, "onSwipe", Toast.LENGTH_SHORT).show();
+        }
+
+    } ;
 
     @Override
     public void onStart() {
@@ -63,12 +85,11 @@ public class RecyclerViewFragment extends Fragment {
         RecyclerViewAdapter adapter_items;
 
         //if there is already a list, load it
-        if(itemList == null || itemList.size() == 0){
+        if (itemList == null || itemList.size() == 0) {
             itemList = new ArrayList<InventoryItem>();
             adapter_items = new RecyclerViewAdapter(itemList);
             inventory_rv.setAdapter(adapter_items);
-        }
-        else{
+        } else {
             adapter_items = new RecyclerViewAdapter(itemList);
         }
         inventory_rv.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -95,7 +116,7 @@ public class RecyclerViewFragment extends Fragment {
     @Override
     public void onStop() {
         Log.d("life", "RV: onStop");
-        itemList = recyclerAdapter!=null ? recyclerAdapter.getShownItems() : null;
+        itemList = recyclerAdapter != null ? recyclerAdapter.getShownItems() : null;
         super.onStop();
     }
 
@@ -105,18 +126,16 @@ public class RecyclerViewFragment extends Fragment {
         super.onDestroy();
     }
 
-    public static void AddNewItem(){
+    public static void AddNewItem() {
         // Popup Dialog
         InventoryItem a;
-        if(counter == 0){
+        if (counter == 0) {
             a = new InventoryItem("cero", "324", "234");
             counter++;
-        }
-        else if (counter % 2 == 1){
+        } else if (counter % 2 == 1) {
             a = new InventoryItem("Sample Item 1", "Date", "4");
             counter++;
-        }
-        else {
+        } else {
             counter = counter * 2 + 1;
             a = new InventoryItem("Sample Item 2", "Date", "4");
             counter = 0;
@@ -126,11 +145,22 @@ public class RecyclerViewFragment extends Fragment {
     }
 
 
-
-    public static class RecyclerViewAdapter extends RecyclerView.Adapter<InventoryItem.ViewHolder>{
-
+    public static class RecyclerViewAdapter extends RecyclerView.Adapter<InventoryItem.ViewHolder> {
+        //list of items maintained by Adapter
         static List<InventoryItem> items;
-        public RecyclerViewAdapter(List<InventoryItem> input) {items = input;}
+
+
+        //Used to communicate between the fragment and the recycler view
+        //RecyclerViewFragment.OnItemClickListner vc = null;
+        //public void setOnItemClickListener(RecyclerViewFragment.onItemClickListner _vo) {vc=_vo}
+
+
+        //constructor
+        public RecyclerViewAdapter(List<InventoryItem> input) {
+            this.items = input;
+        }
+
+        //Listener Setup
         private View.OnClickListener Test = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -143,7 +173,7 @@ public class RecyclerViewFragment extends Fragment {
         @Override
         public InventoryItem.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View v = LayoutInflater.from(parent.getContext()).inflate(
-                    (R.layout.inventory_tile), parent, false);
+                    (R.layout.tile_inventory_item), parent, false);
             final InventoryItem.ViewHolder view_holder = new InventoryItem.ViewHolder(v);
             view_holder.editBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -151,6 +181,7 @@ public class RecyclerViewFragment extends Fragment {
                     Toast.makeText(view.getContext(), String.valueOf(view_holder.getAdapterPosition()), Toast.LENGTH_SHORT).show();
                 }
             });
+            view_holder.reorderBtn.setOnClickListener(Test);
             view_holder.setIsRecyclable(true);
             return new InventoryItem.ViewHolder(v);
         }
@@ -160,45 +191,14 @@ public class RecyclerViewFragment extends Fragment {
             //Initializes each component of the UI for each tile to match their respective class attributes
             //InventoryItem item = items.get(holder.getAdapterPosition());
             holder.itemNameTV.setText(items.get(position).getItemName());
-            Log.d("error", "onBindViewHolder: "+items.get(position).getItemName() + " " + String.valueOf(position) + items.toString());
-            //Log.d("error", "onBindViewHolder: "+items.get(position).getItemName());
+            Log.d("error", "onBindViewHolder: " + items.get(position).getItemName() + " " + String.valueOf(position) + items.toString());
             holder.itemDataTV.setText(items.get(position).getItemData());
             holder.itemQuantityTV.setText(items.get(position).getItemQuantity());
             holder.itemStatusPB.setProgress(5);
             holder.itemNeedfulCB.setChecked(items.get(position).isItemNeedful());
-
-
-            //add listeners to the tile buttons
-            holder.deleteBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Toast.makeText(view.getContext(), String.valueOf(position), Toast.LENGTH_SHORT).show();
-
-                    /*
-                    if(item.isInEditMode()){
-                        //save all UI into class
-
-                        item.setItemName(holder.itemNameTV.getText().toString());
-                        Toast.makeText(view.getContext(), view.toString(), Toast.LENGTH_SHORT).show();
-                        item.setItemDate(holder.itemDataTV.getText().toString());
-                        item.setItemQuantity(holder.itemQuantityTV.getText().toString());
-                        item.setItemNeedful(holder.itemNeedfulCB.isChecked());
-                        notifyItemChanged(holder.getAdapterPosition());
-                    }
-
-                     */
-                    //Toggle UI attributes
-                    //holder.ToggleEditMode_VH();
-                    //Update Class
-                    //item.ToggleEditMode();
-
-                }
-            });
-           //holder.deleteBtn.setOnClickListener(Test);
-            holder.reorderBtn.setOnClickListener(Test);
         }
 
-        public static void AddItem(InventoryItem item){
+        public static void AddItem(InventoryItem item) {
             /*
             if(items.size() == 0){
                 items.add(item);
@@ -209,18 +209,17 @@ public class RecyclerViewFragment extends Fragment {
                 items.add(item);
                 recyclerAdapter.notifyItemInserted(items.size() -1);
             }*/
-            if(items != null){
-                Log.d("error", "AddItem1: "+items.toString());
-                Log.d("error", "AddItem2: "+item.toString());
+            if (items != null) {
+                Log.d("error", "AddItem1: " + items.toString());
+                Log.d("error", "AddItem2: " + item.toString());
             }
             items.add(item);
-            Log.d("error", "AddItem3: "+items.toString());
-            if(recyclerAdapter == null){
+            Log.d("error", "AddItem3: " + items.toString());
+            if (recyclerAdapter == null) {
                 recyclerAdapter = new RecyclerViewFragment.RecyclerViewAdapter(items);
                 inventory_rv.setAdapter(recyclerAdapter);
-            }
-            else
-                recyclerAdapter.notifyItemInserted(items.size() -1);
+            } else
+                recyclerAdapter.notifyItemInserted(items.size() - 1);
         }
 
         @Override
@@ -228,8 +227,16 @@ public class RecyclerViewFragment extends Fragment {
             if (items != null)
                 return items.size();
             else {
-                Log.d("rv","There are no inventory items in the list");
+                Log.d("rv", "There are no inventory items in the list");
                 return 0;
+            }
+        }
+
+        public void RemoveItem(int i) {
+            if (i != -1) {
+                items.remove(i);
+                notifyItemRemoved(i);
+                notifyItemRangeChanged(i, items.size());
             }
         }
 

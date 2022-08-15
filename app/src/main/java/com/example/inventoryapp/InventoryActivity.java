@@ -11,9 +11,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 public class InventoryActivity extends AppCompatActivity {
 
@@ -26,7 +24,7 @@ public class InventoryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d("life", "onCreate: alive");
-        setContentView(R.layout.inventory_page);
+        setContentView(R.layout.page_inventory);
         HandleExtras();
         RecyclerViewFragment(savedInstanceState);
     }
