@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:id="@+id/tile_inventory">
 
     <LinearLayout
@@ -11,9 +11,15 @@
         android:orientation="horizontal"
         >
 
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:id="@+id/inventorylist_img"
+            android:src="@mipmap/ic_launcher"/>
+
 
         <EditText
-            android:id="@+id/item_title"
+            android:id="@+id/inventory_title_edittext"
             android:layout_width="0dp"
             android:layout_marginHorizontal="10dp"
             android:layout_height="wrap_content"
@@ -30,7 +36,7 @@
 
 
         <ImageButton
-            android:id="@+id/item_edit_btn"
+            android:id="@+id/inv_edit_btn"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
@@ -41,7 +47,7 @@
             />
 
         <ImageButton
-            android:id="@+id/item_delete_btn"
+            android:id="@+id/inv_delete_btn"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
@@ -52,7 +58,7 @@
             />
 
         <ImageButton
-            android:id="@+id/item_reorder_btn"
+            android:id="@+id/inv_reorder_btn"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
