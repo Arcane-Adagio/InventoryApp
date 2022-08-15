@@ -3,6 +3,7 @@ package com.example.inventoryapp;
 import static android.database.sqlite.SQLiteDatabase.openOrCreateDatabase;
 
 import static com.example.inventoryapp.DBActions.RemoveUserFromDatabase;
+import static com.example.inventoryapp.DBActions.SaveInventoryJSON;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -43,6 +44,9 @@ public class GlobalActions {
                 }
                 else
                     Toast.makeText(context, "No", Toast.LENGTH_LONG).show();
+                return true;
+            case R.id.menu_user_save:
+                SaveInventoryJSON(context);
                 return true;
             default:
                 Toast.makeText(context, "menu tapped", Toast.LENGTH_LONG).show();

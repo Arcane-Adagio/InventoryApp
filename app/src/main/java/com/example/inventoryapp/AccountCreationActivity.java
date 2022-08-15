@@ -22,21 +22,22 @@ public class AccountCreationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.page_createaccount);
         mydatabase = openOrCreateDatabase(DBActions.ACCOUNT_DATABASE_NAME, MODE_PRIVATE, null);
-        //DBActions.RunSQLQueryOnDataBase(mydatabase,DBActions.AccountDatabaseTable,"(Username VARCHAR, Password VARCHAR)");
         Refresh();
+        //DBActions.RunSQLQueryOnDataBase(mydatabase, dataAdapter, "UPDATE Users SET InventoryJSON = 'success' WHERE Username = 'dev';", this);
         SetupUI();
     }
 
     private void Refresh(){
         // The desired columns to be bound
         String[] columns = new String[] {
-                "Username", "Password"
+                "Username", "Password", "InventoryJSON"
         };
 
         // the XML defined views which the data will be bound to
         int[] to = new int[]{
                 R.id.sample_username_view,
-                R.id.sample_password_view
+                R.id.sample_password_view,
+                R.id.sample_inventory_view
         };
 
         // create the adapter using the cursor pointing to the desired data

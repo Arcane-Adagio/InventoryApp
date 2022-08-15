@@ -1,11 +1,15 @@
 package com.example.inventoryapp;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,6 +38,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressLint("Range")
     public void LoginBehavior(View view){
         EditText username_et = (EditText) findViewById(R.id.edittext_loginUsername);
         String username =  username_et.getText().toString();
@@ -44,6 +49,7 @@ public class LoginActivity extends AppCompatActivity {
         else{
             //perform login
             User.setUsername(username);
+            User.setInventorys(DBActions.GetJSONString(username, this));
             GlobalActions.NavigateToActivity(this, MainActivity.class);
         }
     }

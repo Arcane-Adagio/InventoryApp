@@ -1,7 +1,9 @@
 package com.example.inventoryapp;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.widget.SimpleCursorAdapter;
@@ -54,6 +56,7 @@ public class DBActions {
         }
         else{
             database.execSQL("INSERT INTO "+ ACCOUNTDB_TABLE_NAME +" VALUES('"+username+"','"+password+"');");
+            //            database.execSQL("INSERT INTO "+ ACCOUNTDB_TABLE_NAME +" VALUES('"+username+"','"+password+"','test');"); | debug
             Toast.makeText(context, "Account Created", Toast.LENGTH_SHORT).show();
         }
         resultSet.close();
@@ -90,9 +93,50 @@ public class DBActions {
         return database.rawQuery("select * from "+tableName+" where Username='"+string+"'",null).getCount() > 0;
     }
 
-    public static void RunSQLQueryOnDataBase(SQLiteDatabase database, SimpleCursorAdapter adapter, String string, Context context)
+    public static void ExecSQLOnDataBase(SQLiteDatabase database, SimpleCursorAdapter adapter, String string, Context context)
     {
         database.execSQL(string);
         adapter.changeCursor(GetAllUsersFromDatabase(context));
+    }
+
+    public static void ExecSQLOnDataBase(SimpleCursorAdapter adapter, String string, Context context)
+    {
+        getUserDatabase(context).execSQL(string);
+        adapter.changeCursor(GetAllUsersFromDatabase(context));
+    }
+
+    public static Cursor RunSQLQueryOnDataBase(String string, Context context)
+    {
+        return getUserDatabase(context).rawQuery(string, null);
+    }
+
+    public static void PrintCursorToLogcat(Cursor curse){
+        Log.d("db", DatabaseUtils.dumpCursorToString(curse));
+    }
+
+
+    public static String GetJSONString(Context context){
+        Cursor cuss = RunSQLQueryOnDataBase("SELECT * FROM Users WHERE Username = '"+User.getUsername()+"';", context);
+        cuss.moveToFirst(); // a must
+        int colIndex = cuss.getColumnIndex("InventoryJSON");
+        if (colIndex != -1 && cuss.getString(colIndex) != null)
+            return cuss.getString(colIndex);
+        else
+            return "";
+    }
+
+    public static String GetJSONString(String username, Context context){
+        Cursor cuss = RunSQLQueryOnDataBase("SELECT * FROM Users WHERE Username = '"+username+"';", context);
+        cuss.moveToFirst(); // a must
+        int colIndex = cuss.getColumnIndex("InventoryJSON");
+        if (colIndex != -1 && cuss.getString(colIndex) != null)
+            return cuss.getString(colIndex);
+        else
+            return "";
+    }
+
+    public static void SaveInventoryJSON(Context context){
+        getUserDatabase(context).execSQL("UPDATE '"+ACCOUNTDB_TABLE_NAME+"' SET InventoryJSON = '"+User.getInventoryJSON()+"' WHERE Username = '"+User.getUsername()+"';");
+        //getUserDatabase(context).execSQL("UPDATE '"+ACCOUNTDB_TABLE_NAME+"' SET InventoryJSON = '"+"TEST"+"' WHERE Username = '"+User.getUsername()+"';");
     }
 }

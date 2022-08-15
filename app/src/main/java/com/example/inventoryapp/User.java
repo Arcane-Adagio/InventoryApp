@@ -23,6 +23,15 @@ public class User {
         return mUsername;
     }
 
+    public static String getInventoryJSON(){
+        if(INSTANCE == null)
+            INSTANCE = new User();
+        if(mInventorys == null)
+            return "";
+        else
+            return mInventorys;
+    }
+
     public static void setUsername(String username){
         //Username should only be allowed to be set
         //when null
@@ -30,6 +39,15 @@ public class User {
             INSTANCE = new User();
         if (mUsername == null)
             mUsername = username;
+    }
+
+    public static void setInventorys(String inventory){
+        //Username should only be allowed to be set
+        //when null
+        if(INSTANCE == null)
+            INSTANCE = new User();
+        if (mInventorys == null)
+            mInventorys = inventory;
     }
 
     public static void LogoutUser(){
