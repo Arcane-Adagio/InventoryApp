@@ -44,6 +44,7 @@ public class TestRecyclerView extends RecyclerView.Adapter<TestRecyclerView.View
             @Override
             public void onClick(View view) {
                 Log.d("Debug", "onBind: "+String.valueOf(mInventoryNames.get(position)));
+
             }
         });
     }
@@ -66,6 +67,13 @@ public class TestRecyclerView extends RecyclerView.Adapter<TestRecyclerView.View
             parentLayout = itemview.findViewById(R.id.tile_inventory);
             editBtn = (ImageButton) itemview.findViewById(R.id.inv_edit_btn);
             deleteBtn = (ImageButton) itemview.findViewById(R.id.inv_delete_btn);
+            deleteBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    User.RemoveInventory(inventoryName.getText().toString());
+                    notifyItemRemoved(getAdapterPosition());
+                }
+            });
             reorderBtn = (ImageButton) itemview.findViewById(R.id.inv_reorder_btn);
         }
     }

@@ -55,8 +55,7 @@ public class DBActions {
             Toast.makeText(context, "Username already exists", Toast.LENGTH_SHORT).show();
         }
         else{
-            database.execSQL("INSERT INTO "+ ACCOUNTDB_TABLE_NAME +" VALUES('"+username+"','"+password+"');");
-            //            database.execSQL("INSERT INTO "+ ACCOUNTDB_TABLE_NAME +" VALUES('"+username+"','"+password+"','test');"); | debug
+            database.execSQL("INSERT INTO "+ ACCOUNTDB_TABLE_NAME +" VALUES('"+username+"','"+password+"','');");
             Toast.makeText(context, "Account Created", Toast.LENGTH_SHORT).show();
         }
         resultSet.close();

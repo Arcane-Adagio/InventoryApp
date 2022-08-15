@@ -31,7 +31,7 @@
             android:inputType="none"
             android:text="Sample Inventory Title"
             android:maxLines="1"
-            android:maxLength="17"
+            android:maxLength="40"
             android:hint="Title"
             />
 

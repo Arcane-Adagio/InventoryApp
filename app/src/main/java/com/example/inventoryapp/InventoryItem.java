@@ -58,9 +58,6 @@ public class InventoryItem {
 
 
         }
-        
-        
-
 
 
         public void ToggleEditMode_VH(){

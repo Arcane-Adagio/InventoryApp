@@ -17,14 +17,12 @@ public class User {
 
     private static User INSTANCE = null;
     private static String mUsername;
-    public static String mInventorys;
     public static List<String> Inventorys = new ArrayList<String>();
     public static List<JSONObject> InventoryJSONs = new ArrayList<JSONObject>();
     public static List<String> InventoryNames = new ArrayList<String>();
     public static List<List<InventoryItem>> InventoryItems = new ArrayList<>();
     public static JSONArray test;
-
-    String sampleString = "{\"inv\": {},\"inv2\": {}}";
+    public static boolean sample = false;
 
     private User() {};
 
@@ -64,8 +62,11 @@ public class User {
         //when null
         if(INSTANCE == null)
             INSTANCE = new User();
-        if (mInventorys == null){
-            mInventorys = inventory;
+        if (InventoryNames == null || InventoryNames.size() == 0){
+            if (sample || inventory == "" || inventory.length() < 3)
+                DemoConvert();
+            else
+                ConvertStringToInventory(inventory);
         }
     }
 
@@ -75,23 +76,59 @@ public class User {
         mUsername = null;
     }
 
-    public static void ConvertJSONToItems(){
+    public static void DemoConvert(){
         Log.d("user", SampleText().toString());
-        JSONArrayToInventoryObjs(SampleText());
-        //GetInventoryNames();
-        Log.d("user", String.valueOf(Inventorys.size()));
+        JSONArray arr = SampleText();
+        List<String> names = new ArrayList<String>();
+        try {
+            for (int i=0; i<arr.length(); i++){
+                //add each json object to object list
+                InventoryJSONs.add(arr.getJSONObject(i));
+
+                //Add each inventory object name to class list
+                names.add(arr.getJSONObject(i).getString("name"));
+
+                //Convert each inventory's items to lists and store them
+                InventoryItems.add(convertJSONObjectToInventoryItemList(arr.getJSONObject(i)));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Log.d("User", "GetInventoryNames: "+names.get(0));
+        Log.d("User", "GetInventoryNames: "+String.valueOf(names.size()));
+        Log.d("User", "GetInventoryNames: "+String.valueOf(InventoryItems.size()));
+        Log.d("User", "GetInventoryString: "+convertInventoryToString());
+        InventoryNames = names;
+
     }
 
-    public static void ConvertJSONToItems(String inventoryStringFromDatabase){
+    public static void ConvertStringToInventory(String inventoryStringFromDatabase){
+        if (sample)
+            return;
         JSONArray arr = null;
+        List<String> names = new ArrayList<String>();
         try {
             arr = new JSONArray(inventoryStringFromDatabase);
             for (int i=0; i<arr.length(); i++){
+                //add each json object to object list
                 InventoryJSONs.add(arr.getJSONObject(i));
+
+                //Add each inventory object name to class list
+                names.add(arr.getJSONObject(i).getString("name"));
+
+                //Convert each inventory's items to lists and store them
+                InventoryItems.add(convertJSONObjectToInventoryItemList(arr.getJSONObject(i)));
             }
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
+
+        Log.d("User", "GetInventoryNames: "+names.get(0));
+        Log.d("User", "GetInventoryNames: "+String.valueOf(names.size()));
+        Log.d("User", "GetInventoryNames: "+String.valueOf(InventoryItems.size()));
+        Log.d("User", "GetInventoryString: "+convertInventoryToString());
+        InventoryNames = names;
     }
 
     private static JSONArray SampleText(){
@@ -109,7 +146,7 @@ public class User {
                 Item1.put("quantity",String.valueOf(i));
                 Item1.put("needful","true");
                 testing[i].put("Item1",Item1);
-                testing[i].put("name","Inventory");
+                testing[i].put("name","Sample Inventory "+String.valueOf(i));
                 Inventory.put(testing[i]);
             }
         } catch (JSONException e) {
@@ -118,33 +155,10 @@ public class User {
         return Inventory;
     }
 
-    private static void JSONArrayToInventoryObjs(JSONArray arr){
-        for (int i=0; i<arr.length(); i++){
-            try {
-                InventoryJSONs.add(arr.getJSONObject(i));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 
     public static List<String> GetInventoryNames(){
         if (InventoryNames == null || InventoryNames.size() == 0){
-            List<String> names = new ArrayList<String>();
-            try{
-                for (int i=0; i<InventoryJSONs.size(); i++){
-                    names.add(InventoryJSONs.get(i).getString("name"));
-                    InventoryItems.add(convertJSONObjectToInventoryItemList(InventoryJSONs.get(i)));
-                }
-            } catch (Exception e){
-
-            }
-            Log.d("User", "GetInventoryNames: "+names.get(0));
-            Log.d("User", "GetInventoryNames: "+String.valueOf(names.size()));
-            Log.d("User", "GetInventoryNames: "+String.valueOf(InventoryItems.size()));
-            InventoryNames = names;
-            Log.d("User", "GetInventoryString: "+convertInventoryToString());
-            return names;
+            return null;
         }
         else
             return InventoryNames;
@@ -205,5 +219,11 @@ public class User {
     public static List<InventoryItem> GetInventoryItems(String inventoryName){
         int position = GetInventoryNames().indexOf(inventoryName);
         return InventoryItems.get(position);
+    }
+
+    public static void RemoveInventory(String inventoryName){
+        int position = GetInventoryNames().indexOf(inventoryName);
+        InventoryNames.remove(position);
+        InventoryItems.remove(position);
     }
 }
