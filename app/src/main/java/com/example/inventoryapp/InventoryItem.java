@@ -100,6 +100,13 @@ public class InventoryItem {
         mItemQuantity = quantity;
     }
 
+    public InventoryItem (String name, String data, String quantity, boolean itemNeedful){
+        mItemName = name;
+        mItemDate = data;
+        mItemQuantity = quantity;
+        mItemNeedful = itemNeedful;
+    }
+
     public void setItemName(String itemName) {mItemName = itemName;}
 
     public void setItemDate(String ItemDate) {mItemDate = ItemDate;}
@@ -122,6 +129,13 @@ public class InventoryItem {
 
     public String getItemQuantity(){
         return mItemQuantity != null ? mItemQuantity : null;
+    }
+
+    public String getItemNeedfulString(){
+        if(mItemNeedful)
+            return "true";
+        else
+            return "fasle";
     }
 
     public ItemState getItemStatus(){

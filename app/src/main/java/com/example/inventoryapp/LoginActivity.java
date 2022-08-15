@@ -38,7 +38,6 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    @SuppressLint("Range")
     public void LoginBehavior(View view){
         EditText username_et = (EditText) findViewById(R.id.edittext_loginUsername);
         String username =  username_et.getText().toString();

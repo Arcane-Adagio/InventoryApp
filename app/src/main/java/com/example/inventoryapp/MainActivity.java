@@ -38,13 +38,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.page_home);
+        User.ConvertJSONToItems();
         //if(emptyList)
             //SetupInitFragment();
         //}
         //else
            // RecyclerViewFragment (savedInstanceState);
         //initImageBitmaps();
+        initrv();
     }
 
     private void Add(View view){
@@ -116,6 +118,13 @@ public class MainActivity extends AppCompatActivity {
     private void initRecyclerView(){
         RecyclerView recyclerView = findViewById(R.id.inventorylist_view);
         InvLstRecyclerViewAdapter adapter = new InvLstRecyclerViewAdapter( mNames, mImageUrls, this);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    private void initrv(){
+        RecyclerView recyclerView = findViewById(R.id.inventorylist_view);
+        TestRecyclerView adapter = new TestRecyclerView( User.GetInventoryNames(), this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
