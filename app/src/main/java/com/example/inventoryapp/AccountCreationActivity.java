@@ -22,6 +22,7 @@ public class AccountCreationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.page_createaccount);
         mydatabase = openOrCreateDatabase(DBActions.ACCOUNT_DATABASE_NAME, MODE_PRIVATE, null);
+        mydatabase.execSQL("CREATE TABLE IF NOT EXISTS Users (Username VARCHAR, Password VARCHAR, InventoryJSON VARCHAR);");
         Refresh();
         //DBActions.RunSQLQueryOnDataBase(mydatabase, dataAdapter, "UPDATE Users SET InventoryJSON = 'success' WHERE Username = 'dev';", this);
         SetupUI();
