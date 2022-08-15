@@ -3,8 +3,6 @@ package com.example.inventoryapp;
 import static android.database.sqlite.SQLiteDatabase.openOrCreateDatabase;
 
 import static com.example.inventoryapp.DBActions.RemoveUserFromDatabase;
-import static com.example.inventoryapp.DBActions.getLoggedInUser;
-import static com.example.inventoryapp.DBActions.loggedInUser;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -29,17 +27,18 @@ import java.util.concurrent.Callable;
 
 public class GlobalActions {
 
+
     public static boolean DefaultMenuOptionSelection(@NonNull MenuItem item, Context context, FragmentManager fM) {
         // This function is called when an icon is selected in the Actionbar
 
         switch (item.getItemId()){
             case R.id.menu_logout:
-                DBActions.setLoggedInUser(null);
+                User.LogoutUser();
                 NavigateToActivity(context, LoginActivity.class);
                 return true;
             case R.id.menu_delete_account:
-                if(getLoggedInUser() != null){
-                    RemoveUserFromDatabase(getLoggedInUser(), context);
+                if(User.getUsername() != null){
+                    RemoveUserFromDatabase(User.getUsername(), context);
                     NavigateToActivity(context, LoginActivity.class);
                 }
                 else

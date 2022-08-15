@@ -22,7 +22,7 @@ public class AccountCreationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.page_createaccount);
         mydatabase = openOrCreateDatabase(DBActions.ACCOUNT_DATABASE_NAME, MODE_PRIVATE, null);
-        //DBActions.CreateTableInDatabase(mydatabase,DBActions.AccountDatabaseTable,"(Username VARCHAR, Password VARCHAR)");
+        //DBActions.RunSQLQueryOnDataBase(mydatabase,DBActions.AccountDatabaseTable,"(Username VARCHAR, Password VARCHAR)");
         Refresh();
         SetupUI();
     }

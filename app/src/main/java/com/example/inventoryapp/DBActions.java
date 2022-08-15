@@ -8,7 +8,6 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
 public class DBActions {
-    public static String loggedInUser;
     public static final String ACCOUNT_DATABASE_NAME = "Account";
     public static final String ACCOUNTDB_TABLE_NAME = "Users";
 
@@ -65,14 +64,6 @@ public class DBActions {
         return context.openOrCreateDatabase(ACCOUNT_DATABASE_NAME, Context.MODE_PRIVATE, null);
     }
 
-    public static void setLoggedInUser(String username){
-        loggedInUser = username;
-    }
-
-    public static String getLoggedInUser(){
-        return loggedInUser;
-    }
-
     public static void RemoveStringFromDatabaseTable(SQLiteDatabase database, String tableName, String columnName, SimpleCursorAdapter adapter, String string, Context context){
         /* Template to Remember */
         Cursor resultSet = database.rawQuery("select * from "+tableName+" where "+columnName+"='"+string+"'",null);
@@ -99,4 +90,9 @@ public class DBActions {
         return database.rawQuery("select * from "+tableName+" where Username='"+string+"'",null).getCount() > 0;
     }
 
+    public static void RunSQLQueryOnDataBase(SQLiteDatabase database, SimpleCursorAdapter adapter, String string, Context context)
+    {
+        database.execSQL(string);
+        adapter.changeCursor(GetAllUsersFromDatabase(context));
+    }
 }

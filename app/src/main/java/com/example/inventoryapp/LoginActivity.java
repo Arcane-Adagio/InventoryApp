@@ -21,33 +21,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.page_login);
         accountDatabase = openOrCreateDatabase(DBActions.ACCOUNT_DATABASE_NAME, MODE_PRIVATE, null);
-        Refresh();
         SetupUI();
-    }
-
-
-    private void Refresh(){
-        // The desired columns to be bound
-        String[] columns = new String[] {
-                "Username", "Password"
-        };
-
-        // the XML defined views which the data will be bound to
-        int[] to = new int[]{
-                R.id.sample_username_view,
-                R.id.sample_password_view
-        };
-
-        // create the adapter using the cursor pointing to the desired data
-        // as well as the layout information
-        dataAdapter = new SimpleCursorAdapter(
-                this,
-                R.layout.sample_account_listitem,
-                getAllUsers(),
-                columns,
-                to,
-                0
-        );
     }
 
     public void SetupUI(){
@@ -69,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(this, "Password was incorrect", Toast.LENGTH_SHORT).show();
         else{
             //perform login
-            DBActions.loggedInUser = username;
+            User.setUsername(username);
             GlobalActions.NavigateToActivity(this, MainActivity.class);
         }
     }
