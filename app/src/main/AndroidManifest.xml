@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.inventoryapp">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -15,17 +16,22 @@
         android:theme="@style/Theme.InventoryApp"
         tools:targetApi="31">
         <activity
-            android:name=".InventoryActivity"
-            android:exported="false" />
-        <activity
-            android:name=".MainActivity"
+            android:name=".SQLiteActivity"
             android:exported="true"
-            android:screenOrientation="portrait">
+            android:windowSoftInputMode="adjustNothing">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".InventoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="false"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 
