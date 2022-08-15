@@ -2,22 +2,20 @@ package com.example.inventoryapp;
 
 import static android.database.sqlite.SQLiteDatabase.openOrCreateDatabase;
 
-import android.app.Activity;
+import static com.example.inventoryapp.DBActions.RemoveUserFromDatabase;
+import static com.example.inventoryapp.DBActions.getLoggedInUser;
+import static com.example.inventoryapp.DBActions.loggedInUser;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Adapter;
-import android.widget.EditText;
-import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -25,38 +23,32 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import java.util.concurrent.Callable;
 
 public class GlobalActions {
 
-
     public static boolean DefaultMenuOptionSelection(@NonNull MenuItem item, Context context, FragmentManager fM) {
         // This function is called when an icon is selected in the Actionbar
-        /*
+
         switch (item.getItemId()){
-            case R.id.home_btn_settings:
-                //Intent intent = new Intent(context, SettingsActivity.class);
-                //context.startActivity(intent);
+            case R.id.menu_logout:
+                DBActions.setLoggedInUser(null);
+                NavigateToActivity(context, LoginActivity.class);
                 return true;
-            case R.id.copy:
-                Toast.makeText(context, "Copied", Toast.LENGTH_LONG).show();
-                return true;
-            case R.id.home_btn_share: //Popup QR dialog
-                //DialogFragment newFragment = GlobalActions.MyAlertDialogFragmentWithCustomLayout.newInstance(R.layout.qr_code_display);
-                //newFragment.show(fM, context.getString(R.string.fragment_tag_dialog));
-                return true;
-            case R.id.home_btn_info:
-                //Toast.makeText(context, context.getString(R.string.btn_info_text), Toast.LENGTH_LONG).show();
+            case R.id.menu_delete_account:
+                if(getLoggedInUser() != null){
+                    RemoveUserFromDatabase(getLoggedInUser(), context);
+                    NavigateToActivity(context, LoginActivity.class);
+                }
+                else
+                    Toast.makeText(context, "No", Toast.LENGTH_LONG).show();
                 return true;
             default:
+                Toast.makeText(context, "menu tapped", Toast.LENGTH_LONG).show();
                 return false;
         }
-         */
-        Toast.makeText(context, "menu tapped", Toast.LENGTH_LONG).show();
-        return true;
     }
 
     public static void SetupToolbar(AppCompatActivity activity, int toolbarID){
@@ -124,55 +116,5 @@ public class GlobalActions {
         return AppCompatResources.getDrawable(c, id);
     }
 
-    public static Cursor GetAllUsersFromDatabase(SQLiteDatabase database, String databaseName){
-        /* SimpleCursorAdapter requires that the cursor;s result set must include a column
-         * name exactly "_id". Don't hast to change schema if you didn't define the "_id" column
-         * in your table. SQLite automatically added a hidden column called "rowid" for every table.
-         * All you need to do is that - just select rowid explicitly and alias it as '_id' */
-        Cursor resultSet = database.rawQuery("select rowid _id,* from "+databaseName+";",null);
-        if (resultSet.moveToFirst()){
-            do {
-                //DisplayUser(resultSet);
-            } while (resultSet.moveToNext());
-        }
-        return resultSet;
-    }
 
-    public static void RemoveUserFromDatabase(SQLiteDatabase database, String databaseName, SimpleCursorAdapter adapter, String username, Context context){
-        /* Deletes user from database when provided with username */
-        Cursor resultSet = database.rawQuery("select * from Users where Username='"+username+"'",null);
-        if(resultSet.getCount()>0){
-            database.execSQL("DELETE FROM Users WHERE Username='"+username+"';");
-            Toast.makeText(context, "Account Deleted", Toast.LENGTH_SHORT).show();
-            adapter.changeCursor(GetAllUsersFromDatabase(database, databaseName));
-        }
-        Toast.makeText(context, "Username does not exists", Toast.LENGTH_SHORT).show();
-    }
-
-    public static boolean IsUserInDataBase(SQLiteDatabase database, String databaseName, SimpleCursorAdapter adapter, String username){
-        return database.rawQuery("select * from Users where Username='"+username+"'",null).getCount() > 0;
-    }
-
-    public static void AddUserToDatabase(SQLiteDatabase database, String databaseName, SimpleCursorAdapter adapter, String username, String password, Context context){
-        /* Reads Username and Password from Create Account page
-         *  then adds account if account isn't already in the database
-         *  */
-        Cursor resultSet = database.rawQuery("select * from Users where Username='"+username+"'",null);
-        if(resultSet.getCount()>0){
-            Toast.makeText(context, "Username already exists", Toast.LENGTH_SHORT).show();
-        }
-        else{
-            database.execSQL("INSERT INTO Users VALUES('"+username+"','"+password+"');");
-            Toast.makeText(context, "Account Created", Toast.LENGTH_SHORT).show();
-        }
-        resultSet.close();
-        adapter.changeCursor(GetAllUsersFromDatabase(database, databaseName));
-    }
-
-    public static void CreateTableInDatabase(SQLiteDatabase database, String tableName, String columnArgs){
-        /* Column Args should be surrounded by parenthesis and separated by commas for each arg
-        *  Ex: (Username VARCHAR, Password VARCHAR)
-        * */
-        database.execSQL("CREATE TABLE IF NOT EXISTS "+tableName+columnArgs+";");
-    }
 }

@@ -6,24 +6,25 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.Toast;
 
-public class SQLiteActivity extends AppCompatActivity {
+public class AccountCreationActivity extends AppCompatActivity {
 
     private SimpleCursorAdapter dataAdapter;
     SQLiteDatabase mydatabase;
+    Button createBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.page_createaccount);
-        mydatabase = openOrCreateDatabase("Account", MODE_PRIVATE, null);
-        GlobalActions.CreateTableInDatabase(mydatabase,"Users","(Username VARCHAR, Password VARCHAR)");
+        mydatabase = openOrCreateDatabase(DBActions.ACCOUNT_DATABASE_NAME, MODE_PRIVATE, null);
+        //DBActions.CreateTableInDatabase(mydatabase,DBActions.AccountDatabaseTable,"(Username VARCHAR, Password VARCHAR)");
         Refresh();
-        //DBDelete("Patrick");
+        SetupUI();
     }
 
     private void Refresh(){
@@ -34,8 +35,8 @@ public class SQLiteActivity extends AppCompatActivity {
 
         // the XML defined views which the data will be bound to
         int[] to = new int[]{
-            R.id.sample_username_view,
-            R.id.sample_password_view
+                R.id.sample_username_view,
+                R.id.sample_password_view
         };
 
         // create the adapter using the cursor pointing to the desired data
@@ -53,20 +54,27 @@ public class SQLiteActivity extends AppCompatActivity {
         listView.setAdapter(dataAdapter);
     }
 
-    public void DBinsert(View view){
+    public void CreateAccount(View view){
         EditText username = (EditText) findViewById(R.id.username_editText);
         EditText password = (EditText) findViewById(R.id.password_edittext);
         String uname = username.getText().toString();
         String pass = password.getText().toString();
-        GlobalActions.AddUserToDatabase(mydatabase, "Users", dataAdapter, uname, pass, this);
+        DBActions.AddUserToDatabase(dataAdapter, uname, pass, this);
+        GlobalActions.NavigateToActivity(this, LoginActivity.class);
     }
 
-    public void DBDelete(String username){
-        GlobalActions.RemoveUserFromDatabase(mydatabase,"Users", dataAdapter, username, this);
+    private void SetupUI(){
+        createBtn = (Button) findViewById(R.id.btn_createaccount);
+        createBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CreateAccount(view);
+            }
+        });
     }
 
     private Cursor getAllUsers(){
-        return GlobalActions.GetAllUsersFromDatabase(mydatabase, "Users");
+        return DBActions.GetAllUsersFromDatabase(this);
     }
 
     @Override

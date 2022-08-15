@@ -47,10 +47,11 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="176dp"
         android:text="Login"
-        app:layout_constraintBottom_toTopOf="@+id/button2"
+        app:layout_constraintBottom_toTopOf="@+id/createAccount_textbtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:onClick="LoginBehavior"/>
 
     <TextView
         android:id="@+id/textView2"
@@ -59,7 +60,7 @@
         android:layout_marginStart="104dp"
         android:text="Don't have an account?"
         android:textSize="11sp"
-        app:layout_constraintBottom_toBottomOf="@+id/button2"
+        app:layout_constraintBottom_toBottomOf="@+id/createAccount_textbtn"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
@@ -73,7 +74,7 @@
         app:layout_constraintTop_toBottomOf="@+id/edittext_TextPassword" />
 
     <TextView
-        android:id="@+id/button2"
+        android:id="@+id/createAccount_textbtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="76dp"
