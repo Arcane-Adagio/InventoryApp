@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initrv(){
         RecyclerView recyclerView = findViewById(R.id.inventorylist_view);
-        TestRecyclerView adapter = new TestRecyclerView( User.GetInventoryNames(), this);
+        TestRecyclerView adapter = TestRecyclerView.ConstructHomeRecyclerViewIfNotCreated( User.GetInventoryNames(), this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }

@@ -45,6 +45,12 @@ public class GlobalActions {
                 else
                     Toast.makeText(context, "No", Toast.LENGTH_LONG).show();
                 return true;
+            case R.id.menu_add_inventory:
+                //add inventory to user
+                User.AddInventory();
+                TestRecyclerView.GetHomeRecyclerViewINSTANCE().AddInventory2();
+                //add inventory to recyclerview
+                return true;
             case R.id.menu_user_save:
                 SaveInventoryJSON(context);
                 return true;

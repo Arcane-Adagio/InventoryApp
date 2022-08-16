@@ -226,4 +226,11 @@ public class User {
         InventoryNames.remove(position);
         InventoryItems.remove(position);
     }
+
+    public static void AddInventory(){
+        String newInventoryName = "Inventory #"+String.valueOf(InventoryNames.size()+1);
+        InventoryNames.add(newInventoryName);
+        //InventoryItems.add(new InventoryItem(newInventoryName, "--", "0", false));
+        InventoryItems.add(new ArrayList<InventoryItem>());
+    }
 }
