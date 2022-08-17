@@ -16,6 +16,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String EMPTY_FRAG_TAG = "EmptyRV";
     private static final String LIST_FRAG_TAG = "ListRV";
     private static boolean emptyList = true;
+    FloatingActionButton fab;
     EditText dialogEditText;
 
     //vars
@@ -128,7 +131,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         Log.d("life", "HomeActivity: onStart");
-
+        fab = (FloatingActionButton) findViewById(R.id.inventory_fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TestRecyclerView.GetHomeRecyclerViewINSTANCE().AddInventory();
+            }
+        });
         super.onStart();
     }
 

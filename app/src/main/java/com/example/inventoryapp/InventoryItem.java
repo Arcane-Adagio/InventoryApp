@@ -15,16 +15,16 @@ public class InventoryItem {
 
     public enum ItemState{ Full, Good, Half, Low, Empty, NA}
 
-    public static String mItemName;
-    private static boolean mItemNeedful = false;
-    private static String mItemDate;
-    private static String mItemQuantity;
-    private static ItemState mItemStatus;
-    private static boolean mEditMode = true;
+    private String mItemName;
+    private boolean mItemNeedful = false;
+    private String mItemDate;
+    private String mItemQuantity;
+    private ItemState mItemStatus;
+    private boolean mEditMode = true;
 
     public String toString()
     {
-        return "--"+mItemName+"--";
+        return mItemName;
     }
 
 
@@ -48,15 +48,6 @@ public class InventoryItem {
             editBtn = (ImageButton) view.findViewById(R.id.item_edit_btn);
             deleteBtn = (ImageButton) view.findViewById(R.id.item_delete_btn);
             reorderBtn = (ImageButton) view.findViewById(R.id.item_reorder_btn);
-            
-            deleteBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    RecyclerViewFragment.recyclerAdapter.RemoveItem(getAdapterPosition());
-                }
-            });
-
-
         }
 
 

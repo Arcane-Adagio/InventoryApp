@@ -45,12 +45,6 @@ public class GlobalActions {
                 else
                     Toast.makeText(context, "No", Toast.LENGTH_LONG).show();
                 return true;
-            case R.id.menu_add_inventory:
-                //add inventory to user
-                User.AddInventory();
-                TestRecyclerView.GetHomeRecyclerViewINSTANCE().AddInventory2();
-                //add inventory to recyclerview
-                return true;
             case R.id.menu_user_save:
                 SaveInventoryJSON(context);
                 return true;
@@ -89,7 +83,7 @@ public class GlobalActions {
             int layout = getArguments().getInt("layout");
             final int list = getArguments().getInt("list");
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            LayoutInflater layoutInflater = getActivity().getLayoutInflater();
+            LayoutInflater layoutInflater = getLayoutInflater();
             View view = layoutInflater.inflate(layout, null);
             return builder.setView(view)
                     .setPositiveButton("Create", (dialogInterface, i) -> {

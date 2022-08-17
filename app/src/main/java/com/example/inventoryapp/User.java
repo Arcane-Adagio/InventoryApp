@@ -228,9 +228,26 @@ public class User {
     }
 
     public static void AddInventory(){
-        String newInventoryName = "Inventory #"+String.valueOf(InventoryNames.size()+1);
-        InventoryNames.add(newInventoryName);
-        //InventoryItems.add(new InventoryItem(newInventoryName, "--", "0", false));
+        /* New inventory name should not be a duplicate of an existing name */
+        String defaultInventoryName;
+        int counter = InventoryNames.size();
+        do {
+            defaultInventoryName = "Inventory #"+String.valueOf(counter++);
+        }
+        while (InventoryNames.contains(defaultInventoryName));
+        InventoryNames.add(defaultInventoryName);
         InventoryItems.add(new ArrayList<InventoryItem>());
     }
+
+    public static void AddInventoryItem(String inventoryName, InventoryItem newItem){
+        int position = GetInventoryNames().indexOf(inventoryName);
+        InventoryItems.get(position).add(newItem);
+    }
+
+    public static void RemoveItemFromInventory(String inventoryName, InventoryItem item){
+        int position = GetInventoryNames().indexOf(inventoryName);
+        InventoryItems.get(position).remove(item);
+    }
+
+
 }

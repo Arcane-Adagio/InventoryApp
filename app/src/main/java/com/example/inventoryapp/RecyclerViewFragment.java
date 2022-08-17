@@ -22,7 +22,7 @@ import java.util.List;
 
 public class RecyclerViewFragment extends Fragment {
     private Activity HostActivity;
-    public static RecyclerViewAdapter recyclerAdapter;
+//    public static RecyclerViewAdapter recyclerAdapter;
     private static FloatingActionButton rv_fab;
     private static RecyclerView inventory_rv;
     private static List<InventoryItem> itemList;
@@ -77,7 +77,7 @@ public class RecyclerViewFragment extends Fragment {
 
     @Override
     public void onStart() {
-        Log.d("life", "RV: onStart");
+/*        Log.d("life", "RV: onStart");
         inventory_rv = (RecyclerView) HostActivity.findViewById(R.id.inventory_recycleview);
         inventory_rv.addOnScrollListener(rv_FAB_listener);
         rv_fab = (FloatingActionButton) HostActivity.findViewById(R.id.frame_fab);
@@ -96,7 +96,7 @@ public class RecyclerViewFragment extends Fragment {
         inventory_rv.scrollToPosition(0);
         inventory_rv.setAdapter(adapter_items);
         inventory_rv.setHasFixedSize(false);
-        inventory_rv.setItemAnimator(new DefaultItemAnimator());
+        inventory_rv.setItemAnimator(new DefaultItemAnimator());*/
         //rv_fab.setVisibility(View.VISIBLE);
         super.onStart();
     }
@@ -116,7 +116,7 @@ public class RecyclerViewFragment extends Fragment {
     @Override
     public void onStop() {
         Log.d("life", "RV: onStop");
-        itemList = recyclerAdapter != null ? recyclerAdapter.getShownItems() : null;
+//        itemList = recyclerAdapter != null ? recyclerAdapter.getShownItems() : null;
         super.onStop();
     }
 
@@ -140,12 +140,12 @@ public class RecyclerViewFragment extends Fragment {
             a = new InventoryItem("Sample Item 2", "Date", "4");
             counter = 0;
         }
-        RecyclerViewAdapter.AddItem(a);
-        inventory_rv.smoothScrollToPosition(recyclerAdapter.getItemCount());
+//        RecyclerViewAdapter.AddItem(a);
+//        inventory_rv.smoothScrollToPosition(recyclerAdapter.getItemCount());
     }
 
 
-    public static class RecyclerViewAdapter extends RecyclerView.Adapter<InventoryItem.ViewHolder> {
+    /*public static class RecyclerViewAdapter extends RecyclerView.Adapter<InventoryItem.ViewHolder> {
         //list of items maintained by Adapter
         static List<InventoryItem> items;
 
@@ -190,16 +190,16 @@ public class RecyclerViewFragment extends Fragment {
         public void onBindViewHolder(@NonNull InventoryItem.ViewHolder holder, int position) {
             //Initializes each component of the UI for each tile to match their respective class attributes
             //InventoryItem item = items.get(holder.getAdapterPosition());
-            holder.itemNameTV.setText(items.get(position).getItemName());
+*//*            holder.itemNameTV.setText(items.get(position).getItemName());
             Log.d("error", "onBindViewHolder: " + items.get(position).getItemName() + " " + String.valueOf(position) + items.toString());
             holder.itemDataTV.setText(items.get(position).getItemData());
             holder.itemQuantityTV.setText(items.get(position).getItemQuantity());
             holder.itemStatusPB.setProgress(5);
-            holder.itemNeedfulCB.setChecked(items.get(position).isItemNeedful());
+            holder.itemNeedfulCB.setChecked(items.get(position).isItemNeedful());*//*
         }
 
         public static void AddItem(InventoryItem item) {
-            /*
+            *//*
             if(items.size() == 0){
                 items.add(item);
                 recyclerAdapter = new RecyclerViewFragment.RecyclerViewAdapter(items);
@@ -208,7 +208,7 @@ public class RecyclerViewFragment extends Fragment {
             else{
                 items.add(item);
                 recyclerAdapter.notifyItemInserted(items.size() -1);
-            }*/
+            }*//*
             if (items != null) {
                 Log.d("error", "AddItem1: " + items.toString());
                 Log.d("error", "AddItem2: " + item.toString());
@@ -243,5 +243,5 @@ public class RecyclerViewFragment extends Fragment {
         public List<InventoryItem> getShownItems(){
             return items;
         }
-    }
+    }*/
 }

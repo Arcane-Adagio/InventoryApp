@@ -13,12 +13,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 public class InventoryActivity extends AppCompatActivity {
 
     private ImageButton addItem_btn;
     private Fragment fragment;
     private FragmentManager fm;
     private static final String LIST_FRAG_TAG = "ListRV";
+    FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -10,7 +10,7 @@
         android:title="Share"
         app:showAsAction="never" />
     <item
-        android:id="@+id/menu_inv_edit"
+        android:id="@+id/menu_inv_edit_title"
         android:title="Edit Title"
         app:showAsAction="never" />
     <item

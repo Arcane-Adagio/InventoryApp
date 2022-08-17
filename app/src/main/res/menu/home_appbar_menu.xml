@@ -6,13 +6,6 @@
         android:title="Save"
         app:showAsAction="never" />
     <item
-        android:id="@+id/menu_add_inventory"
-        android:title="Create Inventory"
-        android:icon="@drawable/ic_add_default"
-        android:iconTint="@color/black"
-        app:showAsAction="always" />
-
-    <item
         android:id="@+id/menu_logout"
         android:title="Logout"
         app:showAsAction="never" />

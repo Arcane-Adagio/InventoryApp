@@ -45,21 +45,25 @@ public class DBActions {
                 .rawQuery("select * from "+ ACCOUNTDB_TABLE_NAME +" where Username='"+username+"'",null).getCount() > 0;
     }
 
-    public static void AddUserToDatabase(SimpleCursorAdapter adapter, String username, String password, Context context){
+    public static boolean AddUserToDatabase(SimpleCursorAdapter adapter, String username, String password, Context context){
         /* Reads Username and Password from Create Account page
          *  then adds account if account isn't already in the database
          *  */
+        boolean response;
         SQLiteDatabase database = getUserDatabase(context);
         Cursor resultSet = database.rawQuery("select * from "+ ACCOUNTDB_TABLE_NAME +" where Username='"+username+"'",null);
         if(resultSet.getCount()>0){
             Toast.makeText(context, "Username already exists", Toast.LENGTH_SHORT).show();
+            response = false;
         }
         else{
             database.execSQL("INSERT INTO "+ ACCOUNTDB_TABLE_NAME +" VALUES('"+username+"','"+password+"','');");
             Toast.makeText(context, "Account Created", Toast.LENGTH_SHORT).show();
+            response = true;
         }
         resultSet.close();
         adapter.changeCursor(GetAllUsersFromDatabase(context));
+        return response;
     }
 
     private static SQLiteDatabase getUserDatabase(Context context){

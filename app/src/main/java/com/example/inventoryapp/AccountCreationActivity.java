@@ -61,8 +61,8 @@ public class AccountCreationActivity extends AppCompatActivity {
         EditText password = (EditText) findViewById(R.id.password_edittext);
         String uname = username.getText().toString();
         String pass = password.getText().toString();
-        DBActions.AddUserToDatabase(dataAdapter, uname, pass, this);
-        GlobalActions.NavigateToActivity(this, LoginActivity.class);
+        if(DBActions.AddUserToDatabase(dataAdapter, uname, pass, this))
+            GlobalActions.NavigateToActivity(this, LoginActivity.class);
     }
 
     private void SetupUI(){
