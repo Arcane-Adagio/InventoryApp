@@ -67,7 +67,7 @@ public class InventoryItemRecyclerAdapter extends RecyclerView.Adapter<Inventory
     }
 
     public void AddInventory2(){
-        InventoryItem newItem = new InventoryItem( "Item #"+String.valueOf(mItems.size()), "-","-");
+        InventoryItem newItem = new InventoryItem( "Item #"+String.valueOf(mItems.size()), "","");
         User.AddInventoryItem(currentInventoryName, newItem);
         notifyItemInserted(getItemCount());
         mRecyclerView.scrollToPosition(mItems.size()-1);

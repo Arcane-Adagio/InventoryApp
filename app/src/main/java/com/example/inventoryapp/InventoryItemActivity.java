@@ -10,12 +10,15 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -26,6 +29,10 @@ public class InventoryItemActivity extends AppCompatActivity {
 
     private static FloatingActionButton rv_fab;
     private String mCurrentInventory;
+    EditText mNameChangeEditText;
+    ImageButton mConfirmNameButton;
+    ImageButton mCancelNameButton;
+    LinearLayout mNameChangeLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +60,42 @@ public class InventoryItemActivity extends AppCompatActivity {
                 InventoryItemRecyclerAdapter.GetItemRecyclerViewINSTANCE().AddInventory2();
             }
         });
+        mCancelNameButton = (ImageButton) findViewById(R.id.inv_btn_namechange_cancel);
+        mCancelNameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mNameChangeEditText.setText("");
+                mNameChangeLayout.setVisibility(View.GONE);
+            }
+        });
+        mConfirmNameButton = (ImageButton) findViewById(R.id.inv_btn_namechange_confirm);
+        mConfirmNameButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RenameInventory(mNameChangeEditText.getText().toString());
+                mNameChangeLayout.setVisibility(View.GONE);
+            }
+        });
+        mNameChangeEditText = (EditText) findViewById(R.id.newInventoryNameEditText);
+        mNameChangeEditText.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    RenameInventory(mNameChangeEditText.getText().toString());
+                    return true;
+                }
+                return false;
+            }
+        });
+        mNameChangeLayout = (LinearLayout) findViewById(R.id.namechange_view);
+    }
+
+    private void RenameInventory(String newName){
+        int position = User.GetPositionOfInventory(mCurrentInventory);
+        User.RenameInventory(mCurrentInventory, newName);
+        mCurrentInventory = newName;
+        TestRecyclerView.GetHomeRecyclerViewINSTANCE().notifyItemChanged(position);
+        Objects.requireNonNull(getSupportActionBar()).setTitle(newName);
     }
 
     private void initrv(String inventoryName){
@@ -65,10 +108,7 @@ public class InventoryItemActivity extends AppCompatActivity {
     private boolean MenuOptionsSelected(@NonNull MenuItem item){
         switch (item.getItemId()){
             case R.id.menu_inv_edit_title:
-                String oldInventoryName = mCurrentInventory;
-                //update user class and recycler view
-                RenameInventory();
-                getSupportActionBar().setTitle(mCurrentInventory);
+                mNameChangeLayout.setVisibility(View.VISIBLE);
                 return true;
             case R.id.menu_inv_delete:
                 User.RemoveInventory(mCurrentInventory);
@@ -94,56 +134,6 @@ public class InventoryItemActivity extends AppCompatActivity {
             return true;
         else
             return super.onOptionsItemSelected(item);
-    }
-
-    private void RenameInventory(){
-        // Displays a form for a user to Title and navigate to a newly created Inventory
-        int layout = R.layout.dialog_inventorycreation;
-        String newInventoryName;
-        DialogFragment newFragment = GlobalActions.MyAlertDialogFragmentWithCustomLayout.newInstance(layout,
-                new Callable<Void>() {
-                    @Override
-                    public Void call() {
-                        //get the context of the dialog view, and use that to find the edit text
-                        View view = getLayoutInflater().inflate(layout,null);
-                        final EditText eT = (EditText) view.findViewById(R.id.newInventoryNameEditText);
-                        mCurrentInventory = eT.getText().toString();
-                        return null;
-                    }
-                });
-        newFragment.show(getSupportFragmentManager(), "dialog");
-    }
-
-
-    public static class MyAlertDialogFragmentWithCustomLayout extends DialogFragment {
-
-        public static GlobalActions.MyAlertDialogFragmentWithCustomLayout newInstance(int layout, Callable<Void> positiveFunc){
-            GlobalActions.MyAlertDialogFragmentWithCustomLayout frag = new GlobalActions.MyAlertDialogFragmentWithCustomLayout();
-            Bundle args = new Bundle();
-            args.putInt("layout", layout);
-            frag.setArguments(args);
-            return frag;
-        }
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState){
-            int layout = getArguments().getInt("layout");
-            final int list = getArguments().getInt("list");
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            LayoutInflater layoutInflater = getActivity().getLayoutInflater();
-            View view = layoutInflater.inflate(layout, null);
-            return builder.setView(view)
-                    .setPositiveButton("Set", (dialogInterface, i) -> {
-                        try {
-
-                        } catch (Exception e) {
-                            Log.d("error", "onCreateDialog: "+e.toString());
-                            e.printStackTrace();
-                        }
-                    }).setNegativeButton("cancel", (dialogInterface, i) -> {
-                        //do nothing
-                    }).create();
-        }
     }
 
 }

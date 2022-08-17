@@ -10,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -247,6 +248,15 @@ public class User {
     public static void RemoveItemFromInventory(String inventoryName, InventoryItem item){
         int position = GetInventoryNames().indexOf(inventoryName);
         InventoryItems.get(position).remove(item);
+    }
+
+    public static void RenameInventory(String oldName, String newName){
+        int position = GetInventoryNames().indexOf(oldName);
+        Collections.replaceAll(InventoryNames, oldName, newName);
+    }
+
+    public static int GetPositionOfInventory(String inventoryName){
+        return GetInventoryNames().indexOf(inventoryName);
     }
 
 
