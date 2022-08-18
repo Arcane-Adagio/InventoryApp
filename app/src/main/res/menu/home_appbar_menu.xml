@@ -10,6 +10,10 @@
         android:title="Export Inventories"
         app:showAsAction="never" />
     <item
+        android:id="@+id/menu_inv_file_save"
+        android:title="Save To File"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/menu_logout"
         android:title="Logout"
         app:showAsAction="never" />

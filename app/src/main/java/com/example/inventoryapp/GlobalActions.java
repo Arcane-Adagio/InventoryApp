@@ -6,6 +6,7 @@ import static com.example.inventoryapp.DBActions.RemoveUserFromDatabase;
 import static com.example.inventoryapp.DBActions.SaveInventoryJSON;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
@@ -29,6 +30,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 
 import java.util.concurrent.Callable;
+import java.util.logging.FileHandler;
 
 public class GlobalActions {
 
@@ -51,6 +53,9 @@ public class GlobalActions {
                 return true;
             case R.id.menu_user_save:
                 SaveInventoryJSON(context);
+                return true;
+            case R.id.menu_inv_file_save:
+                new StorageHandler((Activity) context).WriteToFile();
                 return true;
             case R.id.menu_inv_share:
                 String testString = "aaa";
