@@ -4,6 +4,9 @@
     package="com.example.inventoryapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
 
     <application
         android:allowBackup="true"
@@ -15,6 +18,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.InventoryApp"
         tools:targetApi="31">
+        <service
+            android:name=".ServiceHandler"
+            android:exported="true"
+            android:enabled="true"/>
+        <receiver
+            android:name=".BroadcastHandler$AppWideReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.example.inventoryapp.share"/>
+            </intent-filter>
+        </receiver>
         <activity
             android:name=".InventoryItemActivity"
             android:exported="false" />
@@ -37,7 +51,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="false"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

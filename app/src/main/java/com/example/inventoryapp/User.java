@@ -77,6 +77,25 @@ public class User {
         mUsername = null;
     }
 
+    public static void ImportInventory(JSONArray importedArray){
+        List<String> names = new ArrayList<String>();
+        try {
+            for (int i=0; i<importedArray.length(); i++){
+                //add each json object to object list
+                InventoryJSONs.add(importedArray.getJSONObject(i));
+
+                //Add each inventory object name to class list
+                names.add(importedArray.getJSONObject(i).getString("name"));
+
+                //Convert each inventory's items to lists and store them
+                InventoryItems.add(convertJSONObjectToInventoryItemList(importedArray.getJSONObject(i)));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        InventoryNames.addAll(names);
+    }
+
     public static void DemoConvert(){
         Log.d("user", SampleText().toString());
         JSONArray arr = SampleText();

@@ -6,6 +6,10 @@
         android:title="Save"
         app:showAsAction="never" />
     <item
+        android:id="@+id/menu_inv_share"
+        android:title="Export Inventories"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/menu_logout"
         android:title="Logout"
         app:showAsAction="never" />

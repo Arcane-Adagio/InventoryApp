@@ -2,16 +2,13 @@ package com.example.inventoryapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,7 +20,6 @@ import android.widget.LinearLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Objects;
-import java.util.concurrent.Callable;
 
 public class InventoryItemActivity extends AppCompatActivity {
 
@@ -38,6 +34,8 @@ public class InventoryItemActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.page_inventoryitem);
+        this.registerReceiver(BroadcastHandler.GetBatteryReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        registerReceiver(BroadcastHandler.SampleReceiver, new IntentFilter("com.example.inventoryapp.share"));
     }
 
 
@@ -88,6 +86,13 @@ public class InventoryItemActivity extends AppCompatActivity {
             }
         });
         mNameChangeLayout = (LinearLayout) findViewById(R.id.namechange_view);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(BroadcastHandler.GetBatteryReceiver);
+        unregisterReceiver(BroadcastHandler.SampleReceiver);
     }
 
     private void RenameInventory(String newName){

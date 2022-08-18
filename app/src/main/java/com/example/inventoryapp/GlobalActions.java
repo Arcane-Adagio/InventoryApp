@@ -5,11 +5,15 @@ import static android.database.sqlite.SQLiteDatabase.openOrCreateDatabase;
 import static com.example.inventoryapp.DBActions.RemoveUserFromDatabase;
 import static com.example.inventoryapp.DBActions.SaveInventoryJSON;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.BatteryManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -47,6 +51,12 @@ public class GlobalActions {
                 return true;
             case R.id.menu_user_save:
                 SaveInventoryJSON(context);
+                return true;
+            case R.id.menu_inv_share:
+                String testString = "aaa";
+                Intent intent = new Intent(context, ServiceHandler.class);
+                intent.putExtra("SharedInventory", testString);
+                context.startService(intent);
                 return true;
             default:
                 Toast.makeText(context, "menu tapped", Toast.LENGTH_LONG).show();
@@ -117,6 +127,21 @@ public class GlobalActions {
 
     public static Drawable GetDrawableFromInt(Context c, int id){
         return AppCompatResources.getDrawable(c, id);
+    }
+
+
+    public static void Alert(Context context, String alertMessage){
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        alertDialogBuilder.setMessage(alertMessage);
+        alertDialogBuilder.setPositiveButton("Okay",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 
 
