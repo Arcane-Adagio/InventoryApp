@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private Fragment fragment;
+    private final String TAG = "Inventory Activity";
     private static final String EMPTY_FRAG_TAG = "EmptyRV";
     private static final String LIST_FRAG_TAG = "ListRV";
     private static boolean emptyList = true;
@@ -37,14 +39,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.page_home);
-        //User.DemoConvert();
-        //if(emptyList)
-            //SetupInitFragment();
-        //}
-        //else
-           // RecyclerViewFragment (savedInstanceState);
-        //initImageBitmaps();
         initrv();
+        this.registerReceiver(BroadcastHandler.GetBatteryReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        registerReceiver(BroadcastHandler.SampleReceiver, new IntentFilter("com.example.inventoryapp.share"));
     }
 
     private void Add(View view){
@@ -106,6 +103,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         Log.d("life", "HomeActivity: onDestroy");
+        unregisterReceiver(BroadcastHandler.GetBatteryReceiver);
+        unregisterReceiver(BroadcastHandler.SampleReceiver);
+        GlobalActions.LogoutBehavior(this);
         super.onDestroy();
     }
 

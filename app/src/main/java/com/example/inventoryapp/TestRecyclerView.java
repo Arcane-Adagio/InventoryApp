@@ -21,19 +21,16 @@ public class TestRecyclerView extends RecyclerView.Adapter<TestRecyclerView.View
     private static final String TAG = "InventoryListRecyclerViewAdapter";
     private static TestRecyclerView INSTANCE = null;
     private static List<String> mInventoryNames = new ArrayList<>();
-    private static Context mContext;
     private static RecyclerView mRecyclerView;
 
     private TestRecyclerView(List<String> imageNames, Context context){
         mInventoryNames = imageNames;
-        mContext = context;
     }
 
     public static TestRecyclerView ConstructHomeRecyclerViewIfNotCreated(List<String> invNames, Context context){
         if (INSTANCE == null){
             INSTANCE = new TestRecyclerView(invNames, context);
             mInventoryNames = invNames;
-            mContext = context;
         }
         return INSTANCE;
     }
@@ -74,6 +71,8 @@ public class TestRecyclerView extends RecyclerView.Adapter<TestRecyclerView.View
 
     @Override
     public int getItemCount() {
+        if(mInventoryNames == null)
+            mInventoryNames = new ArrayList<>();
         return mInventoryNames.size();
     }
 
@@ -107,6 +106,12 @@ public class TestRecyclerView extends RecyclerView.Adapter<TestRecyclerView.View
             });
             reorderBtn = (ImageButton) itemview.findViewById(R.id.inv_reorder_btn);
         }
+    }
+
+    public static void ResetRecyclerView(){
+        INSTANCE = null;
+        mInventoryNames = new ArrayList<>();
+        mRecyclerView = null;
     }
 
     @Override

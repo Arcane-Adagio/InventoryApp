@@ -14,7 +14,6 @@ public class BroadcastHandler {
     public static android.content.BroadcastReceiver GetBatteryReceiver = new android.content.BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Toast.makeText(context, "Herehe: "+intent.getAction(), Toast.LENGTH_SHORT).show();
             int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
             if (level == 10)
                 Alert(context, "The battery is at "+String.valueOf(level)+" percent!");
@@ -34,12 +33,13 @@ public class BroadcastHandler {
     public static BroadcastReceiver SampleReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            Toast.makeText(context, "here i is", Toast.LENGTH_SHORT).show();
             String emptyString = "";
             String inventory = intent.getExtras().getString("SharedInventory", emptyString);
             if (Objects.equals(inventory, emptyString))
                 return;
             //Do something
-            Toast.makeText(context, "Samples Loaded", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Received inventory Broadcast!", Toast.LENGTH_SHORT).show();
 
         }
     };

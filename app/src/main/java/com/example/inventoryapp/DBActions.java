@@ -138,8 +138,17 @@ public class DBActions {
             return "";
     }
 
+    public static String GetUserPassword(String username, Context context){
+        Cursor cuss = RunSQLQueryOnDataBase("SELECT * FROM Users WHERE Username = '"+username+"';", context);
+        cuss.moveToFirst(); // a must
+        int colIndex = cuss.getColumnIndex("Password");
+        if (colIndex != -1 && cuss.getString(colIndex) != null)
+            return cuss.getString(colIndex);
+        else
+            return "";
+    }
+
     public static void SaveInventoryJSON(Context context){
         getUserDatabase(context).execSQL("UPDATE '"+ACCOUNTDB_TABLE_NAME+"' SET InventoryJSON = '"+User.getInventoryJSON()+"' WHERE Username = '"+User.getUsername()+"';");
-        //getUserDatabase(context).execSQL("UPDATE '"+ACCOUNTDB_TABLE_NAME+"' SET InventoryJSON = '"+"TEST"+"' WHERE Username = '"+User.getUsername()+"';");
     }
 }

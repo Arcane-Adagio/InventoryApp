@@ -18,12 +18,14 @@ import android.widget.Toast;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private final String TAG = "LoginActivity";
     private SimpleCursorAdapter dataAdapter;
     SQLiteDatabase accountDatabase;
     TextView createAccount_text;
     Button loginBtn;
     EditText usernameTB;
     EditText passwordTB;
+    TextView forgotPasswordTV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,8 +33,18 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.page_login);
         accountDatabase = openOrCreateDatabase(DBActions.ACCOUNT_DATABASE_NAME, MODE_PRIVATE, null);
         accountDatabase.execSQL("CREATE TABLE IF NOT EXISTS Users (Username VARCHAR, Password VARCHAR, InventoryJSON VARCHAR);");
-
         SetupUI();
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        GlobalActions.logoutInProgress = false;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 
     public void SetupUI(){
@@ -70,6 +82,19 @@ public class LoginActivity extends AppCompatActivity {
                     return true;
                 }
                 return false;
+            }
+        });
+        forgotPasswordTV = (TextView) findViewById(R.id.forgotPassword_TV);
+        forgotPasswordTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String uInput = usernameTB.getText().toString();
+                if (DBActions.IsUserInDataBase(uInput, view.getContext())){
+                    Toast.makeText(LoginActivity.this, "Password is: "+DBActions.GetUserPassword(uInput, view.getContext()), Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Toast.makeText(LoginActivity.this, "User does not exists", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

@@ -33,6 +33,7 @@ import java.util.concurrent.Callable;
 import java.util.logging.FileHandler;
 
 public class GlobalActions {
+    public static boolean logoutInProgress = false;
 
 
     public static boolean DefaultMenuOptionSelection(@NonNull MenuItem item, Context context, FragmentManager fM) {
@@ -40,12 +41,12 @@ public class GlobalActions {
 
         switch (item.getItemId()){
             case R.id.menu_logout:
-                User.LogoutUser();
-                NavigateToActivity(context, LoginActivity.class);
+                LogoutBehavior(context);
                 return true;
             case R.id.menu_delete_account:
                 if(User.getUsername() != null){
                     RemoveUserFromDatabase(User.getUsername(), context);
+                    LogoutBehavior(context);
                     NavigateToActivity(context, LoginActivity.class);
                 }
                 else
@@ -58,14 +59,25 @@ public class GlobalActions {
                 new StorageHandler((Activity) context).WriteToFile();
                 return true;
             case R.id.menu_inv_share:
-                String testString = "aaa";
                 Intent intent = new Intent(context, ServiceHandler.class);
-                intent.putExtra("SharedInventory", testString);
+                intent.putExtra("SharedInventory", User.getInventoryJSON());
                 context.startService(intent);
                 return true;
             default:
                 Toast.makeText(context, "menu tapped", Toast.LENGTH_LONG).show();
                 return false;
+        }
+    }
+
+    public static void LogoutBehavior(Context context){
+        if(!logoutInProgress){
+            User.LogoutUser();
+            if (TestRecyclerView.GetHomeRecyclerViewINSTANCE() != null)
+                TestRecyclerView.GetHomeRecyclerViewINSTANCE().notifyDataSetChanged();
+            TestRecyclerView.ResetRecyclerView();
+            NavigateToActivity(context, LoginActivity.class);
+            Toast.makeText(context, "Logged Out", Toast.LENGTH_SHORT).show();
+            logoutInProgress = true;
         }
     }
 

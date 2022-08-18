@@ -72,9 +72,11 @@ public class User {
     }
 
     public static void LogoutUser(){
-        if(INSTANCE == null)
-            INSTANCE = new User();
+        InventoryNames = new ArrayList<>();
+        InventoryJSONs = new ArrayList<>();
+        InventoryItems = new ArrayList<>();
         mUsername = null;
+        INSTANCE = null;
     }
 
     public static void ImportInventory(JSONArray importedArray){
@@ -174,6 +176,10 @@ public class User {
         }
         return Inventory;
     }
+
+/*    public static String getSampleJSON(){
+
+    }*/
 
 
     public static List<String> GetInventoryNames(){

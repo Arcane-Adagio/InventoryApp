@@ -46,10 +46,7 @@ public class InventoryItemActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.page_inventoryitem);
         this.registerReceiver(BroadcastHandler.GetBatteryReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        registerReceiver(BroadcastHandler.SampleReceiver, new IntentFilter("com.example.inventoryapp.share"));
     }
-
-
 
 
     @Override
@@ -92,6 +89,7 @@ public class InventoryItemActivity extends AppCompatActivity {
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
                         (keyCode == KeyEvent.KEYCODE_ENTER)) {
                     RenameInventory(mNameChangeEditText.getText().toString());
+                    mNameChangeLayout.setVisibility(View.GONE);
                     return true;
                 }
                 return false;
@@ -104,7 +102,6 @@ public class InventoryItemActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(BroadcastHandler.GetBatteryReceiver);
-        unregisterReceiver(BroadcastHandler.SampleReceiver);
     }
 
     private void RenameInventory(String newName){
@@ -126,10 +123,6 @@ public class InventoryItemActivity extends AppCompatActivity {
         switch (item.getItemId()){
             case R.id.menu_inv_edit_title:
                 mNameChangeLayout.setVisibility(View.VISIBLE);
-                return true;
-            case R.id.menu_inv_delete:
-                User.RemoveInventory(mCurrentInventory);
-                GlobalActions.NavigateToActivity(this, MainActivity.class);
                 return true;
             default:
                 return false;

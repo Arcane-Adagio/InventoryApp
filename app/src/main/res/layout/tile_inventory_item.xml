@@ -90,7 +90,7 @@
             android:layout_height="match_parent"
             android:indeterminate="false"
             android:layout_gravity="center"
-
+            android:visibility="gone"
             />
 
         <ImageButton

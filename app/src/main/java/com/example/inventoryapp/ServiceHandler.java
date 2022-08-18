@@ -31,6 +31,6 @@ public class ServiceHandler extends IntentService {
         Intent intent1 = new Intent("com.example.inventoryapp.share");
         intent1.putExtra("SharedInventory", inventory);
         sendBroadcast(intent1);
-        Log.d(TAG, "onHandleIntent: serviceEnd");
+        Log.d(TAG, "onHandleIntent: serviceEnd, Inventory: "+inventory);
     }
 }
