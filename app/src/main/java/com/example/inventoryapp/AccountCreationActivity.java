@@ -24,11 +24,14 @@ public class AccountCreationActivity extends AppCompatActivity {
         mydatabase = openOrCreateDatabase(DBActions.ACCOUNT_DATABASE_NAME, MODE_PRIVATE, null);
         mydatabase.execSQL("CREATE TABLE IF NOT EXISTS Users (Username VARCHAR, Password VARCHAR, InventoryJSON VARCHAR);");
         Refresh();
-        //DBActions.RunSQLQueryOnDataBase(mydatabase, dataAdapter, "UPDATE Users SET InventoryJSON = 'success' WHERE Username = 'dev';", this);
         SetupUI();
     }
 
     private void Refresh(){
+        /*
+        * Boiler Plate Code
+        * to setup database
+        * or something */
         // The desired columns to be bound
         String[] columns = new String[] {
                 "Username", "Password", "InventoryJSON"
@@ -56,7 +59,8 @@ public class AccountCreationActivity extends AppCompatActivity {
         listView.setAdapter(dataAdapter);
     }
 
-    public void CreateAccount(View view){
+    public void CreateAccountBehavior(View view){
+        /* Reads input from textbox and creates user account in database */
         EditText username = (EditText) findViewById(R.id.username_editText);
         EditText password = (EditText) findViewById(R.id.password_edittext);
         String uname = username.getText().toString();
@@ -70,12 +74,13 @@ public class AccountCreationActivity extends AppCompatActivity {
         createBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CreateAccount(view);
+                CreateAccountBehavior(view);
             }
         });
     }
 
     private Cursor getAllUsers(){
+        /* Helper function to Refresh func */
         return DBActions.GetAllUsersFromDatabase(this);
     }
 

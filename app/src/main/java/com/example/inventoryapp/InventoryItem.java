@@ -11,6 +11,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+/* Data class singleton for an inventory item */
+
 public class InventoryItem {
 
     public enum ItemState{ Full, Good, Half, Low, Empty, NA}
@@ -25,61 +27,6 @@ public class InventoryItem {
     public String toString()
     {
         return mItemName;
-    }
-
-
-    public static class ViewHolder extends RecyclerView.ViewHolder{
-        public final CheckBox itemNeedfulCB;
-        public final TextView itemNameTV;
-        public final TextView itemDataTV;
-        public final TextView itemQuantityTV;
-        public final ProgressBar itemStatusPB;
-        public final ImageButton editBtn;
-        public final ImageButton deleteBtn;
-        public final ImageButton reorderBtn;
-
-        public ViewHolder(@NonNull View view) {
-            super(view);
-            itemNeedfulCB = (CheckBox) view.findViewById(R.id.item_needful_checkbox);
-            itemNameTV = (TextView) view.findViewById(R.id.item_title);
-            itemDataTV = (TextView) view.findViewById(R.id.item_date_text);
-            itemQuantityTV = (TextView) view.findViewById(R.id.item_quantity);
-            itemStatusPB = (ProgressBar) view.findViewById(R.id.item_progressbar);
-            editBtn = (ImageButton) view.findViewById(R.id.item_edit_btn);
-            deleteBtn = (ImageButton) view.findViewById(R.id.item_delete_btn);
-            reorderBtn = (ImageButton) view.findViewById(R.id.item_reorder_btn);
-        }
-
-
-        public void ToggleEditMode_VH(){
-            if (itemNameTV.isFocusable()){
-                //User clicked save and shouldnt be able to edit anymore
-                itemNameTV.setFocusable(false);
-                itemDataTV.setFocusable(false);
-                itemQuantityTV.setFocusable(false);
-                //Update Icon
-                editBtn.setImageDrawable(GlobalActions.GetDrawableFromInt(editBtn.getContext(), R.drawable.ic_edit_default));
-            }
-            else {
-                //User Clicked Edit and wants to give input
-                itemNameTV.setInputType(InputType.TYPE_CLASS_TEXT);
-                itemDataTV.setInputType(InputType.TYPE_DATETIME_VARIATION_DATE);
-                itemQuantityTV.setInputType(InputType.TYPE_CLASS_NUMBER);
-                itemNameTV.setFocusableInTouchMode(true);
-                itemDataTV.setFocusableInTouchMode(true);
-                itemQuantityTV.setFocusableInTouchMode(true);
-                //update Icon
-                editBtn.setImageDrawable(GlobalActions.GetDrawableFromInt(editBtn.getContext(), R.drawable.ic_save_default));
-            }
-        }
-    }
-
-    public void ToggleEditMode(){
-        mEditMode = !mEditMode;
-    }
-
-    public boolean isInEditMode(){
-        return mEditMode;
     }
 
     public InventoryItem (String name, String data, String quantity){
@@ -124,9 +71,5 @@ public class InventoryItem {
             return "true";
         else
             return "fasle";
-    }
-
-    public ItemState getItemStatus(){
-        return mItemStatus != null ? mItemStatus : null;
     }
 }

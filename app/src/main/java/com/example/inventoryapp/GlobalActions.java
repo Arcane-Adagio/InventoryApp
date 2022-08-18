@@ -5,16 +5,13 @@ import static android.database.sqlite.SQLiteDatabase.openOrCreateDatabase;
 import static com.example.inventoryapp.DBActions.RemoveUserFromDatabase;
 import static com.example.inventoryapp.DBActions.SaveInventoryJSON;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.os.BatteryManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,15 +27,15 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 
 import java.util.concurrent.Callable;
-import java.util.logging.FileHandler;
 
 public class GlobalActions {
+    public static final String KEY_SHAREDINVENTORY = "SharedInventory";
+    public static final String EXPORT_ACTION = "com.example.inventoryapp.share";
     public static boolean logoutInProgress = false;
 
 
     public static boolean DefaultMenuOptionSelection(@NonNull MenuItem item, Context context, FragmentManager fM) {
         // This function is called when an icon is selected in the Actionbar
-
         switch (item.getItemId()){
             case R.id.menu_logout:
                 LogoutBehavior(context);
@@ -50,7 +47,7 @@ public class GlobalActions {
                     NavigateToActivity(context, LoginActivity.class);
                 }
                 else
-                    Toast.makeText(context, "No", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, context.getString(R.string.Toast_No), Toast.LENGTH_LONG).show();
                 return true;
             case R.id.menu_user_save:
                 SaveInventoryJSON(context);
@@ -60,23 +57,24 @@ public class GlobalActions {
                 return true;
             case R.id.menu_inv_share:
                 Intent intent = new Intent(context, ServiceHandler.class);
-                intent.putExtra("SharedInventory", User.getInventoryJSON());
+                intent.putExtra(KEY_SHAREDINVENTORY, User.getInventoryJSON());
                 context.startService(intent);
                 return true;
             default:
-                Toast.makeText(context, "menu tapped", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, context.getString(R.string.Toast_menu_default), Toast.LENGTH_LONG).show();
                 return false;
         }
     }
 
     public static void LogoutBehavior(Context context){
+        /* To logout, the user and main recyclerview adapter needs to be sanitized */
         if(!logoutInProgress){
             User.LogoutUser();
-            if (TestRecyclerView.GetHomeRecyclerViewINSTANCE() != null)
-                TestRecyclerView.GetHomeRecyclerViewINSTANCE().notifyDataSetChanged();
-            TestRecyclerView.ResetRecyclerView();
+            if (InventoryRecyclerViewerAdapter.GetHomeRecyclerViewINSTANCE() != null)
+                InventoryRecyclerViewerAdapter.GetHomeRecyclerViewINSTANCE().notifyDataSetChanged();
+            InventoryRecyclerViewerAdapter.ResetRecyclerView();
             NavigateToActivity(context, LoginActivity.class);
-            Toast.makeText(context, "Logged Out", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, context.getString(R.string.Toast_LogOut), Toast.LENGTH_SHORT).show();
             logoutInProgress = true;
         }
     }
@@ -132,6 +130,7 @@ public class GlobalActions {
     }
 
     public static void LogAllKeysinBundle(Intent intent){
+        /* Debug Function */
         Bundle b = intent.getExtras();
         if (b == null){
             Log.d("debug", "There are no Extras");
@@ -146,15 +145,15 @@ public class GlobalActions {
         return AppCompatResources.getDrawable(c, id);
     }
 
-
     public static void Alert(Context context, String alertMessage){
+        /* An alert that meant to display a message to a user */
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
         alertDialogBuilder.setMessage(alertMessage);
-        alertDialogBuilder.setPositiveButton("Okay",
+        AlertDialog.Builder okay = alertDialogBuilder.setPositiveButton(context.getString(R.string.Dialog_okay),
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-
+                        //DoNothing
                     }
                 });
         AlertDialog alertDialog = alertDialogBuilder.create();

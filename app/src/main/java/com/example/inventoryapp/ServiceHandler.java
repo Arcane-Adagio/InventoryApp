@@ -18,18 +18,18 @@ public class ServiceHandler extends IntentService {
     static final String TAG = "ServiceHandler";
 
     public ServiceHandler(){
-        super("ServiceHandler");
+        super(TAG);
     }
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         Log.d(TAG, "onHandleIntent: serviceStart");
         String emptyString = "";
-        String inventory = intent.getExtras().getString("SharedInventory", emptyString);
+        String inventory = intent.getExtras().getString(GlobalActions.KEY_SHAREDINVENTORY, emptyString);
         if (Objects.equals(inventory, emptyString))
             return;
-        Intent intent1 = new Intent("com.example.inventoryapp.share");
-        intent1.putExtra("SharedInventory", inventory);
+        Intent intent1 = new Intent(GlobalActions.EXPORT_ACTION);
+        intent1.putExtra(GlobalActions.KEY_SHAREDINVENTORY, inventory);
         sendBroadcast(intent1);
         Log.d(TAG, "onHandleIntent: serviceEnd, Inventory: "+inventory);
     }

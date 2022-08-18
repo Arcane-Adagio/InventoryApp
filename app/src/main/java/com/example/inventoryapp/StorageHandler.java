@@ -28,36 +28,34 @@ public class StorageHandler {
 
     public void WriteToFile(){
         String inventoryText = User.getInventoryJSON();
-        if (true){
-            //Seeks permission and checks hardware write-ability before
-            //performing file writing
-            if(checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
-                if(isExternalStorageWritable()){
-                    performWrite(inventoryText);
-                }
-                else{
-                    Log.d(TAG, "WriteToFile: truly is not writable!");
-                    makeToast("Storage is not writable");
-                }
+        //Seeks permission and checks hardware write-ability before
+        //performing file writing
+        if(checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+            if(isExternalStorageWritable()){
+                performWrite(inventoryText);
             }
             else{
-                ActivityCompat.requestPermissions(mCallingActivity,
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        2);
-                if(checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) && isExternalStorageWritable()){
-                    performWrite(inventoryText);
-                }
-                else{
-                    Log.d(TAG, "Needs Storage Permission");
-                    makeToast("Storage is not writable");
-                }
+                Log.d(TAG, "WriteToFile: truly is not writable!");
+                makeToast(mCallingActivity.getString(R.string.Toast_StorageNotWritable));
+            }
+        }
+        else{
+            ActivityCompat.requestPermissions(mCallingActivity,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    2);
+            if(checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) && isExternalStorageWritable()){
+                performWrite(inventoryText);
+            }
+            else{
+                Log.d(TAG, "Needs Storage Permission Or Not Writable");
+                makeToast(mCallingActivity.getString(R.string.Toast_StorageNotWritable));
             }
         }
     }
 
     private boolean isExternalStorageWritable(){
         if(Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())){
-            Log.d("State", "Yes, it is writable!");
+            Log.d(TAG, "Yes, it is writable!");
             return true;
         }else{
             return false;
@@ -71,33 +69,28 @@ public class StorageHandler {
             FileOutputStream fos = new FileOutputStream(textFile);
             fos.write(noteText.getBytes());
             fos.close();
-            makeToast("File Saved");
+            makeToast(mCallingActivity.getString(R.string.Toast_FileSaved));
         } catch (IOException e) {
             e.printStackTrace();
             Log.d(TAG, "WriteFile: "+e.toString());
-            makeToast("Scoped Storage, I think");
         }
     }
 
-    public static File commonDocumentDirPath(String FolderName)
-    {
+    public static File commonDocumentDirPath(String FolderName) {
+        /* Incorporated Scoped Storage
+        *  Returns a path that can be wrote to
+        * */
         File dir = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
-        {
             dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/" + FolderName);
-        }
         else
-        {
             dir = new File(Environment.getExternalStorageDirectory() + "/" + FolderName);
-        }
 
         // Make sure the path directory exists.
-        if (!dir.exists())
-        {
+        if (!dir.exists()) {
             // Make it, if it doesn't exit
             boolean success = dir.mkdirs();
-            if (!success)
-            {
+            if (!success) {
                 dir = null;
             }
         }

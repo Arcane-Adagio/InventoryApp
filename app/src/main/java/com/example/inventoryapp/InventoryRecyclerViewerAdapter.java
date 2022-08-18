@@ -16,26 +16,26 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TestRecyclerView extends RecyclerView.Adapter<TestRecyclerView.ViewHolder> {
+public class InventoryRecyclerViewerAdapter extends RecyclerView.Adapter<InventoryRecyclerViewerAdapter.ViewHolder> {
 
     private static final String TAG = "InventoryListRecyclerViewAdapter";
-    private static TestRecyclerView INSTANCE = null;
+    private static InventoryRecyclerViewerAdapter INSTANCE = null;
     private static List<String> mInventoryNames = new ArrayList<>();
     private static RecyclerView mRecyclerView;
 
-    private TestRecyclerView(List<String> imageNames, Context context){
+    private InventoryRecyclerViewerAdapter(List<String> imageNames, Context context){
         mInventoryNames = imageNames;
     }
 
-    public static TestRecyclerView ConstructHomeRecyclerViewIfNotCreated(List<String> invNames, Context context){
+    public static InventoryRecyclerViewerAdapter ConstructHomeRecyclerViewIfNotCreated(List<String> invNames, Context context){
         if (INSTANCE == null){
-            INSTANCE = new TestRecyclerView(invNames, context);
+            INSTANCE = new InventoryRecyclerViewerAdapter(invNames, context);
             mInventoryNames = invNames;
         }
         return INSTANCE;
     }
 
-    public static TestRecyclerView GetHomeRecyclerViewINSTANCE(){
+    public static InventoryRecyclerViewerAdapter GetHomeRecyclerViewINSTANCE(){
         if (INSTANCE == null)
             return null;
         else

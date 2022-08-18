@@ -1,17 +1,13 @@
 package com.example.inventoryapp;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,7 +15,6 @@ import android.widget.Toast;
 public class LoginActivity extends AppCompatActivity {
 
     private final String TAG = "LoginActivity";
-    private SimpleCursorAdapter dataAdapter;
     SQLiteDatabase accountDatabase;
     TextView createAccount_text;
     Button loginBtn;
@@ -38,6 +33,8 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onPostResume() {
+        /* I dont know if it works, but what i do know is:
+        * it's not broke */
         super.onPostResume();
         GlobalActions.logoutInProgress = false;
     }
@@ -100,17 +97,17 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void LoginBehavior(){
-        EditText username_et = (EditText) findViewById(R.id.edittext_loginUsername);
-        String username =  username_et.getText().toString();
+        String username =  usernameTB.getText().toString();
+        String password =  passwordTB.getText().toString();
         if(!DBActions.IsUserInDataBase(username, this))
-            Toast.makeText(this, "User does not exist", Toast.LENGTH_SHORT).show();
-        else if (false) // check password
-            Toast.makeText(this, "Password was incorrect", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.Toast_UserNotFound), Toast.LENGTH_SHORT).show();
+        else if (!DBActions.GetUserPassword(username, this).equals(password)) // check password
+            Toast.makeText(this, getString(R.string.Toast_IncorrectPassword), Toast.LENGTH_SHORT).show();
         else{
             //perform login
             User.setUsername(username);
             User.setInventorys(DBActions.GetJSONString(username, this));
-            GlobalActions.NavigateToActivity(this, MainActivity.class);
+            GlobalActions.NavigateToActivity(this, InventoryActivity.class);
         }
     }
 
@@ -120,7 +117,7 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy(){
-        /* Perform cleanup if phone terminates activity prematurely*/
+        /* Perform cleanup if phone terminates activity prematurely */
         accountDatabase.close();
         super.onDestroy();
     }

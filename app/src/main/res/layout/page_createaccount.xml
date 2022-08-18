@@ -101,6 +101,7 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
 
     <ListView
+        android:visibility="gone"
         android:id="@+id/db_listview"
         android:layout_width="357dp"
         android:layout_height="239dp"

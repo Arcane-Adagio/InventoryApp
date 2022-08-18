@@ -26,31 +26,32 @@ public class InventoryItemRecyclerAdapter extends RecyclerView.Adapter<Inventory
     private static InventoryItemRecyclerAdapter INSTANCE = null;
     private static List<InventoryItem> mItems = new ArrayList<>();
     private static String currentInventoryName;
-    private static Context mContext;
     static RecyclerView mRecyclerView;
 
 
 
     private InventoryItemRecyclerAdapter(String inventoryName, List<InventoryItem> items, Context context){
         mItems = items;
-        mContext = context;
         currentInventoryName = inventoryName;
     }
 
     public static InventoryItemRecyclerAdapter ConstructItemRecyclerViewIfNotCreated(String inventoryName, List<InventoryItem> items, Context context){
+        //Safe construction
         if (INSTANCE == null){
             INSTANCE = new InventoryItemRecyclerAdapter(inventoryName, items, context);
             mItems = items;
-            mContext = context;
             currentInventoryName = inventoryName;
         }
         return INSTANCE;
     }
 
+    public static void UpdateCurrentInventoryName(String newName){
+        currentInventoryName = newName;
+    }
+
     public static InventoryItemRecyclerAdapter ConstructItemRecyclerView(String inventoryName, List<InventoryItem> items, Context context){
         INSTANCE = new InventoryItemRecyclerAdapter(inventoryName, items, context);
         mItems = items;
-        mContext = context;
         currentInventoryName = inventoryName;
         return INSTANCE;
     }
@@ -66,7 +67,7 @@ public class InventoryItemRecyclerAdapter extends RecyclerView.Adapter<Inventory
             return INSTANCE;
     }
 
-    public void AddInventory2(){
+    public void AddItemToInventory(){
         InventoryItem newItem = new InventoryItem( "Item #"+String.valueOf(mItems.size()), "","");
         User.AddInventoryItem(currentInventoryName, newItem);
         notifyItemInserted(getItemCount());
@@ -83,6 +84,7 @@ public class InventoryItemRecyclerAdapter extends RecyclerView.Adapter<Inventory
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        /* Called to rebind a view with its respective class */
         InventoryItem item = mItems.get(position);
         holder.itemNameTV.setText(item.getItemName());
         holder.itemDateTV.setText(mItems.get(position).getItemData());
@@ -98,6 +100,7 @@ public class InventoryItemRecyclerAdapter extends RecyclerView.Adapter<Inventory
 
     @Override
     public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        /* Overridden to get a static reference to recyclerview */
         super.onAttachedToRecyclerView(recyclerView);
         mRecyclerView = recyclerView;
     }

@@ -2,19 +2,12 @@ package com.example.inventoryapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.Manifest;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,13 +16,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.Objects;
 
 public class InventoryItemActivity extends AppCompatActivity {
@@ -40,6 +29,7 @@ public class InventoryItemActivity extends AppCompatActivity {
     ImageButton mConfirmNameButton;
     ImageButton mCancelNameButton;
     LinearLayout mNameChangeLayout;
+    public static final String KEY_INVENTORYNAME = "inventoryName";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,15 +38,14 @@ public class InventoryItemActivity extends AppCompatActivity {
         this.registerReceiver(BroadcastHandler.GetBatteryReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
     }
 
-
     @Override
     protected void onStart() {
         super.onStart();
         Bundle extras = getIntent().getExtras();
         if(extras != null){
-            if(extras.getString("inventoryName") != null){
-                mCurrentInventory = extras.getString("inventoryName");
-                initrv(mCurrentInventory);
+            if(extras.getString(KEY_INVENTORYNAME) != null){
+                mCurrentInventory = extras.getString(KEY_INVENTORYNAME);
+                SetupInventoryItemRecyclerView(mCurrentInventory);
                 Objects.requireNonNull(getSupportActionBar()).setTitle(mCurrentInventory);
             }
         }
@@ -64,7 +53,7 @@ public class InventoryItemActivity extends AppCompatActivity {
         rv_fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                InventoryItemRecyclerAdapter.GetItemRecyclerViewINSTANCE().AddInventory2();
+                InventoryItemRecyclerAdapter.GetItemRecyclerViewINSTANCE().AddItemToInventory();
             }
         });
         mCancelNameButton = (ImageButton) findViewById(R.id.inv_btn_namechange_cancel);
@@ -100,19 +89,22 @@ public class InventoryItemActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        /* According to documentation, activities should unregister receivers before destruction */
         super.onDestroy();
         unregisterReceiver(BroadcastHandler.GetBatteryReceiver);
     }
 
     private void RenameInventory(String newName){
+        /* The background data must also be updated */
         int position = User.GetPositionOfInventory(mCurrentInventory);
         User.RenameInventory(mCurrentInventory, newName);
         mCurrentInventory = newName;
-        TestRecyclerView.GetHomeRecyclerViewINSTANCE().notifyItemChanged(position);
+        InventoryItemRecyclerAdapter.GetItemRecyclerViewINSTANCE().UpdateCurrentInventoryName(mCurrentInventory);
+        InventoryRecyclerViewerAdapter.GetHomeRecyclerViewINSTANCE().notifyItemChanged(position);
         Objects.requireNonNull(getSupportActionBar()).setTitle(newName);
     }
 
-    private void initrv(String inventoryName){
+    private void SetupInventoryItemRecyclerView(String inventoryName){
         RecyclerView recyclerView = findViewById(R.id.inventoryitemlist_view);
         InventoryItemRecyclerAdapter adapter = InventoryItemRecyclerAdapter.ConstructItemRecyclerView(inventoryName, User.GetInventoryItems(inventoryName), this);
         recyclerView.setAdapter(adapter);
@@ -120,6 +112,7 @@ public class InventoryItemActivity extends AppCompatActivity {
     }
 
     private boolean MenuOptionsSelected(@NonNull MenuItem item){
+        /* Function to handle menu item behaviors specific to this activity */
         switch (item.getItemId()){
             case R.id.menu_inv_edit_title:
                 mNameChangeLayout.setVisibility(View.VISIBLE);
@@ -131,6 +124,7 @@ public class InventoryItemActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        /* inflates the appbar to add menu items */
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.inventory_appbar_menu, menu);;
         return true;
@@ -138,6 +132,7 @@ public class InventoryItemActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        /* Handles behavior for when an appbar menu item is selected */
         if(MenuOptionsSelected(item))
             return true;
         else if (GlobalActions.DefaultMenuOptionSelection(item,this, getSupportFragmentManager()))

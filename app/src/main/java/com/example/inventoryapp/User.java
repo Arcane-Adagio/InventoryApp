@@ -18,11 +18,9 @@ public class User {
 
     private static User INSTANCE = null;
     private static String mUsername;
-    public static List<String> Inventorys = new ArrayList<String>();
     public static List<JSONObject> InventoryJSONs = new ArrayList<JSONObject>();
     public static List<String> InventoryNames = new ArrayList<String>();
     public static List<List<InventoryItem>> InventoryItems = new ArrayList<>();
-    public static JSONArray test;
     public static boolean sample = false;
 
     private User() {};

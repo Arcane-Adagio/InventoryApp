@@ -1,3 +1,18 @@
 <resources>
-    <string name="app_name">InventoryApp</string>
+    <string name="app_name">Inventory App</string>
+    <string name="alert_battery_prt1">\"The battery is at \"</string>
+    <string name="alert_battery_prt2">\" percent!\"</string>
+    <string name="toast_incomingbroadcast">Incoming Broadcasts</string>
+    <string name="toast_broadcastreceived">Received inventory Broadcast!</string>
+    <string name="Toast_AccountDeleted">Account Deleted</string>
+    <string name="Toast_UserNotFound">Username does not exists</string>
+    <string name="Toast_DuplicateUser">Username already exists</string>
+    <string name="Toast_AccountCreated">Account Created</string>
+    <string name="Toast_LogOut">Logged Out</string>
+    <string name="Toast_menu_default">menu tapped</string>
+    <string name="Toast_No">No</string>
+    <string name="Dialog_okay">Okay</string>
+    <string name="Toast_IncorrectPassword">Password was incorrect</string>
+    <string name="Toast_StorageNotWritable">Storage is not writable</string>
+    <string name="Toast_FileSaved">File Saved</string>
 </resources>

@@ -3,89 +3,106 @@ package com.example.inventoryapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageButton;
+import android.widget.EditText;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.ArrayList;
+
 public class InventoryActivity extends AppCompatActivity {
 
-    private ImageButton addItem_btn;
-    private Fragment fragment;
-    private FragmentManager fm;
-    private static final String LIST_FRAG_TAG = "ListRV";
+    private final String TAG = "Inventory Activity";
     FloatingActionButton fab;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("life", "onCreate: alive");
-        setContentView(R.layout.page_inventory);
-        HandleExtras();
-        RecyclerViewFragment(savedInstanceState);
+        setContentView(R.layout.page_home);
+        SetupInventoryRecyclerView();
+        this.registerReceiver(BroadcastHandler.GetBatteryReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        registerReceiver(BroadcastHandler.SharedInventoryReceiver, new IntentFilter(GlobalActions.EXPORT_ACTION));
+    }
+
+    private void SetupInventoryRecyclerView(){
+        RecyclerView recyclerView = findViewById(R.id.inventorylist_view);
+        InventoryRecyclerViewerAdapter adapter = InventoryRecyclerViewerAdapter.ConstructHomeRecyclerViewIfNotCreated( User.GetInventoryNames(), this);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     @Override
     protected void onStart() {
-        super.onStart();
-        addItem_btn = (ImageButton) findViewById(R.id.add_item_btn);
-        addItem_btn.setOnClickListener(new View.OnClickListener() {
+        Log.d(TAG, "onStart");
+        fab = (FloatingActionButton) findViewById(R.id.inventory_fab);
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AddSampleTask();
+                InventoryRecyclerViewerAdapter.GetHomeRecyclerViewINSTANCE().AddInventory();
             }
         });
-    }
-
-    private void AddSampleTask(){
-        RecyclerViewFragment.AddNewItem();
-    }
-
-    public void HandleExtras(){
-        Bundle extras = getIntent().getExtras();
-        if(extras == null)
-            return;
-        if (extras.getString("name") != null)
-            if(getSupportActionBar() != null)
-                getSupportActionBar().setTitle(extras.getString("name"));
-        else
-            GlobalActions.LogAllKeysinBundle(getIntent());
+        super.onStart();
     }
 
     @Override
     protected void onResume() {
+        Log.d(TAG, "onResume");
         super.onResume();
     }
 
     @Override
+    protected void onPause() {
+        Log.d(TAG, "onPause");
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        Log.d(TAG, "onStop");
+        super.onStop();
+    }
+
+    @Override
+    protected void onRestart() {
+        Log.d(TAG, "onRestart");
+        super.onRestart();
+    }
+
+    @Override
+    protected void onDestroy() {
+        /* Documentation says to make sure receivers get unregistered */
+        Log.d(TAG, "onDestroy");
+        unregisterReceiver(BroadcastHandler.GetBatteryReceiver);
+        unregisterReceiver(BroadcastHandler.SharedInventoryReceiver);
+        GlobalActions.LogoutBehavior(this);
+        super.onDestroy();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        /* Inflates appbar to include menu options */
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.inventory_appbar_menu, menu);;
+        inflater.inflate(R.menu.home_appbar_menu, menu);;
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        /* Handles behavior for when a menu option is selected */
         if (GlobalActions.DefaultMenuOptionSelection(item,this, getSupportFragmentManager()))
             return true;
         return super.onOptionsItemSelected(item);
     }
 
-    public void RecyclerViewFragment(Bundle savedInstanceState){
-
-        if(savedInstanceState == null)
-            fragment = new RecyclerViewFragment();
-        else
-            fragment = getSupportFragmentManager().findFragmentByTag(LIST_FRAG_TAG);
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.rv_container2, fragment, LIST_FRAG_TAG)
-                .commit();
-    }
 }
