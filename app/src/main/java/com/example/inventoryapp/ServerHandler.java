@@ -10,6 +10,16 @@ import org.json.JSONObject;
 
 public class ServerHandler {
     private final static String TAG = "ServerHandler";
+
+    private final static String website = "http://10.0.3.2/pc/";
+    private final static String webapi_addaccount = "http://10.0.3.2/pc/api/accounts/add";
+    private final static String webapi_changeusername = "http://10.0.3.2/pc/api/accounts/changeusername";
+    private final static String webapi_changepassword = "http://10.0.3.2/pc/api/accounts/changepassword";
+    private final static String webapi_deleteaccount = "http://10.0.3.2/pc/api/accounts/remove";
+    private final static String webapi_login = "http://10.0.3.2/pc/api/login";
+    private final static String webapi_accounts = "http://10.0.3.2/pc/api/accounts";
+
+    /*
     private final static String website = "http://10.0.3.2/inventoryapp/";
     private final static String webapi_addaccount = "http://10.0.3.2/inventoryapp/api/accounts/add";
     private final static String webapi_changeusername = "http://10.0.3.2/inventoryapp/api/accounts/changeusername";
@@ -17,7 +27,7 @@ public class ServerHandler {
     private final static String webapi_deleteaccount = "http://10.0.3.2/inventoryapp/api/accounts/remove";
     private final static String webapi_login = "http://10.0.3.2/inventoryapp/api/login";
     private final static String webapi_accounts = "http://10.0.3.2/inventoryapp/api/accounts";
-
+    */
     
     public static boolean CreateUser(String username, String password){
         JSONObject newuser = constructUserObject(username, password);
@@ -50,8 +60,7 @@ public class ServerHandler {
         //update return variables
         try {
             JSONArray responseArray = new JSONArray(response);
-            JSONObject resultJSON = responseArray.getJSONObject(responseArray.length() - 1); //should always be at the end
-            String result = resultJSON.getJSONObject("Result").getString("text");
+            String result = GetResultText(responseArray.getJSONObject(responseArray.length() - 1)); //should always be at the end
             if(result.equals("login successful")){
                 loginSuccessful = true;
                 resultResponse = responseArray.getJSONObject(0).toString();
@@ -67,6 +76,15 @@ public class ServerHandler {
             returnValues = new Pair<>(false, "unknown error occurred");
         }
         return returnValues;
+    }
+
+    public static String GetResultText(JSONObject resultJSON){
+        try {
+            return resultJSON.getJSONObject("Result").getString("text");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public static JSONObject constructUserObject(String username, String password){

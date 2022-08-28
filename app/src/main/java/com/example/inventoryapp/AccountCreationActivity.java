@@ -120,8 +120,10 @@ public class AccountCreationActivity extends AppCompatActivity {
         String pass = password.getText().toString();
         if (uname.equals("") || pass.equals(""))
             return;
-        if(ServerHandler.CreateUser(uname,pass))
+        if(ServerHandler.CreateUser(uname,pass)){
+            //Toast.makeText(this, "Account Created Successfully", Toast.LENGTH_SHORT).show();
             GlobalActions.NavigateToActivity(this, LoginActivity.class);
+        }
     }
 
 
