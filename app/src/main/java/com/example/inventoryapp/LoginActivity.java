@@ -1,14 +1,17 @@
 package com.example.inventoryapp;
+import static com.example.inventoryapp.GlobalActions.online;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.StrictMode;
+import android.util.Pair;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,9 +29,16 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.page_login);
-        accountDatabase = openOrCreateDatabase(DBActions.ACCOUNT_DATABASE_NAME, MODE_PRIVATE, null);
-        accountDatabase.execSQL("CREATE TABLE IF NOT EXISTS Users (Username VARCHAR, Password VARCHAR, InventoryJSON VARCHAR);");
-        SetupUI();
+        if(!online){
+            accountDatabase = openOrCreateDatabase(DBActions.ACCOUNT_DATABASE_NAME, MODE_PRIVATE, null);
+            accountDatabase.execSQL("CREATE TABLE IF NOT EXISTS Users (Username VARCHAR, Password VARCHAR, InventoryJSON VARCHAR);");
+            SetupUI();
+        }
+        else {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+            SetupUIOnline();
+        }
     }
 
     @Override
@@ -96,6 +106,60 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    public void SetupUIOnline(){
+        createAccount_text = (TextView) findViewById(R.id.createAccount_textbtn);
+        createAccount_text.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                GlobalActions.NavigateToActivity(LoginActivity.this, AccountCreationActivity.class);
+            }
+        });
+        loginBtn = (Button) findViewById(R.id.login_btn);
+        loginBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LoginBehaviorOnline();
+            } //changed
+        });
+        passwordTB = (EditText) findViewById(R.id.edittext_TextPassword);
+        passwordTB.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    LoginBehaviorOnline(); //changed
+                    return true;
+                }
+                return false;
+            }
+        });
+        usernameTB = (EditText) findViewById(R.id.edittext_loginUsername);
+        usernameTB.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    passwordTB.requestFocus();
+                    return true;
+                }
+                return false;
+            }
+        });
+        forgotPasswordTV = (TextView) findViewById(R.id.forgotPassword_TV);
+        forgotPasswordTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                /*
+                String uInput = usernameTB.getText().toString();
+                if (DBActions.IsUserInDataBase(uInput, view.getContext())){
+                    Toast.makeText(LoginActivity.this, "Password is: "+DBActions.GetUserPassword(uInput, view.getContext()), Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Toast.makeText(LoginActivity.this, "User does not exists", Toast.LENGTH_SHORT).show();
+                }
+                 */
+            }
+        });
+    }
+
     public void LoginBehavior(){
         String username =  usernameTB.getText().toString();
         String password =  passwordTB.getText().toString();
@@ -105,8 +169,21 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(this, getString(R.string.Toast_IncorrectPassword), Toast.LENGTH_SHORT).show();
         else{
             //perform login
-            User.setUsername(username);
+            User.setUserCredentials(username, password);
             User.setInventorys(DBActions.GetJSONString(username, this));
+            GlobalActions.NavigateToActivity(this, InventoryActivity.class);
+        }
+    }
+
+    public void LoginBehaviorOnline(){
+        String username =  usernameTB.getText().toString();
+        String password =  passwordTB.getText().toString();
+        Pair<Boolean, String> loginSuccessful = ServerHandler.Login(username, password);
+        if(!loginSuccessful.first)
+            Toast.makeText(this, loginSuccessful.second, Toast.LENGTH_SHORT).show();
+        else{
+            //perform login
+            User.initializeUserFromOnlineDB(loginSuccessful.second);
             GlobalActions.NavigateToActivity(this, InventoryActivity.class);
         }
     }
@@ -118,7 +195,8 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onDestroy(){
         /* Perform cleanup if phone terminates activity prematurely */
-        accountDatabase.close();
+        if(!online)
+            accountDatabase.close();
         super.onDestroy();
     }
 

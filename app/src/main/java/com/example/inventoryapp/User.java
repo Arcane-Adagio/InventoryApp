@@ -18,6 +18,7 @@ public class User {
 
     private static User INSTANCE = null;
     private static String mUsername;
+    private static String mPassword;
     public static List<JSONObject> InventoryJSONs = new ArrayList<JSONObject>();
     public static List<String> InventoryNames = new ArrayList<String>();
     public static List<List<InventoryItem>> InventoryItems = new ArrayList<>();
@@ -32,10 +33,29 @@ public class User {
         return(INSTANCE);
     }
 
+    public static void initializeUserFromOnlineDB(String jsonString){
+        if(INSTANCE == null)
+            INSTANCE = new User();
+        JSONObject obj = null;
+        try {
+            obj = new JSONObject(jsonString);
+            mUsername = obj.getString("username");
+            mPassword = obj.getString("password");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static String getUsername(){
         if(INSTANCE == null)
             INSTANCE = new User();
         return mUsername;
+    }
+
+    public static String getPassword(){
+        if(INSTANCE == null)
+            INSTANCE = new User();
+        return mPassword;
     }
 
     public static String getInventoryJSON(){
@@ -47,13 +67,15 @@ public class User {
             return convertInventoryToString();
     }
 
-    public static void setUsername(String username){
+    public static void setUserCredentials(String username, String password){
         //Username should only be allowed to be set
         //when null
         if(INSTANCE == null)
             INSTANCE = new User();
         if (mUsername == null)
             mUsername = username;
+        if (mPassword == null)
+            mPassword = password;
     }
 
     public static void setInventorys(String inventory){

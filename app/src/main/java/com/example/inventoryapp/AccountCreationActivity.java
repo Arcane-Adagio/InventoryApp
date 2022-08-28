@@ -1,15 +1,27 @@
 package com.example.inventoryapp;
 
+import static com.example.inventoryapp.GlobalActions.online;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.StrictMode;
+import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 public class AccountCreationActivity extends AppCompatActivity {
 
@@ -21,9 +33,16 @@ public class AccountCreationActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.page_createaccount);
-        mydatabase = openOrCreateDatabase(DBActions.ACCOUNT_DATABASE_NAME, MODE_PRIVATE, null);
-        mydatabase.execSQL("CREATE TABLE IF NOT EXISTS Users (Username VARCHAR, Password VARCHAR, InventoryJSON VARCHAR);");
-        Refresh();
+        if(!online){
+            mydatabase = openOrCreateDatabase(DBActions.ACCOUNT_DATABASE_NAME, MODE_PRIVATE, null);
+            mydatabase.execSQL("CREATE TABLE IF NOT EXISTS Users (Username VARCHAR, Password VARCHAR, InventoryJSON VARCHAR);");
+            Refresh();
+        }
+        else {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+            refreshDB();
+        }
         SetupUI();
     }
 
@@ -59,6 +78,30 @@ public class AccountCreationActivity extends AppCompatActivity {
         listView.setAdapter(dataAdapter);
     }
 
+    private void refreshDB()
+    {
+        String db_result = ServerHandler.GetListOfAccountsInDatabase();
+        String result = "";
+        try
+        {
+            JSONArray jsonArray = new JSONArray(db_result);
+            ArrayList<String> names = new ArrayList<String>();
+            for(int i=0; i<jsonArray.length(); i++)
+            {
+                JSONObject obj = jsonArray.getJSONObject(i);
+                names.add("username: "+obj.getString("username")+", password: "+obj.getString("password"));
+            }
+            ArrayAdapter nameadapter = new ArrayAdapter(this, R.layout.sample_accounts_listtextview, names);
+            ListView listView = (ListView) findViewById(R.id.db_listview);
+            listView.setAdapter(nameadapter);
+        }
+        catch(Exception ex)
+        {
+            Log.d("JSONObject", "You had an exception");
+            ex.printStackTrace();
+        }
+    }
+
     public void CreateAccountBehavior(View view){
         /* Reads input from textbox and creates user account in database */
         EditText username = (EditText) findViewById(R.id.username_editText);
@@ -69,12 +112,28 @@ public class AccountCreationActivity extends AppCompatActivity {
             GlobalActions.NavigateToActivity(this, LoginActivity.class);
     }
 
+    public void CreateAccountBehaviorOnline(View view){
+        /* Reads input from textbox and creates user account in database */
+        EditText username = (EditText) findViewById(R.id.username_editText);
+        EditText password = (EditText) findViewById(R.id.password_edittext);
+        String uname = username.getText().toString();
+        String pass = password.getText().toString();
+        if (uname.equals("") || pass.equals(""))
+            return;
+        if(ServerHandler.CreateUser(uname,pass))
+            GlobalActions.NavigateToActivity(this, LoginActivity.class);
+    }
+
+
     private void SetupUI(){
         createBtn = (Button) findViewById(R.id.btn_createaccount);
         createBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CreateAccountBehavior(view);
+                if(online)
+                    CreateAccountBehaviorOnline(view);
+                else
+                    CreateAccountBehavior(view);
             }
         });
     }
@@ -87,7 +146,8 @@ public class AccountCreationActivity extends AppCompatActivity {
     @Override
     protected void onDestroy(){
         /* Perform cleanup if phone terminates activity prematurely*/
-        mydatabase.close();
+        if(!online)
+            mydatabase.close();
         super.onDestroy();
     }
 }

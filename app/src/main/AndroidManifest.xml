@@ -18,6 +18,7 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.InventoryApp"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <service
             android:name=".ServiceHandler"

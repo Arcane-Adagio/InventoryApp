@@ -32,6 +32,7 @@ public class GlobalActions {
     public static final String KEY_SHAREDINVENTORY = "SharedInventory";
     public static final String EXPORT_ACTION = "com.example.inventoryapp.share";
     public static boolean logoutInProgress = false;
+    public static boolean online = true;
 
 
     public static boolean DefaultMenuOptionSelection(@NonNull MenuItem item, Context context, FragmentManager fM) {
@@ -42,9 +43,14 @@ public class GlobalActions {
                 return true;
             case R.id.menu_delete_account:
                 if(User.getUsername() != null){
-                    RemoveUserFromDatabase(User.getUsername(), context);
-                    LogoutBehavior(context);
-                    NavigateToActivity(context, LoginActivity.class);
+                    if(!online) {
+                        RemoveUserFromDatabase(User.getUsername(), context);
+                        LogoutBehavior(context);
+                    }
+                    else {
+                        ServerHandler.DeleteAccount(User.getUsername(), User.getPassword());
+                        LogoutBehavior(context);
+                    }
                 }
                 else
                     Toast.makeText(context, context.getString(R.string.Toast_No), Toast.LENGTH_LONG).show();
