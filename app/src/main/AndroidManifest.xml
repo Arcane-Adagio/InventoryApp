@@ -7,6 +7,7 @@
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
     <application
         android:allowBackup="true"
@@ -24,6 +25,9 @@
             android:name=".ServiceHandler"
             android:exported="true"
             android:enabled="true"/>
+        <service
+            android:name=".JobServicer$TestJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE"/>
         <receiver
             android:name=".BroadcastHandler$AppWideReceiver"
             android:exported="true">
@@ -31,6 +35,7 @@
                 <action android:name="com.example.inventoryapp.share"/>
             </intent-filter>
         </receiver>
+        <receiver android:name=".AlarmHandler"/>
         <activity
             android:name=".InventoryItemActivity"
             android:exported="false" />

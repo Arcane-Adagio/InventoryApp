@@ -6,15 +6,38 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".InventoryActivity">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="Ring the Alarm"
+            android:textSize="12sp"
+            android:onClick="SetAlarm"/>
+        <Button
+            android:layout_width="120dp"
+            android:layout_marginHorizontal="10dp"
+            android:layout_height="wrap_content"
+            android:text="Commence Job"
+            android:textSize="12sp"
+            android:onClick="SetJob"/>
+    </LinearLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"
         android:id="@+id/inventorylist_view">
 
     </androidx.recyclerview.widget.RecyclerView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/inventory_fab"
+        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
