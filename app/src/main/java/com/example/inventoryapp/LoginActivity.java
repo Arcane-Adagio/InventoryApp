@@ -32,12 +32,6 @@ public class LoginActivity extends AppCompatActivity {
         if(!online){
             accountDatabase = openOrCreateDatabase(DBActions.ACCOUNT_DATABASE_NAME, MODE_PRIVATE, null);
             accountDatabase.execSQL("CREATE TABLE IF NOT EXISTS Users (Username VARCHAR, Password VARCHAR, InventoryJSON VARCHAR);");
-            SetupUI();
-        }
-        else {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
-            SetupUIOnline();
         }
     }
 
@@ -52,6 +46,10 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        if (online)
+            SetupUIOnline();
+        else
+            SetupUI();
     }
 
     public void SetupUI(){
@@ -178,14 +176,7 @@ public class LoginActivity extends AppCompatActivity {
     public void LoginBehaviorOnline(){
         String username =  usernameTB.getText().toString();
         String password =  passwordTB.getText().toString();
-        Pair<Boolean, String> loginSuccessful = ServerHandler.Login(username, password);
-        if(!loginSuccessful.first)
-            Toast.makeText(this, loginSuccessful.second, Toast.LENGTH_SHORT).show();
-        else{
-            //perform login
-            User.initializeUserFromOnlineDB(loginSuccessful.second);
-            GlobalActions.NavigateToActivity(this, InventoryActivity.class);
-        }
+        new ServerHandler.Login(this, username, password).execute();
     }
 
     private Cursor getAllUsers(){

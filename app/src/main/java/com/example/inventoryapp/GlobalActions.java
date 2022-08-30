@@ -48,7 +48,7 @@ public class GlobalActions {
                         LogoutBehavior(context);
                     }
                     else {
-                        ServerHandler.DeleteAccount(User.getUsername(), User.getPassword());
+                        new ServerHandler.DeleteAccount(User.getUsername(), User.getPassword()).execute();
                         LogoutBehavior(context);
                     }
                 }

@@ -4,8 +4,11 @@ import static com.example.inventoryapp.GlobalActions.online;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
@@ -21,6 +24,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 public class AccountCreationActivity extends AppCompatActivity {
@@ -28,29 +32,106 @@ public class AccountCreationActivity extends AppCompatActivity {
     private SimpleCursorAdapter dataAdapter;
     SQLiteDatabase mydatabase;
     Button createBtn;
+    static Activity _this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.page_createaccount);
+        _this = this;
         if(!online){
             mydatabase = openOrCreateDatabase(DBActions.ACCOUNT_DATABASE_NAME, MODE_PRIVATE, null);
             mydatabase.execSQL("CREATE TABLE IF NOT EXISTS Users (Username VARCHAR, Password VARCHAR, InventoryJSON VARCHAR);");
             Refresh();
         }
-        else {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
-            refreshDB();
-        }
         SetupUI();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        ListView lv =(ListView) findViewById(R.id.db_listview);
+        new refreshDB(this, lv).execute();
+    }
+
+    public void CreateAccountBehavior(View view){
+        /* Reads input from textbox and creates user account in database */
+        EditText username = (EditText) findViewById(R.id.username_editText);
+        EditText password = (EditText) findViewById(R.id.password_edittext);
+        String uname = username.getText().toString();
+        String pass = password.getText().toString();
+        if(DBActions.AddUserToDatabase(dataAdapter, uname, pass, this))
+            GlobalActions.NavigateToActivity(this, LoginActivity.class);
+    }
+
+    public void CreateAccountBehaviorOnline(View view){
+        /* Reads input from textbox and creates user account in database */
+        EditText username = (EditText) findViewById(R.id.username_editText);
+        EditText password = (EditText) findViewById(R.id.password_edittext);
+        String uname = username.getText().toString();
+        String pass = password.getText().toString();
+        if (uname.equals("") || pass.equals(""))
+            return;
+        new CreateUser(uname, pass).execute();
+    }
+
+    public static void FinishAccountCreation(){
+        /* this function is called by the async task, once an account is
+        * successfullly created */
+        GlobalActions.NavigateToActivity(_this, LoginActivity.class);
+    }
+
+    private void SetupUI(){
+        createBtn = (Button) findViewById(R.id.btn_createaccount);
+        createBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(online)
+                    CreateAccountBehaviorOnline(view);
+                else
+                    CreateAccountBehavior(view);
+            }
+        });
+    }
+
+    final static class CreateUser extends AsyncTask<Void, Void, Boolean> {
+        /* Performs post request to the remote server */
+        private final String mUsername, mPassword;
+        public CreateUser(String uname, String pass) {
+            mUsername = uname; mPassword = pass;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... args) {
+            return ServerHandler.CreateUser(mUsername, mPassword);
+        }
+
+        @Override /* Run on the UI thread */
+        protected void onPostExecute(Boolean loginSuccessful) {
+            FinishAccountCreation();
+        }
+    }
+
+    private Cursor getAllUsers(){
+        /* Helper function to Refresh func */
+        return DBActions.GetAllUsersFromDatabase(this);
+    }
+
+    @Override
+    protected void onDestroy(){
+        /* Perform cleanup if phone terminates activity prematurely*/
+        if(!online)
+            mydatabase.close();
+        super.onDestroy();
+    }
+
     private void Refresh(){
+        /*Function used for offline debugging*/
+
         /*
-        * Boiler Plate Code
-        * to setup database
-        * or something */
+         * Boiler Plate Code
+         * to setup database
+         * or something */
         // The desired columns to be bound
         String[] columns = new String[] {
                 "Username", "Password", "InventoryJSON"
@@ -78,78 +159,45 @@ public class AccountCreationActivity extends AppCompatActivity {
         listView.setAdapter(dataAdapter);
     }
 
-    private void refreshDB()
-    {
-        String db_result = ServerHandler.GetListOfAccountsInDatabase();
-        String result = "";
-        try
+    final static class refreshDB extends AsyncTask<Void, Integer, String> {
+        /* Function used for online debugging */
+        private final WeakReference<Activity> parentRef;
+        private final WeakReference<ListView> listViewRef;
+
+        public refreshDB(final Activity parent, final ListView listView)
         {
-            JSONArray jsonArray = new JSONArray(db_result);
-            ArrayList<String> names = new ArrayList<String>();
-            for(int i=0; i<jsonArray.length(); i++)
+            parentRef = new WeakReference<Activity>(parent);
+            listViewRef = new WeakReference<ListView>(listView);
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            return ServerHandler.GetListOfAccountsInDatabase();
+        }
+
+        @Override
+        protected void onPostExecute(String db_result)
+        {
+            Activity parent = parentRef.get();
+            ListView listView = listViewRef.get();
+
+            try
             {
-                JSONObject obj = jsonArray.getJSONObject(i);
-                names.add("username: "+obj.getString("username")+", password: "+obj.getString("password"));
+                JSONArray jsonArray = new JSONArray(db_result);
+                ArrayList<String> names = new ArrayList<String>();
+                for(int i=0; i<jsonArray.length(); i++)
+                {
+                    JSONObject obj = jsonArray.getJSONObject(i);
+                    names.add("username: "+obj.getString("username")+", password: "+obj.getString("password"));
+                }
+                ArrayAdapter nameadapter = new ArrayAdapter(parent.getApplicationContext(), R.layout.sample_accounts_listtextview, names);
+                listView.setAdapter(nameadapter);
             }
-            ArrayAdapter nameadapter = new ArrayAdapter(this, R.layout.sample_accounts_listtextview, names);
-            ListView listView = (ListView) findViewById(R.id.db_listview);
-            listView.setAdapter(nameadapter);
-        }
-        catch(Exception ex)
-        {
-            Log.d("JSONObject", "You had an exception");
-            ex.printStackTrace();
-        }
-    }
-
-    public void CreateAccountBehavior(View view){
-        /* Reads input from textbox and creates user account in database */
-        EditText username = (EditText) findViewById(R.id.username_editText);
-        EditText password = (EditText) findViewById(R.id.password_edittext);
-        String uname = username.getText().toString();
-        String pass = password.getText().toString();
-        if(DBActions.AddUserToDatabase(dataAdapter, uname, pass, this))
-            GlobalActions.NavigateToActivity(this, LoginActivity.class);
-    }
-
-    public void CreateAccountBehaviorOnline(View view){
-        /* Reads input from textbox and creates user account in database */
-        EditText username = (EditText) findViewById(R.id.username_editText);
-        EditText password = (EditText) findViewById(R.id.password_edittext);
-        String uname = username.getText().toString();
-        String pass = password.getText().toString();
-        if (uname.equals("") || pass.equals(""))
-            return;
-        if(ServerHandler.CreateUser(uname,pass)){
-            //Toast.makeText(this, "Account Created Successfully", Toast.LENGTH_SHORT).show();
-            GlobalActions.NavigateToActivity(this, LoginActivity.class);
-        }
-    }
-
-
-    private void SetupUI(){
-        createBtn = (Button) findViewById(R.id.btn_createaccount);
-        createBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(online)
-                    CreateAccountBehaviorOnline(view);
-                else
-                    CreateAccountBehavior(view);
+            catch(Exception ex)
+            {
+                Log.d("JSONObject", "You had an exception");
+                ex.printStackTrace();
             }
-        });
-    }
-
-    private Cursor getAllUsers(){
-        /* Helper function to Refresh func */
-        return DBActions.GetAllUsersFromDatabase(this);
-    }
-
-    @Override
-    protected void onDestroy(){
-        /* Perform cleanup if phone terminates activity prematurely*/
-        if(!online)
-            mydatabase.close();
-        super.onDestroy();
+        }
     }
 }

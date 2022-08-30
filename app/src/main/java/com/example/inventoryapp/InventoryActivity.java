@@ -85,8 +85,13 @@ public class InventoryActivity extends AppCompatActivity {
         Log.d(TAG, "onDestroy");
         unregisterReceiver(BroadcastHandler.GetBatteryReceiver);
         unregisterReceiver(BroadcastHandler.SharedInventoryReceiver);
-        GlobalActions.LogoutBehavior(this);
         super.onDestroy();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        GlobalActions.LogoutBehavior(this);
     }
 
     @Override
