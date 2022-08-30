@@ -24,6 +24,14 @@ public class BroadcastHandler {
         }
     };
 
+    public static class PowerReceived extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            /* This receiver is called when power is connected to the device */
+            JobServicer.ScheduleTestJob(context.getApplicationContext());
+        }
+    };
+
     public static class AppWideReceiver extends android.content.BroadcastReceiver {
         /* This func would be used to handle broadcasts that the app receives
         * The function is referenced in the manifest to activate app-wide (if i

@@ -35,6 +35,13 @@
                 <action android:name="com.example.inventoryapp.share"/>
             </intent-filter>
         </receiver>
+        <receiver
+            android:name=".BroadcastHandler$PowerReceived"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.ACTION_POWER_CONNECTED"/>
+            </intent-filter>
+        </receiver>
         <receiver android:name=".AlarmHandler"/>
         <activity
             android:name=".InventoryItemActivity"

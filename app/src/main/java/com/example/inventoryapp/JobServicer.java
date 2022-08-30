@@ -9,7 +9,7 @@ import android.content.Context;
 import android.widget.Toast;
 
 public class JobServicer {
-    private static class TestJobService extends JobService {
+    public static class TestJobService extends JobService {
 
         @Override
         public boolean onStartJob(JobParameters jobParameters) {
