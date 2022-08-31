@@ -12,6 +12,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -29,6 +30,7 @@ import java.util.ArrayList;
 
 public class AccountCreationActivity extends AppCompatActivity {
 
+    private static final String TAG = "Account Creation Activity";
     private SimpleCursorAdapter dataAdapter;
     SQLiteDatabase mydatabase;
     Button createBtn;
@@ -52,6 +54,7 @@ public class AccountCreationActivity extends AppCompatActivity {
         super.onStart();
         ListView lv =(ListView) findViewById(R.id.db_listview);
         new refreshDB(this, lv).execute();
+        new ServerHandler.TestServerConnection(this).execute();
     }
 
     public void CreateAccountBehavior(View view){
@@ -94,7 +97,7 @@ public class AccountCreationActivity extends AppCompatActivity {
         });
     }
 
-    final static class CreateUser extends AsyncTask<Void, Void, Boolean> {
+    final static class CreateUser extends AsyncTask<Void, Void, Pair<Boolean, String>> {
         /* Performs post request to the remote server */
         private final String mUsername, mPassword;
         public CreateUser(String uname, String pass) {
@@ -102,15 +105,23 @@ public class AccountCreationActivity extends AppCompatActivity {
         }
 
         @Override
-        protected Boolean doInBackground(Void... args) {
+        protected Pair<Boolean, String> doInBackground(Void... args) {
             return ServerHandler.CreateUser(mUsername, mPassword);
         }
 
         @Override /* Run on the UI thread */
-        protected void onPostExecute(Boolean loginSuccessful) {
-            FinishAccountCreation();
+        protected void onPostExecute(Pair<Boolean, String> loginSuccessful) {
+            if (loginSuccessful.first){
+                FinishAccountCreation();
+                Toast.makeText(_this, "Account Created", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                Toast.makeText(_this, loginSuccessful.second, Toast.LENGTH_SHORT).show();
+            }
         }
     }
+
+
 
     private Cursor getAllUsers(){
         /* Helper function to Refresh func */

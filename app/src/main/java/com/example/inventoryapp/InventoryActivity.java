@@ -42,15 +42,6 @@ public class InventoryActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
-    public void SetAlarm(View view){
-        AlarmHandler alarm = new AlarmHandler();
-        alarm.setCustomAlarm(this, 1);
-    }
-
-    public void SetJob(View view){
-        JobServicer.ScheduleTestJob(this);
-    }
-
     @Override
     protected void onStart() {
         Log.d(TAG, "onStart");
@@ -68,6 +59,10 @@ public class InventoryActivity extends AppCompatActivity {
     protected void onResume() {
         Log.d(TAG, "onResume");
         super.onResume();
+    }
+
+    public void createInventoryGroup (View view){
+        //communicates with the server to add inventory group
     }
 
     @Override

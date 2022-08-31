@@ -1,6 +1,7 @@
 package com.example.inventoryapp;
 
 import android.util.Log;
+import android.util.Pair;
 
 import org.json.JSONObject;
 
@@ -68,9 +69,10 @@ public class ServerHelper {
         return jsonString;
     }
 
-    public static Boolean sendHttpPostRequest(String urlString, JSONObject json)
+    public static Pair<Boolean, String> sendHttpPostRequest(String urlString, JSONObject json)
     {
         boolean result = false;
+        StringBuilder response = new StringBuilder();
         HttpURLConnection httpConnection = null;
         try
         {
@@ -93,6 +95,7 @@ public class ServerHelper {
                 while((line = reader.readLine()) != null)
                 {
                     Log.d("PostRequest", line);
+                    response.append(line);
                 }
                 reader.close();
                 result = true;
@@ -107,7 +110,7 @@ public class ServerHelper {
         {
             httpConnection.disconnect();
         }
-        return result;
+        return new Pair<>(result, response.toString());
     }
 
     public static Boolean sendHttpPutRequest(String urlString, JSONObject json)

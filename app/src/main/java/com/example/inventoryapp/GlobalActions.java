@@ -45,18 +45,20 @@ public class GlobalActions {
                 if(User.getUsername() != null){
                     if(!online) {
                         RemoveUserFromDatabase(User.getUsername(), context);
-                        LogoutBehavior(context);
                     }
                     else {
                         new ServerHandler.DeleteAccount(User.getUsername(), User.getPassword()).execute();
-                        LogoutBehavior(context);
                     }
+                    LogoutBehavior(context);
                 }
                 else
                     Toast.makeText(context, context.getString(R.string.Toast_No), Toast.LENGTH_LONG).show();
                 return true;
             case R.id.menu_user_save:
-                SaveInventoryJSON(context);
+                if (online)
+                    new ServerHandler.SaveInventory(User.getUsername(), User.getPassword(), User.getInventoryJSON(), context).execute();
+                else
+                    SaveInventoryJSON(context);
                 return true;
             case R.id.menu_inv_file_save:
                 new StorageHandler((Activity) context).WriteToFile();

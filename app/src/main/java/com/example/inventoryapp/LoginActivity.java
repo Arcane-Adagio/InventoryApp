@@ -6,8 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.os.StrictMode;
-import android.util.Pair;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -64,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LoginBehavior();
+                LoginBehaviorOffline();
             }
         });
         passwordTB = (EditText) findViewById(R.id.edittext_TextPassword);
@@ -72,7 +70,7 @@ public class LoginActivity extends AppCompatActivity {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
                         (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                    LoginBehavior();
+                    LoginBehaviorOffline();
                     return true;
                 }
                 return false;
@@ -158,7 +156,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    public void LoginBehavior(){
+    public void LoginBehaviorOffline(){
         String username =  usernameTB.getText().toString();
         String password =  passwordTB.getText().toString();
         if(!DBActions.IsUserInDataBase(username, this))

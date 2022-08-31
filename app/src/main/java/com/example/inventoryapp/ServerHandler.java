@@ -1,8 +1,12 @@
 package com.example.inventoryapp;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.util.Pair;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -10,6 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 
 public class ServerHandler {
     private final static String TAG = "ServerHandler";
@@ -22,11 +27,15 @@ public class ServerHandler {
     private final static String webapi_login = "http://10.0.3.2/inventoryapp/api/login";
     private final static String webapi_accounts = "http://10.0.3.2/inventoryapp/api/accounts";
     private final static String webapi_saveinventory = "http://10.0.3.2/inventoryapp/api/accounts/saveinventory";
+    private final static String webapi_getMyIP = "http://10.0.3.2/inventoryapp/api/testme";
 
 
-    public static boolean CreateUser(String username, String password){
+    public static Pair<Boolean, String> CreateUser(String username, String password){
+        /* Commmunicates with server and returns a boolean indicating whether there was an error connecting
+        * with the server and a String indicating the response from the server */
         JSONObject newuser = constructUserObject(username, password);
-        return ServerHelper.sendHttpPostRequest(webapi_addaccount, newuser);
+        Pair<Boolean, String> response = ServerHelper.sendHttpPostRequest(webapi_addaccount, newuser);
+        return new Pair<>(response.first, getResultText(response.second));
     }
 
     public static String GetListOfAccountsInDatabase(){
@@ -100,21 +109,30 @@ public class ServerHandler {
         }
     }
 
-    final static class SaveInventory extends AsyncTask<Void, Void, Void> {
+    final static class SaveInventory extends AsyncTask<Context, Void, Pair<Boolean, String>> {
         private final String mUsername, mPassword, mInventory;
-        public SaveInventory(String uname, String pass, String inven){ mUsername = uname; mPassword = pass; mInventory = inven;}
+        private final Context mContext;
+        public SaveInventory(String uname, String pass, String inven, Context context)
+        { mUsername = uname; mPassword = pass; mInventory = inven; mContext = context; }
         @Override
-        protected Void doInBackground(Void... args) {
+        protected Pair<Boolean, String> doInBackground(Context... args) {
             JSONObject postParameters = new JSONObject();
             try {
                 postParameters.put("username", mUsername);
                 postParameters.put("password"  , mPassword);
                 postParameters.put("inventory", mInventory);
-                ServerHelper.sendHttpPostRequest(webapi_saveinventory, postParameters);
+                Log.d(TAG, "Saving inventory: "+mInventory);
+                return ServerHelper.sendHttpPostRequest(webapi_saveinventory, postParameters);
             } catch (JSONException e) {
                 e.printStackTrace();
+                Log.d(TAG, "doInBackground: JSON parsing error");
             }
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Pair<Boolean, String> RequestProcessed) {
+            Toast.makeText(mContext, getResultText(RequestProcessed.second), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -124,7 +142,7 @@ public class ServerHandler {
         @Override
         protected Boolean doInBackground(Void... args) {
             JSONObject newuser = constructUserObject(mUsername, mPassword);
-            return ServerHelper.sendHttpPostRequest(webapi_deleteaccount, newuser);
+            return ServerHelper.sendHttpPostRequest(webapi_deleteaccount, newuser).first;
         }
     }
 
@@ -139,7 +157,7 @@ public class ServerHandler {
         try {
             JSONArray responseArray = new JSONArray(response);
             String result = getResultText(responseArray.getJSONObject(responseArray.length() - 1)); //should always be at the end
-            if(result.equals("login successful")){
+            if(result.equals(GlobalConstants.db_loginSuccessful)){
                 loginSuccessful = true;
                 resultResponse = responseArray.getJSONObject(0).toString();
                 returnValues = new Pair<>(loginSuccessful, resultResponse);
@@ -165,6 +183,17 @@ public class ServerHandler {
         }
     }
 
+    public static String getResultText(String responseString){
+        try {
+            JSONArray responseArray = new JSONArray(responseString);
+            JSONObject resultJSON = responseArray.getJSONObject(responseArray.length() - 1);
+            return resultJSON.getJSONObject("Result").getString("text");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public static JSONObject constructUserObject(String username, String password){
         JSONObject userobject = new JSONObject();
         try {
@@ -181,6 +210,39 @@ public class ServerHandler {
         @Override
         protected String doInBackground(String... urls) {
             return ServerHelper.downloadJSONusingHTTPGetRequest(urls[0]);
+        }
+    }
+
+    final static class TestServerConnection extends AsyncTask<Void, Integer, String> {
+        /* Function used for online debugging */
+        private final WeakReference<Activity> parentRef;
+
+        public TestServerConnection(final Activity parent)
+        {
+            parentRef = new WeakReference<Activity>(parent);
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            return ServerHelper.downloadJSONusingHTTPGetRequest(webapi_getMyIP);
+        }
+
+        @Override
+        protected void onPostExecute(String db_result)
+        {
+            Activity parent = parentRef.get();
+
+            try
+            {
+                //JSONArray jsonArray = new JSONArray(db_result);
+                //ArrayList<String> a = new ArrayList<String>();
+                Toast.makeText(parent, db_result, Toast.LENGTH_SHORT).show();
+            }
+            catch(Exception ex)
+            {
+                Log.d("JSONObject", "You had an exception");
+                ex.printStackTrace();
+            }
         }
     }
 }

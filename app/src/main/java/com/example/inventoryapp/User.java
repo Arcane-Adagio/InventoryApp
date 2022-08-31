@@ -41,6 +41,13 @@ public class User {
             obj = new JSONObject(jsonString);
             mUsername = obj.getString("username");
             mPassword = obj.getString("password");
+            String inventoryJSON = obj.getString("inventory");
+            if(GlobalConstants.db_emptyValues.contains(inventoryJSON))
+                DemoConvert();
+            else{
+                //ConvertStringToInventory(inventoryJSON.replace('\"','"'));
+                ConvertStringToInventory(inventoryJSON);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
