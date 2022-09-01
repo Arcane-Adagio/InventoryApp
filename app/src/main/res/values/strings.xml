@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Inventory App</string>
+    <string name="app_name">Online Inventory App</string>
     <string name="alert_battery_prt1">\"The battery is at \"</string>
     <string name="alert_battery_prt2">\" percent!\"</string>
     <string name="toast_incomingbroadcast">Incoming Broadcasts</string>

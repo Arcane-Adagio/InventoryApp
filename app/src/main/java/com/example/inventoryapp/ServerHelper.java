@@ -29,6 +29,7 @@ public class ServerHelper {
                 jsonString = getStringfromStream(stream);
             }
             httpConnection.disconnect();
+            Log.d("Network", jsonString);
             Log.d("JSONObject", "Got object!");
         }
         catch (UnknownHostException e1)
@@ -60,6 +61,7 @@ public class ServerHelper {
                 }
                 reader.close();
                 jsonString = out.toString();
+                Log.d("Network", jsonString);
             }
             catch(IOException ex)
             {
@@ -98,6 +100,7 @@ public class ServerHelper {
                     response.append(line);
                 }
                 reader.close();
+                Log.d("Network", response.toString());
                 result = true;
             }
         }

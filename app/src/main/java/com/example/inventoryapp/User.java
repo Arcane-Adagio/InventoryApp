@@ -33,7 +33,7 @@ public class User {
         return(INSTANCE);
     }
 
-    public static void initializeUserFromOnlineDB(String jsonString){
+    public static void initializeUserFromOnlineDB(String jsonString, String groupInventorys){
         if(INSTANCE == null)
             INSTANCE = new User();
         JSONObject obj = null;
@@ -42,10 +42,9 @@ public class User {
             mUsername = obj.getString("username");
             mPassword = obj.getString("password");
             String inventoryJSON = obj.getString("inventory");
-            if(GlobalConstants.db_emptyValues.contains(inventoryJSON))
+            if(GlobalConstants.db_emptyValues.contains(inventoryJSON)) //insert && to check group inventories as well
                 DemoConvert();
             else{
-                //ConvertStringToInventory(inventoryJSON.replace('\"','"'));
                 ConvertStringToInventory(inventoryJSON);
             }
         } catch (JSONException e) {
@@ -173,10 +172,35 @@ public class User {
             e.printStackTrace();
         }
 
-        Log.d("User", "GetInventoryNames: "+names.get(0));
-        Log.d("User", "GetInventoryNames: "+String.valueOf(names.size()));
-        Log.d("User", "GetInventoryNames: "+String.valueOf(InventoryItems.size()));
-        Log.d("User", "GetInventoryString: "+convertInventoryToString());
+        InventoryNames = names;
+    }
+
+    public static void AddGroupJSONToInventory(String inventoryStringFromDatabase, String groupInventoriesFromDatabase){
+        if (sample)
+            return;
+        JSONArray arr = null;
+        List<String> names = new ArrayList<String>();
+        try {
+            arr = new JSONArray(groupInventoriesFromDatabase);
+            for (int i=0; i<arr.length(); i++){
+                //add each json object to object list
+                JSONObject groupObj = arr.getJSONObject(i);
+                String groupName = groupObj.getString("name");
+                String groupCode = groupObj.getString("code");
+                String identification = groupName+"#"+groupCode;
+
+                InventoryJSONs.add(groupObj);
+
+                //Add each inventory object name to class list
+                names.add(identification);
+
+                //Convert each inventory's items to lists and store them
+                InventoryItems.add(convertJSONObjectToInventoryItemList(groupObj));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         InventoryNames = names;
     }
 

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/textview_createGroup_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        >
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/textview_createGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:foregroundGravity="center"
+            android:layout_marginTop="10dp"
+            android:text="Create Group:"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/edittext_groupCode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="5dp"
+        android:paddingTop="0dp"
+        android:paddingBottom="10dp"
+        android:maxHeight="40dp"
+        android:textSize="14sp"
+        android:maxLines="1"
+        android:scrollHorizontally="true"
+        android:layout_marginHorizontal="50dp"
+        android:layout_marginTop="20dp"
+        android:hint="Shareable Group Code"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.48"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textview_createGroup_layout" />
+
+    <EditText
+        android:id="@+id/edittext_groupName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="50dp"
+        android:layout_marginTop="10dp"
+        android:paddingHorizontal="5dp"
+        android:paddingTop="0dp"
+        android:maxLines="1"
+        android:scrollHorizontally="true"
+        android:paddingBottom="10dp"
+        android:maxHeight="40dp"
+        android:textSize="14sp"
+        android:ems="10"
+        android:hint="Enter Group Name"
+        android:inputType="textPassword"
+        app:layout_constraintEnd_toEndOf="@+id/edittext_groupCode"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/edittext_groupCode"
+        app:layout_constraintTop_toBottomOf="@+id/edittext_groupCode" />
+
+    <EditText
+        android:id="@+id/edittext_groupPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="50dp"
+        android:layout_marginTop="10dp"
+        android:paddingHorizontal="5dp"
+        android:paddingTop="0dp"
+        android:paddingBottom="10dp"
+        android:maxLines="1"
+        android:scrollHorizontally="true"
+        android:maxHeight="40dp"
+        android:textSize="14sp"
+        android:ems="10"
+        android:hint="Enter Group Password"
+        android:inputType="textPassword"
+        app:layout_constraintEnd_toEndOf="@+id/edittext_groupName"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/edittext_groupName"
+        app:layout_constraintTop_toBottomOf="@+id/edittext_groupName"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="50dp"
+        android:layout_marginBottom="15dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edittext_groupPassword">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/creategroup_cancel_Btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:maxWidth="70dp"
+            android:maxHeight="40dp"
+            android:minWidth="65dp"
+            android:minHeight="35dp"
+            android:padding="5dp"
+            android:text="Cancel"
+            android:textSize="11sp" />
+
+        <Button
+            android:id="@+id/creategroup_submit_Btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:maxWidth="70dp"
+            android:maxHeight="40dp"
+            android:minWidth="65dp"
+            android:minHeight="35dp"
+            android:padding="5dp"
+            android:text="Submit"
+            android:textSize="11sp" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

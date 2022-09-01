@@ -107,6 +107,10 @@ public class LoginActivity extends AppCompatActivity {
         createAccount_text.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(!GlobalActions.isNetworkConnected(getApplicationContext())){
+                    Toast.makeText(getApplicationContext(), "Not connected to the internet", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 GlobalActions.NavigateToActivity(LoginActivity.this, AccountCreationActivity.class);
             }
         });
@@ -172,6 +176,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void LoginBehaviorOnline(){
+        if(!GlobalActions.isNetworkConnected(getApplicationContext())){
+            Toast.makeText(this, "Not connected to the internet", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         String username =  usernameTB.getText().toString();
         String password =  passwordTB.getText().toString();
         new ServerHandler.Login(this, username, password).execute();

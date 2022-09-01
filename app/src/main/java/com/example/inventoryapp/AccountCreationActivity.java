@@ -189,6 +189,7 @@ public class AccountCreationActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String db_result)
         {
+            Log.d(TAG, "onPostExecute: "+db_result);
             Activity parent = parentRef.get();
             ListView listView = listViewRef.get();
 
