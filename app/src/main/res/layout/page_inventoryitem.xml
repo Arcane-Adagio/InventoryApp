@@ -21,7 +21,7 @@
 
         <EditText
             android:id="@+id/newInventoryNameEditText"
-            android:hint="New Inventory Name"
+            android:hint="@string/label_newinventoryname"
             android:maxLines="1"
             android:backgroundTint="@color/white"
             android:textColor="@color/white"
@@ -79,7 +79,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_margin="50dp"
-        android:contentDescription="add inventory item"
+        android:contentDescription="@string/fab_addinventoryitem_contentdescription"
         android:src="@drawable/ic_add_default"
         app:rippleColor="?colorAccent" />
 

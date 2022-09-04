@@ -14,7 +14,7 @@ import java.util.Calendar;
 public class AlarmHandler extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        Toast.makeText(context, "The alarm has been rung!!!", Toast.LENGTH_LONG).show();
+        Toast.makeText(context, context.getString(R.string.alarm_sample_text), Toast.LENGTH_LONG).show();
     }
 
     public void setAlarmTwentyFromNow(Context context)

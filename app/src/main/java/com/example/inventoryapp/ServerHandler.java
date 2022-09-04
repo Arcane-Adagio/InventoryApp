@@ -25,18 +25,21 @@ import kotlin.Triple;
 public class ServerHandler {
     private final static String TAG = "ServerHandler";
 
-    private final static String website = "http://10.0.3.2/inventoryapp/";
-    private final static String webapi_addaccount = "http://10.0.3.2/inventoryapp/api/accounts/add";
-    private final static String webapi_changeusername = "http://10.0.3.2/inventoryapp/api/accounts/changeusername";
-    private final static String webapi_changepassword = "http://10.0.3.2/inventoryapp/api/accounts/changepassword";
-    private final static String webapi_deleteaccount = "http://10.0.3.2/inventoryapp/api/accounts/remove";
-    private final static String webapi_login = "http://10.0.3.2/inventoryapp/api/login";
-    private final static String webapi_accounts = "http://10.0.3.2/inventoryapp/api/accounts";
-    private final static String webapi_iscodevalid = "http://10.0.3.2/inventoryapp/api/groups/code";
-    private final static String webapi_saveinventory = "http://10.0.3.2/inventoryapp/api/accounts/saveinventory";
-    private final static String webapi_getMyIP = "http://10.0.3.2/inventoryapp/api/testme";
-    private final static String webapi_creategroup = "http://10.0.3.2/inventoryapp/api/groups/add";
-    private final static String webapi_getgroupinventorys = "http://10.0.3.2/inventoryapp/api/groups/getAllInventory";
+    private final static String protocol = "http://";
+    private final static String serverip = "10.0.3.2";
+    private final static String appFolder = "/pc";
+    private final static String website = protocol+serverip+appFolder;
+    private final static String webapi_addaccount = website + "/api/accounts/add";
+    private final static String webapi_changeusername = website + "/api/accounts/changeusername";
+    private final static String webapi_changepassword = website + "/api/accounts/changepassword";
+    private final static String webapi_deleteaccount = website + "/api/accounts/remove";
+    private final static String webapi_login = website + "/api/login";
+    private final static String webapi_accounts = website + "/api/accounts";
+    private final static String webapi_iscodevalid = website + "/api/groups/code";
+    private final static String webapi_saveinventory = website + "/api/accounts/saveinventory";
+    private final static String webapi_getMyIP = website + "/api/testme";
+    private final static String webapi_creategroup = website + "/api/groups/add";
+    private final static String webapi_getgroupinventorys = website + "/api/groups/getAllInventory";
 
 
     public static Pair<Boolean, String> CreateUser(String username, String password){

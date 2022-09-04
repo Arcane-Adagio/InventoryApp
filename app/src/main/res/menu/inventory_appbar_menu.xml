@@ -3,6 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/menu_inv_edit_title"
-        android:title="Edit Title"
+        android:title="@string/btn_edittitle"
         app:showAsAction="never" />
 </menu>

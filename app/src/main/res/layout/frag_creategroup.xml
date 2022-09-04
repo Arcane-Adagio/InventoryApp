@@ -26,7 +26,7 @@
             android:gravity="center"
             android:foregroundGravity="center"
             android:layout_marginTop="10dp"
-            android:text="Create Group:"
+            android:text="@string/label_creategroup"
             android:textAlignment="center"
             android:textSize="24sp"
             />
@@ -51,7 +51,7 @@
         android:scrollHorizontally="true"
         android:layout_marginHorizontal="50dp"
         android:layout_marginTop="20dp"
-        android:hint="Shareable Group Code"
+        android:hint="@string/label_groupcode"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.48"
         app:layout_constraintStart_toStartOf="parent"
@@ -71,7 +71,7 @@
         android:maxHeight="40dp"
         android:textSize="14sp"
         android:ems="10"
-        android:hint="Enter Group Name"
+        android:hint="@string/label_groupname"
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="@+id/edittext_groupCode"
         app:layout_constraintHorizontal_bias="0.0"
@@ -92,7 +92,7 @@
         android:maxHeight="40dp"
         android:textSize="14sp"
         android:ems="10"
-        android:hint="Enter Group Password"
+        android:hint="@string/label_grouppassword"
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="@+id/edittext_groupName"
         app:layout_constraintHorizontal_bias="0.0"
@@ -125,7 +125,7 @@
             android:minWidth="65dp"
             android:minHeight="35dp"
             android:padding="5dp"
-            android:text="Cancel"
+            android:text="@string/btn_cancel"
             android:textSize="11sp" />
 
         <Button
@@ -138,7 +138,7 @@
             android:minWidth="65dp"
             android:minHeight="35dp"
             android:padding="5dp"
-            android:text="Submit"
+            android:text="@string/btn_submit"
             android:textSize="11sp" />
 
     </LinearLayout>

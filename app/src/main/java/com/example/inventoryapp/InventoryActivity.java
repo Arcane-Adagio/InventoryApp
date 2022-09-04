@@ -143,8 +143,8 @@ public class InventoryActivity extends AppCompatActivity {
 
         //Set Max length of each edit text to make sure it matches the length allotted by the database
         nameEditText.setFilters(new InputFilter[] { new InputFilter.LengthFilter(GlobalConstants.db_max_groupname_length) });
-        passwordEditText.setFilters(new InputFilter[] { new InputFilter.LengthFilter(GlobalConstants.db_max_groupname_length) });
-        codeEditText.setFilters(new InputFilter[] { new InputFilter.LengthFilter(GlobalConstants.db_max_groupname_length) });
+        passwordEditText.setFilters(new InputFilter[] { new InputFilter.LengthFilter(GlobalConstants.db_max_password_length) });
+        codeEditText.setFilters(new InputFilter[] { new InputFilter.LengthFilter(GlobalConstants.db_max_code_length) });
 
         codeEditText.setOnFocusChangeListener((view, hasFocus) -> {
             if(!hasFocus)
@@ -167,49 +167,4 @@ public class InventoryActivity extends AppCompatActivity {
 
         dialog.show();
     }
-
-    /*
-    final static class GetInventorys extends AsyncTask<Void, Integer, String> {
-        // Function used for online debugging /
-        private final WeakReference<Activity> parentRef;
-        private final WeakReference<ListView> listViewRef;
-
-        public refreshDB(final Activity parent, final ListView listView)
-        {
-            parentRef = new WeakReference<Activity>(parent);
-            listViewRef = new WeakReference<ListView>(listView);
-        }
-
-        @Override
-        protected String doInBackground(Void... voids) {
-            return ServerHandler.GetListOfAccountsInDatabase();
-        }
-
-        @Override
-        protected void onPostExecute(String db_result)
-        {
-            Log.d(TAG, "onPostExecute: "+db_result);
-            Activity parent = parentRef.get();
-            ListView listView = listViewRef.get();
-
-            try
-            {
-                JSONArray jsonArray = new JSONArray(db_result);
-                ArrayList<String> names = new ArrayList<String>();
-                for(int i=0; i<jsonArray.length(); i++)
-                {
-                    JSONObject obj = jsonArray.getJSONObject(i);
-                    names.add("username: "+obj.getString("username")+", password: "+obj.getString("password"));
-                }
-                ArrayAdapter nameadapter = new ArrayAdapter(parent.getApplicationContext(), R.layout.sample_accounts_listtextview, names);
-                listView.setAdapter(nameadapter);
-            }
-            catch(Exception ex)
-            {
-                Log.d("JSONObject", "You had an exception");
-                ex.printStackTrace();
-            }
-        }
-    }
-    */
 }

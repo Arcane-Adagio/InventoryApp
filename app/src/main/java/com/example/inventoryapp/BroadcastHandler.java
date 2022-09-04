@@ -55,8 +55,4 @@ public class BroadcastHandler {
             Toast.makeText(context, context.getString(R.string.toast_broadcastreceived), Toast.LENGTH_SHORT).show();
         }
     };
-
-
-
-
 }

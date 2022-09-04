@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="72dp"
-        android:text="Create Account"
+        android:text="@string/title_createaccount"
         android:textAlignment="center"
         android:textSize="32sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="30dp"
-            android:text="Enter Username:"
+            android:text="@string/label_enterusername"
             android:textSize="18sp" />
 
         <EditText
@@ -51,7 +51,7 @@
             android:layout_marginEnd="30dp"
             android:layout_weight="1"
             android:gravity="bottom"
-            android:hint="Username" />
+            android:hint="@string/label_username" />
     </LinearLayout>
 
     <LinearLayout
@@ -70,7 +70,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginStart="30dp"
             android:gravity="center"
-            android:text="Enter Password:"
+            android:text="@string/label_enterpassword"
             android:textAlignment="center"
             android:textSize="18sp" />
 
@@ -85,7 +85,7 @@
             android:layout_marginStart="10dp"
             android:layout_marginEnd="30dp"
             android:layout_weight="1"
-            android:hint="Password"
+            android:hint="@string/label_password"
             android:inputType="textPassword" />
     </LinearLayout>
 
@@ -95,7 +95,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="64dp"
         android:onClick="DBinsert"
-        android:text="Create"
+        android:text="@string/btn_create"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />

@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:visibility="gone"
             android:layout_gravity="end|bottom"
-            android:contentDescription="add inventory item"
+            android:contentDescription="@string/fab_addinventory_contentdescription"
             android:layout_margin="18dp"
             android:src="@mipmap/ic_launcher" />
 

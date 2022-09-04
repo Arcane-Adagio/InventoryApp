@@ -65,15 +65,16 @@ public class GlobalActions {
             case R.id.menu_inv_file_save:
                 new StorageHandler((Activity) context).WriteToFile();
                 return true;
-            case R.id.menu_inv_share:
-                Intent intent = new Intent(context, ServiceHandler.class);
-                intent.putExtra(KEY_SHAREDINVENTORY, User.getInventoryJSON());
-                context.startService(intent);
-                return true;
             default:
                 Toast.makeText(context, context.getString(R.string.Toast_menu_default), Toast.LENGTH_LONG).show();
                 return false;
         }
+    }
+
+    public static void DemoShare(Context context){
+        Intent intent = new Intent(context, ServiceHandler.class);
+        intent.putExtra(KEY_SHAREDINVENTORY, User.getInventoryJSON());
+        context.startService(intent);
     }
 
     public static void LogoutBehavior(Context context){

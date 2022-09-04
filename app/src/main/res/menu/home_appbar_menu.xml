@@ -3,22 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/menu_user_save"
-        android:title="Save"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/menu_inv_share"
-        android:title="Export Inventories"
+        android:title="@string/btn_save"
         app:showAsAction="never" />
     <item
         android:id="@+id/menu_inv_file_save"
-        android:title="Save To File"
+        android:title="@string/btn_savetofile"
         app:showAsAction="never" />
     <item
         android:id="@+id/menu_logout"
-        android:title="Logout"
+        android:title="@string/btn_logout"
         app:showAsAction="never" />
     <item
         android:id="@+id/menu_delete_account"
-        android:title="Delete Account"
+        android:title="@string/btn_deleteaccount"
         app:showAsAction="never" />
 </menu>
