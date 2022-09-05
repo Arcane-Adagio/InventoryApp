@@ -1,5 +1,6 @@
 package com.example.inventoryapp;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -11,10 +12,16 @@ public class FirebaseHandler {
     public static class Group {
         public String groupID;
         public String groupName;
+        public String groupCode;
+        public String groupPasswordHashed;
+        public String groupOwner;
         public List<Inventory> inventories;
 
-        public Group(String name){
+        public Group(String name, String code, String password, String owner){
             groupName = name;
+            groupCode = code;
+            groupPasswordHashed = String.valueOf(password.hashCode());
+            groupOwner = owner;
         }
 
         public String getGroupName() {
