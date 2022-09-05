@@ -27,8 +27,9 @@
         android:layout_marginHorizontal="50dp"
         android:layout_marginTop="68dp"
         android:hint="Email"
+        android:text="me@localhost.com"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.48"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
@@ -39,6 +40,7 @@
         android:layout_marginHorizontal="50dp"
         android:layout_marginTop="20dp"
         android:ems="10"
+        android:text="123456"
         android:hint="@string/label_password"
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="@+id/edittext_loginEmail"
@@ -51,7 +53,7 @@
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
-        android:text="@string/label_login"
+        android:text="Test Button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"

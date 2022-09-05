@@ -1,12 +1,14 @@
 package com.example.inventoryapp;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -20,6 +22,11 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.List;
 
 public class OnlineLoginActivity extends AppCompatActivity {
 
@@ -28,6 +35,9 @@ public class OnlineLoginActivity extends AppCompatActivity {
     private EditText password_tb;
     private final String TAG = "OnlineLoginActivity";
     private FirebaseUser mCurrentUser;
+    private Button login_btn;
+    private DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +46,7 @@ public class OnlineLoginActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         email_tb = (EditText) findViewById(R.id.edittext_loginEmail);
         password_tb = (EditText) findViewById(R.id.edittext_TextPassword);
+        login_btn = (Button) findViewById(R.id.login_btn);
         mCurrentUser = mAuth.getCurrentUser();
         if(mCurrentUser != null)
             AutoLogin();
@@ -46,6 +57,12 @@ public class OnlineLoginActivity extends AppCompatActivity {
         super.onStart();
         //check if use is signed in (non-null and update UI accordingly
         FirebaseUser currentUser = mAuth.getCurrentUser();
+        login_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Login(null);
+            }
+        });
     }
 
     public void Register(View view){
@@ -55,8 +72,9 @@ public class OnlineLoginActivity extends AppCompatActivity {
     }
 
     public void AutoLogin(){
-        Toast.makeText(this, "auto login called", Toast.LENGTH_SHORT).show();
-        //navigate to activity
+        Log.d(TAG, "AutoLogin: called");
+        Intent intent = new Intent(OnlineLoginActivity.this, InventoryActivityOnline.class);
+        startActivity(intent);
     }
 
     public void createAccount(String email, String password){
@@ -85,7 +103,7 @@ public class OnlineLoginActivity extends AppCompatActivity {
                 .addOnSuccessListener(this, new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
-                        Intent intent = new Intent(OnlineLoginActivity.this, InventoryActivity.class);
+                        Intent intent = new Intent(OnlineLoginActivity.this, InventoryActivityOnline.class);
                         startActivity(intent);
                     }
                 }).addOnFailureListener(this, new OnFailureListener() {
@@ -95,7 +113,7 @@ public class OnlineLoginActivity extends AppCompatActivity {
                 }
         });
     }
-    
+
     public void UpdateUserProfile(View view){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if(user==null)
@@ -110,7 +128,7 @@ public class OnlineLoginActivity extends AppCompatActivity {
                     }
                 }));
     }
-    
+
     public void SendVerificationEmail(){
         mCurrentUser.sendEmailVerification()
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -145,6 +163,30 @@ public class OnlineLoginActivity extends AppCompatActivity {
                         Toast.makeText(OnlineLoginActivity.this, "user re-authenticated", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    public OnCompleteListener getDefaultOnCompleteListener(String successString, String failureString){
+        return new OnCompleteListener() {
+            @Override
+            public void onComplete(@NonNull Task task) {
+                if(task.isSuccessful())
+                    Toast.makeText(OnlineLoginActivity.this, successString, Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(OnlineLoginActivity.this, failureString, Toast.LENGTH_SHORT).show();
+            }
+        };
+    }
+
+    public DatabaseReference.CompletionListener getDefaultOnCompletionListener(String successString, String failureString) {
+        return new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                if (error != null)
+                    Toast.makeText(OnlineLoginActivity.this, successString, Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(OnlineLoginActivity.this, failureString, Toast.LENGTH_SHORT).show();
+            }
+        };
     }
 
     public void UpdateUserEmail(View view){
