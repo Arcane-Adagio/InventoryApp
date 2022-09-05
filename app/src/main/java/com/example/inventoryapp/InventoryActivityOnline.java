@@ -3,6 +3,7 @@ package com.example.inventoryapp;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -10,6 +11,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.view.LayoutInflater;
@@ -17,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,6 +46,7 @@ public class InventoryActivityOnline extends AppCompatActivity {
     GroupRVAdapter inv_rva;
     FirebaseUser currentUser;
     FloatingActionButton addition_fab;
+
 
 
     @Override
@@ -83,11 +87,15 @@ public class InventoryActivityOnline extends AppCompatActivity {
         DatabaseReference mGroupsReference = mRootReference.child("Groups");
         List<FirebaseHandler.Group> groupData = new ArrayList<FirebaseHandler.Group>();
         Context mContext;
+        Drawable delete_draw;
+        Drawable exit_draw;
         RecyclerView rv;
 
         public GroupRVAdapter(Context context){
             mContext = context;
             rv = (RecyclerView) ((AppCompatActivity)context).findViewById(R.id.recyclerview_group);
+            delete_draw = AppCompatResources.getDrawable(context, R.drawable.ic_delete_default);
+            exit_draw = AppCompatResources.getDrawable(context, R.drawable.ic_exit_default);
             mGroupsReference.addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
@@ -141,6 +149,11 @@ public class InventoryActivityOnline extends AppCompatActivity {
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             holder.groupName_et.setText(groupData.get(position).getGroupName());
             holder.groupCode_tv.setText(groupData.get(position).getGroupCode());
+            holder.delete_btn.setOnClickListener(view ->
+                    new FirebaseHandler().RemoveGroup(groupData.get(holder.getAdapterPosition()).getGroupID()));
+            holder.delete_btn.setImageDrawable(
+                    (Objects.equals(groupData.get(holder.getAdapterPosition()).getGroupOwner(), currentUser.getUid())) ? delete_draw : exit_draw
+            );
         }
 
         @Override
@@ -171,12 +184,14 @@ public class InventoryActivityOnline extends AppCompatActivity {
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public EditText groupName_et;
+        public TextView groupName_et;
         public TextView groupCode_tv;
+        public ImageButton delete_btn;
         public ViewHolder(View view){
             super(view);
-            groupName_et = (EditText) view.findViewById(R.id.edittext_groupName);
+            groupName_et = (TextView) view.findViewById(R.id.edittext_groupName);
             groupCode_tv = (TextView) view.findViewById(R.id.textview_groupCode);
+            delete_btn = (ImageButton) view.findViewById(R.id.group_delete_btn);
         }
     }
 
@@ -222,8 +237,8 @@ public class InventoryActivityOnline extends AppCompatActivity {
                 query.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        long chitchen = snapshot.getChildrenCount();
-                        if(chitchen == 0)
+                        long queryResultCount = snapshot.getChildrenCount();
+                        if(queryResultCount == 0)
                             codeEditText.getBackground().clearColorFilter();
                         else {
                             codeEditText.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
@@ -252,10 +267,12 @@ public class InventoryActivityOnline extends AppCompatActivity {
             query.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    long chitchen = snapshot.getChildrenCount();
-                    if(chitchen == 0)
+                    long queryResultCount = snapshot.getChildrenCount();
+                    if(queryResultCount == 0){
                         new FirebaseHandler().AddGroup(
                                 new FirebaseHandler.Group(nameText, codeText, passwordText, currentUser.getUid()));
+                        dialog.dismiss();
+                    }
                     else {
                         codeEditText.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
                         codeEditText.setText("");
@@ -268,7 +285,6 @@ public class InventoryActivityOnline extends AppCompatActivity {
 
                 }
             });
-            dialog.dismiss();
         });
         cancelBtn.setOnClickListener(v -> {
             codeEditText.getBackground().clearColorFilter();

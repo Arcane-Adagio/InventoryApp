@@ -22,12 +22,13 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_weight="8"
+            android:paddingStart="10dp"
             android:layout_marginHorizontal="10dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="0dp"
             android:orientation="vertical">
 
-            <EditText
+            <TextView
                 android:id="@+id/edittext_groupName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -36,11 +37,12 @@
                 android:inputType="none"
                 android:text="Sample Group Title"
                 android:maxLines="1"
+                android:textColor="@color/black"
                 android:maxLength="40"
                 android:hint="Group Title"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
-                android:layout_marginBottom="-5dp"
+
                 android:focusedByDefault="false"
                 />
 
@@ -52,7 +54,6 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
                     android:text="Code: "
                     android:textSize="8dp"
                     />

@@ -1,6 +1,10 @@
 package com.example.inventoryapp;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -89,6 +93,12 @@ public class FirebaseHandler {
         DatabaseReference newAdditionRef = groupsRef.push();
         group.setGroupID(newAdditionRef.getKey());
         newAdditionRef.setValue(group);
+    }
+
+    public void RemoveGroup(String groupID){
+        DatabaseReference groupsRef = mRootRef.child("Groups");
+        DatabaseReference groupRef = groupsRef.child(groupID);
+        groupRef.removeValue();
     }
 
     public void AddInventoryToGroup(String groupID, Inventory inventory){
