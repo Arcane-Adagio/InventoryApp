@@ -8,52 +8,22 @@
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:allowBackup="true"
-        android:requestLegacyExternalStorage="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.InventoryApp"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-        <service
-            android:name=".ServiceHandler"
-            android:exported="true"
-            android:enabled="true"/>
-        <service
-            android:name=".JobServicer$TestJobService"
-            android:permission="android.permission.BIND_JOB_SERVICE"/>
-        <receiver
-            android:name=".BroadcastHandler$AppWideReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.example.inventoryapp.share"/>
-            </intent-filter>
-        </receiver>
-        <receiver
-            android:name=".BroadcastHandler$PowerReceived"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.ACTION_POWER_CONNECTED"/>
-            </intent-filter>
-        </receiver>
-        <receiver android:name=".AlarmHandler"/>
         <activity
-            android:name=".InventoryItemActivity"
-            android:exported="false" />
-        <activity
-            android:name=".AccountCreationActivity"
-            android:exported="false"
-            android:windowSoftInputMode="adjustNothing"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name=".LoginActivity"
+            android:name=".OnlineLoginActivity"
             android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -62,6 +32,44 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".LoginActivity"
+            android:exported="true"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <service
+            android:name=".ServiceHandler"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name=".JobServicer$TestJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <receiver
+            android:name=".BroadcastHandler$AppWideReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.example.inventoryapp.share" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".BroadcastHandler$PowerReceived"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".AlarmHandler" />
+
+        <activity
+            android:name=".InventoryItemActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AccountCreationActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustNothing" />
         <activity
             android:name=".InventoryActivity"
             android:exported="false"

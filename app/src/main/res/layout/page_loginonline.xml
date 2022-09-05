@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".OnlineLoginActivity">
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/textView"
@@ -20,12 +21,12 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/edittext_loginUsername"
+        android:id="@+id/edittext_loginEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="50dp"
         android:layout_marginTop="68dp"
-        android:hint="@string/label_username"
+        android:hint="Email"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.48"
         app:layout_constraintStart_toStartOf="parent"
@@ -40,10 +41,10 @@
         android:ems="10"
         android:hint="@string/label_password"
         android:inputType="textPassword"
-        app:layout_constraintEnd_toEndOf="@+id/edittext_loginUsername"
+        app:layout_constraintEnd_toEndOf="@+id/edittext_loginEmail"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/edittext_loginUsername"
-        app:layout_constraintTop_toBottomOf="@+id/edittext_loginUsername" />
+        app:layout_constraintStart_toStartOf="@+id/edittext_loginEmail"
+        app:layout_constraintTop_toBottomOf="@+id/edittext_loginEmail" />
 
     <Button
         android:id="@+id/login_btn"
@@ -54,49 +55,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/forgotPassword_TV" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="108dp"
-        android:text="@string/label_noaccount"
-        android:textSize="11sp"
-        app:layout_constraintBottom_toBottomOf="@+id/createAccount_textbtn"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/forgotPassword_TV"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="56dp"
-        android:layout_marginTop="16dp"
-        android:visibility="gone"
-        android:text="@string/label_forgotpassword"
-        android:textColor="@color/teal_700"
-        android:textSize="11sp"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edittext_TextPassword" />
 
-    <TextView
-        android:id="@+id/createAccount_textbtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginBottom="44dp"
-        android:text="@string/label_createaccount"
-        android:textColor="@color/royal_purple"
-        android:textSize="11sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView2" />
 
-    <Button
-        android:id="@+id/testbtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="TestBehavior"
-        android:text="Test"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

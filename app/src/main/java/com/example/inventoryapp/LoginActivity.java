@@ -13,6 +13,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 public class LoginActivity extends AppCompatActivity {
 
     private final String TAG = "LoginActivity";
@@ -173,6 +176,20 @@ public class LoginActivity extends AppCompatActivity {
             User.setInventorys(DBActions.GetJSONString(username, this));
             GlobalActions.NavigateToActivity(this, InventoryActivity.class);
         }
+    }
+    
+    public void TestBehavior(View view){
+        DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference mVRef = mRootRef.child("name");
+
+        String tests = "1";
+        try {
+            tests = mVRef.get().getResult().toString();
+            wait();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        Toast.makeText(this, tests, Toast.LENGTH_SHORT).show();
     }
 
     public void LoginBehaviorOnline(){
