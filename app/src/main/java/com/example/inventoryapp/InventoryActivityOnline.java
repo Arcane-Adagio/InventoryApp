@@ -140,7 +140,7 @@ public class InventoryActivityOnline extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             holder.groupName_et.setText(groupData.get(position).getGroupName());
-            holder.groupCode_tv.setText(groupData.get(position).getGroupID());
+            holder.groupCode_tv.setText(groupData.get(position).getGroupCode());
         }
 
         @Override

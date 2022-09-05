@@ -10,11 +10,11 @@ public class FirebaseHandler {
     private DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
 
     public static class Group {
-        public String groupID;
-        public String groupName;
-        public String groupCode;
-        public String groupPasswordHashed;
-        public String groupOwner;
+        private String groupID;
+        private String groupName;
+        private String groupCode;
+        private String groupPasswordHashed;
+        private String groupOwner;
         public List<Inventory> inventories;
 
         public Group(String name, String code, String password, String owner){
@@ -34,6 +34,18 @@ public class FirebaseHandler {
 
         public String getGroupID() {
             return groupID;
+        }
+
+        public String getGroupCode(){
+            return groupCode;
+        }
+
+        public String getGroupPasswordHashed(){
+            return groupPasswordHashed;
+        }
+
+        public String getGroupOwner(){
+            return groupOwner;
         }
     }
 
