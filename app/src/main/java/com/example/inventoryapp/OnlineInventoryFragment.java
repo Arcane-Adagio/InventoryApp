@@ -225,14 +225,6 @@ public class OnlineInventoryFragment extends Fragment {
             inventoryName = inventoryView.findViewById(R.id.inventory_title_edittext);
             parentLayout = inventoryView.findViewById(R.id.tile_inventory);
             editBtn = (ImageButton) inventoryView.findViewById(R.id.inv_edit_btn);
-            editBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    //Intent intent = new Intent(view.getContext(), InventoryItemActivity.class);
-                    //intent.putExtra("inventoryName", inventoryName.getText().toString());
-                    //view.getContext().startActivity(intent);
-                }
-            });
             deleteBtn = (ImageButton) inventoryView.findViewById(R.id.inv_delete_btn);
             reorderBtn = (ImageButton) inventoryView.findViewById(R.id.inv_reorder_btn);
         }

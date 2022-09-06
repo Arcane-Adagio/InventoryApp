@@ -2,8 +2,8 @@ package com.example.inventoryapp;
 
 import static android.database.sqlite.SQLiteDatabase.openOrCreateDatabase;
 
-import static com.example.inventoryapp.DBActions.RemoveUserFromDatabase;
-import static com.example.inventoryapp.DBActions.SaveInventoryJSON;
+import static com.example.inventoryapp.LocalDBActions.RemoveUserFromDatabase;
+import static com.example.inventoryapp.LocalDBActions.SaveInventoryJSON;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -49,7 +49,7 @@ public class GlobalActions {
                         RemoveUserFromDatabase(User.getUsername(), context);
                     }
                     else {
-                        new ServerHandler.DeleteAccount(User.getUsername(), User.getPassword()).execute();
+                        Toast.makeText(context, "online account deletion not implemented", Toast.LENGTH_SHORT).show();
                     }
                     LogoutBehavior(context);
                 }
@@ -58,7 +58,7 @@ public class GlobalActions {
                 return true;
             case R.id.menu_user_save:
                 if (online)
-                    new ServerHandler.SaveInventory(User.getUsername(), User.getPassword(), User.getInventoryJSON(), context).execute();
+                    Toast.makeText(context, "online saving not implemented", Toast.LENGTH_SHORT).show();
                 else
                     SaveInventoryJSON(context);
                 return true;
@@ -69,12 +69,6 @@ public class GlobalActions {
                 Toast.makeText(context, context.getString(R.string.Toast_menu_default), Toast.LENGTH_LONG).show();
                 return false;
         }
-    }
-
-    public static void DemoShare(Context context){
-        Intent intent = new Intent(context, ServiceHandler.class);
-        intent.putExtra(KEY_SHAREDINVENTORY, User.getInventoryJSON());
-        context.startService(intent);
     }
 
     public static void LogoutBehavior(Context context){

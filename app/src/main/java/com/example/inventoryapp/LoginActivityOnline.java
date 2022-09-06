@@ -71,8 +71,11 @@ public class LoginActivityOnline extends AppCompatActivity {
 
     public void AutoLogin(){
         Log.d(TAG, "AutoLogin: called");
+        Toast.makeText(this, "Autologin not implemented", Toast.LENGTH_SHORT).show(); //TODO aaa
+        /*
         Intent intent = new Intent(LoginActivityOnline.this, GroupActivity.class);
         startActivity(intent);
+         */
     }
 
     public void createAccount(String email, String password){
@@ -101,7 +104,7 @@ public class LoginActivityOnline extends AppCompatActivity {
                 .addOnSuccessListener(this, new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
-                        Intent intent = new Intent(LoginActivityOnline.this, GroupActivity.class);
+                        Intent intent = new Intent(LoginActivityOnline.this, MainActivity.class);
                         startActivity(intent);
                     }
                 }).addOnFailureListener(this, new OnFailureListener() {

@@ -46,12 +46,7 @@ import java.util.Objects;
 
 public class OnlineGroupFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
     DatabaseReference mRootReference = FirebaseDatabase.getInstance().getReference();
-    DatabaseReference mGroupsReference = mRootReference.child("Groups");
     RecyclerView rv;
     GroupRVAdapter group_rva;
     FirebaseUser currentUser;
@@ -59,86 +54,27 @@ public class OnlineGroupFragment extends Fragment {
     Activity cActivity;
     private static final String APPBAR_TITLE_FOR_FRAGMENT = "Groups";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     public OnlineGroupFragment() {
         // Required empty public constructor
-    }
-
-    private void NavigateToInventoryFragment(String groupID, String groupName){
-        Bundle bundle = new Bundle();
-        bundle.putString("groupID", groupID);
-        bundle.putString("groupName", groupName);
-        OnlineInventoryFragment frag = new OnlineInventoryFragment();
-        frag.setArguments(bundle);
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(MainActivity.fragmentContainerID, frag);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment OnlineFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static OnlineGroupFragment newInstance(String param1, String param2) {
-        OnlineGroupFragment fragment = new OnlineGroupFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
         cActivity = getActivity();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.frag_online_group, container, false);
     }
-
-
-    private void SetupGroupRecyclerView(){
-        rv=(RecyclerView) getView().findViewById(R.id.recyclerview_group);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(cActivity);
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        layoutManager.scrollToPosition(0);
-        rv.setLayoutManager(layoutManager);
-        group_rva =new GroupRVAdapter(cActivity);
-        rv.setAdapter(group_rva);
-    }
-
-
 
     @Override
     public void onStart() {
         super.onStart();
         addition_fab = (FloatingActionButton) getView().findViewById(R.id.fab_group);
-        addition_fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                CreateGroupDialog();
-            }
-        });
+        addition_fab.setOnClickListener(view -> CreateGroupDialog());
         SetupGroupRecyclerView();
         Objects.requireNonNull(((AppCompatActivity)getActivity()).getSupportActionBar()).setTitle(APPBAR_TITLE_FOR_FRAGMENT);
     }
@@ -210,22 +146,9 @@ public class OnlineGroupFragment extends Fragment {
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             holder.groupName_et.setText(groupData.get(position).getGroupName());
             holder.groupCode_tv.setText(groupData.get(position).getGroupCode());
-            holder.edit_btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    NavigateToInventoryFragment(
-                            groupData.get(holder.getAdapterPosition()).getGroupID(),
-                            groupData.get(holder.getAdapterPosition()).getGroupName()
-                    );
-                    /*
-                    Intent intent = new Intent(mContext, InventoryActivityOnline.class);
-                    intent.putExtra("groupID", groupData.get(holder.getAdapterPosition()).getGroupID());
-                    intent.putExtra("groupName", groupData.get(holder.getAdapterPosition()).getGroupName());
-                    startActivity(intent);
-
-                     */
-                }
-            });
+            holder.edit_btn.setOnClickListener(view -> NavigateToInventoryFragment(
+                    groupData.get(holder.getAdapterPosition()).getGroupID(),
+                    groupData.get(holder.getAdapterPosition()).getGroupName()));
             holder.delete_btn.setOnClickListener(view ->
                     new FirebaseHandler().RemoveGroup(groupData.get(holder.getAdapterPosition()).getGroupID()));
             holder.delete_btn.setImageDrawable(
@@ -272,25 +195,6 @@ public class OnlineGroupFragment extends Fragment {
             edit_btn = (ImageButton) view.findViewById(R.id.group_edit_btn);
             delete_btn = (ImageButton) view.findViewById(R.id.group_delete_btn);
         }
-    }
-
-    public ValueEventListener CustomTextviewValueEventListener(TextView ui){
-        return new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                ui.setText(snapshot.getValue().toString());
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        };
-    }
-
-
-    public void ShowGroupCreationDialog(View view){
-        Toast.makeText(cActivity, "nothing to see here", Toast.LENGTH_SHORT).show();
     }
 
     public void CreateGroupDialog(){
@@ -371,5 +275,28 @@ public class OnlineGroupFragment extends Fragment {
         });
 
         dialog.show();
+    }
+
+    private void SetupGroupRecyclerView(){
+        rv=(RecyclerView) getView().findViewById(R.id.recyclerview_group);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(cActivity);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        layoutManager.scrollToPosition(0);
+        rv.setLayoutManager(layoutManager);
+        group_rva =new GroupRVAdapter(cActivity);
+        rv.setAdapter(group_rva);
+    }
+
+    private void NavigateToInventoryFragment(String groupID, String groupName){
+        Bundle bundle = new Bundle();
+        bundle.putString("groupID", groupID);
+        bundle.putString("groupName", groupName);
+        OnlineInventoryFragment frag = new OnlineInventoryFragment();
+        frag.setArguments(bundle);
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(MainActivity.fragmentContainerID, frag);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 }

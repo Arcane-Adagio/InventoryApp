@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 /* This class handles all calls and queries to the User Database */
 
-public class DBActions {
+public class LocalDBActions {
     public static final String ACCOUNT_DATABASE_NAME = "Account";
     public static final String ACCOUNT_COLUMN_PASSWORD = "Password";
     public static final String ACCOUNT_COLUMN_INVENTORY = "InventoryJSON";

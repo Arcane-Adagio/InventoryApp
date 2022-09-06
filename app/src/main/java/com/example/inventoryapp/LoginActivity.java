@@ -31,7 +31,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.page_login);
         if(!online){
-            accountDatabase = openOrCreateDatabase(DBActions.ACCOUNT_DATABASE_NAME, MODE_PRIVATE, null);
+            accountDatabase = openOrCreateDatabase(LocalDBActions.ACCOUNT_DATABASE_NAME, MODE_PRIVATE, null);
             accountDatabase.execSQL("CREATE TABLE IF NOT EXISTS Users (Username VARCHAR, Password VARCHAR, InventoryJSON VARCHAR);");
         }
     }
@@ -95,8 +95,8 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String uInput = usernameTB.getText().toString();
-                if (DBActions.IsUserInDataBase(uInput, view.getContext())){
-                    Toast.makeText(LoginActivity.this, "Password is: "+DBActions.GetUserPassword(uInput, view.getContext()), Toast.LENGTH_SHORT).show();
+                if (LocalDBActions.IsUserInDataBase(uInput, view.getContext())){
+                    Toast.makeText(LoginActivity.this, "Password is: "+ LocalDBActions.GetUserPassword(uInput, view.getContext()), Toast.LENGTH_SHORT).show();
                 }
                 else{
                     Toast.makeText(LoginActivity.this, "User does not exists", Toast.LENGTH_SHORT).show();
@@ -166,15 +166,15 @@ public class LoginActivity extends AppCompatActivity {
     public void LoginBehaviorOffline(){
         String username =  usernameTB.getText().toString();
         String password =  passwordTB.getText().toString();
-        if(!DBActions.IsUserInDataBase(username, this))
+        if(!LocalDBActions.IsUserInDataBase(username, this))
             Toast.makeText(this, getString(R.string.Toast_UserNotFound), Toast.LENGTH_SHORT).show();
-        else if (!DBActions.GetUserPassword(username, this).equals(password)) // check password
+        else if (!LocalDBActions.GetUserPassword(username, this).equals(password)) // check password
             Toast.makeText(this, getString(R.string.Toast_IncorrectPassword), Toast.LENGTH_SHORT).show();
         else{
             //perform login
             User.setUserCredentials(username, password);
-            User.setInventorys(DBActions.GetJSONString(username, this));
-            GlobalActions.NavigateToActivity(this, InventoryActivity.class);
+            User.setInventorys(LocalDBActions.GetJSONString(username, this));
+            GlobalActions.NavigateToActivity(this, MainActivity.class);
         }
     }
     
@@ -200,11 +200,11 @@ public class LoginActivity extends AppCompatActivity {
 
         String username =  usernameTB.getText().toString();
         String password =  passwordTB.getText().toString();
-        new ServerHandler.Login(this, username, password).execute();
+        Toast.makeText(this, "login behavior not implemented", Toast.LENGTH_SHORT).show(); //TODO
     }
 
     private Cursor getAllUsers(){
-        return DBActions.GetAllUsersFromDatabase(this);
+        return LocalDBActions.GetAllUsersFromDatabase(this);
     }
 
     @Override

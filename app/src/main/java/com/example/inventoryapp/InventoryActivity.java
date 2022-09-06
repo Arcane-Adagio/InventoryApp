@@ -127,44 +127,4 @@ public class InventoryActivity extends AppCompatActivity {
             return true;
         return super.onOptionsItemSelected(item);
     }
-
-    public void ShowGroupCreationDialog(View view){
-        CreateGroupDialog();
-    }
-
-    public void CreateGroupDialog(){
-        final Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.frag_creategroup);
-        Button submitBtn = (Button) dialog.findViewById(R.id.creategroup_submit_Btn);
-        Button cancelBtn = (Button) dialog.findViewById(R.id.creategroup_cancel_Btn);
-        EditText nameEditText = (EditText)dialog.findViewById(R.id.edittext_groupName);
-        EditText passwordEditText = (EditText)dialog.findViewById(R.id.edittext_groupPassword);
-        EditText codeEditText = (EditText)dialog.findViewById(R.id.edittext_groupCode);
-
-        //Set Max length of each edit text to make sure it matches the length allotted by the database
-        nameEditText.setFilters(new InputFilter[] { new InputFilter.LengthFilter(GlobalConstants.db_max_groupname_length) });
-        passwordEditText.setFilters(new InputFilter[] { new InputFilter.LengthFilter(GlobalConstants.db_max_password_length) });
-        codeEditText.setFilters(new InputFilter[] { new InputFilter.LengthFilter(GlobalConstants.db_max_code_length) });
-
-        codeEditText.setOnFocusChangeListener((view, hasFocus) -> {
-            if(!hasFocus)
-                new ServerHandler.isGroupCodeValid(codeEditText.getText().toString(), codeEditText).execute();
-        });
-        submitBtn.setOnClickListener(v -> {
-            String nameText = nameEditText.getText().toString();
-            String passwordText = passwordEditText.getText().toString();
-            String codeText = codeEditText.getText().toString();
-
-            if(nameText.equals("") || passwordText.equals("") || codeText.equals(""))
-                return;
-            new ServerHandler.CreateGroup(codeText, nameText, passwordText, this).execute();
-            dialog.dismiss();
-        });
-        cancelBtn.setOnClickListener(v -> {
-            codeEditText.getBackground().clearColorFilter();
-            dialog.dismiss();
-        });
-
-        dialog.show();
-    }
 }
