@@ -26,9 +26,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.List;
-
-public class OnlineLoginActivity extends AppCompatActivity {
+public class LoginActivityOnline extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private EditText email_tb;
@@ -73,7 +71,7 @@ public class OnlineLoginActivity extends AppCompatActivity {
 
     public void AutoLogin(){
         Log.d(TAG, "AutoLogin: called");
-        Intent intent = new Intent(OnlineLoginActivity.this, InventoryActivityOnline.class);
+        Intent intent = new Intent(LoginActivityOnline.this, GroupActivity.class);
         startActivity(intent);
     }
 
@@ -84,14 +82,14 @@ public class OnlineLoginActivity extends AppCompatActivity {
             public void onSuccess(AuthResult authResult) {
                 Log.d(TAG, "createAccount: success");
                 FirebaseUser user = mAuth.getCurrentUser();
-                Toast.makeText(OnlineLoginActivity.this, "Authentication Succeeded.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivityOnline.this, "Authentication Succeeded.", Toast.LENGTH_SHORT).show();
             }
         }).addOnFailureListener(this, new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Log.d(TAG, "createAccount: failure");
                 FirebaseUser user = mAuth.getCurrentUser();
-                Toast.makeText(OnlineLoginActivity.this, "Auth Failure"+e.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivityOnline.this, "Auth Failure"+e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -103,13 +101,13 @@ public class OnlineLoginActivity extends AppCompatActivity {
                 .addOnSuccessListener(this, new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
-                        Intent intent = new Intent(OnlineLoginActivity.this, InventoryActivityOnline.class);
+                        Intent intent = new Intent(LoginActivityOnline.this, GroupActivity.class);
                         startActivity(intent);
                     }
                 }).addOnFailureListener(this, new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(OnlineLoginActivity.this, "Failed to sign in", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivityOnline.this, "Failed to sign in", Toast.LENGTH_SHORT).show();
                 }
         });
     }
@@ -135,7 +133,7 @@ public class OnlineLoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if(task.isSuccessful()){
-                            Toast.makeText(OnlineLoginActivity.this, "Verification Email Sent", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivityOnline.this, "Verification Email Sent", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -147,7 +145,7 @@ public class OnlineLoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if(task.isSuccessful()){
-                            Toast.makeText(OnlineLoginActivity.this, "Password has been updated", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivityOnline.this, "Password has been updated", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -160,7 +158,7 @@ public class OnlineLoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         Log.d(TAG, "User re-authenticated");
-                        Toast.makeText(OnlineLoginActivity.this, "user re-authenticated", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivityOnline.this, "user re-authenticated", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -170,9 +168,9 @@ public class OnlineLoginActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task task) {
                 if(task.isSuccessful())
-                    Toast.makeText(OnlineLoginActivity.this, successString, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivityOnline.this, successString, Toast.LENGTH_SHORT).show();
                 else
-                    Toast.makeText(OnlineLoginActivity.this, failureString, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivityOnline.this, failureString, Toast.LENGTH_SHORT).show();
             }
         };
     }
@@ -182,9 +180,9 @@ public class OnlineLoginActivity extends AppCompatActivity {
             @Override
             public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
                 if (error != null)
-                    Toast.makeText(OnlineLoginActivity.this, successString, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivityOnline.this, successString, Toast.LENGTH_SHORT).show();
                 else
-                    Toast.makeText(OnlineLoginActivity.this, failureString, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivityOnline.this, failureString, Toast.LENGTH_SHORT).show();
             }
         };
     }
@@ -198,13 +196,13 @@ public class OnlineLoginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()){
-                            Toast.makeText(OnlineLoginActivity.this, "Update was a success", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivityOnline.this, "Update was a success", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(OnlineLoginActivity.this, "Operation was a failure", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivityOnline.this, "Operation was a failure", Toast.LENGTH_SHORT).show();
                 }
         });
     }
@@ -224,9 +222,9 @@ public class OnlineLoginActivity extends AppCompatActivity {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 if(isUserEmailVerified())
-                    Toast.makeText(OnlineLoginActivity.this, "Email is verified", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivityOnline.this, "Email is verified", Toast.LENGTH_SHORT).show();
                 else
-                    Toast.makeText(OnlineLoginActivity.this, "Email is NOT verified", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivityOnline.this, "Email is NOT verified", Toast.LENGTH_SHORT).show();
             }
         };
     }

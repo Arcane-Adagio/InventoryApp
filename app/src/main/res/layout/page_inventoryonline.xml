@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".GroupActivity"
+    tools:context=".InventoryActivityOnline"
     android:orientation="vertical">
 
     <LinearLayout
@@ -16,8 +16,7 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Create Group"
-            android:onClick="ShowGroupCreationDialog"
+            android:text="Create Inventory"
             />
     </LinearLayout>
 
@@ -26,11 +25,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="visible"
-        android:backgroundTint="@color/accent_grey"
+        android:backgroundTint="@color/royal_yellow3"
         >
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerview_group"
+            android:id="@+id/recyclerview_inventory"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:backgroundTint="@color/royal_yellow3">
@@ -38,7 +37,7 @@
         </androidx.recyclerview.widget.RecyclerView>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_group"
+            android:id="@+id/fab_inventory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"

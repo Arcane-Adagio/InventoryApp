@@ -66,11 +66,11 @@
     android:layout_height="match_parent">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_marginVertical="10dp"
         android:id="@+id/inventoryitemlist_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginHorizontal="5dp" />
+        android:layout_marginHorizontal="5dp"
+        android:layout_marginVertical="10dp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/inventoryitem_fab"

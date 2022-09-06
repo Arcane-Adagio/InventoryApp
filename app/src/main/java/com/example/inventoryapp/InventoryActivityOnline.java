@@ -3,36 +3,27 @@ package com.example.inventoryapp;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.content.res.AppCompatResources;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.Dialog;
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
+import android.content.Intent;
 import android.os.Bundle;
-import android.text.InputFilter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,88 +31,95 @@ import java.util.Objects;
 
 public class InventoryActivityOnline extends AppCompatActivity {
 
+    private final String TAG = "Inventory Activity Online";
     DatabaseReference mRootReference = FirebaseDatabase.getInstance().getReference();
-    DatabaseReference mGroupsReference = mRootReference.child("Groups");
+    DatabaseReference mInventoryReference;
+    private String mCurrentGroupID;
     RecyclerView rv;
-    GroupRVAdapter inv_rva;
+    InventoryRVAdapter inv_rva;
     FirebaseUser currentUser;
     FloatingActionButton addition_fab;
-
-
+    public static final String KEY_GROUPID = "groupID";
+    public static final String KEY_GROUPNAME = "groupName";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.page_homeonline);
-        currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        SetupGroupRecyclerView();
+        setContentView(R.layout.page_inventoryonline);
     }
-
-    private void SetupGroupRecyclerView(){
-        rv=(RecyclerView) findViewById(R.id.recyclerview_group);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        layoutManager.scrollToPosition(0);
-        rv.setLayoutManager(layoutManager);
-        inv_rva=new GroupRVAdapter(this);
-        rv.setAdapter(inv_rva);
-    }
-
-
-
 
     @Override
     protected void onStart() {
         super.onStart();
-        addition_fab = (FloatingActionButton) findViewById(R.id.fab_group);
+        addition_fab = (FloatingActionButton) findViewById(R.id.fab_inventory);
         addition_fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CreateGroupDialog();
+                AddInventory();
             }
         });
+        Bundle extras = getIntent().getExtras();
+        if(extras != null){
+            if(extras.getString(KEY_GROUPID) != null){
+                mCurrentGroupID = extras.getString(KEY_GROUPID);
+                Objects.requireNonNull(getSupportActionBar()).setTitle(extras.getString(KEY_GROUPNAME));
+            }
+        }
+        SetupRecyclerView();
     }
 
-    public class GroupRVAdapter extends RecyclerView.Adapter<InventoryActivityOnline.ViewHolder>{
+    private void SetupRecyclerView(){
+        rv=(RecyclerView) findViewById(R.id.recyclerview_inventory);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        layoutManager.scrollToPosition(0);
+        rv.setLayoutManager(layoutManager);
+        inv_rva =new InventoryRVAdapter(this);
+        rv.setAdapter(inv_rva);
+    }
+
+    private void AddInventory(){
+        new FirebaseHandler().AddInventoryToGroup(mCurrentGroupID, new FirebaseHandler.Inventory("TestInventory"));
+    }
+
+    public class InventoryRVAdapter extends RecyclerView.Adapter<InventoryActivityOnline.ViewHolder>{
         DatabaseReference mRootReference = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference mGroupsReference = mRootReference.child("Groups");
-        List<FirebaseHandler.Group> groupData = new ArrayList<FirebaseHandler.Group>();
+        DatabaseReference groupsRef = mRootReference.child("Groups");
+        DatabaseReference groupRef = groupsRef.child(mCurrentGroupID);
+        DatabaseReference mInventoriesReference = groupRef.child("Inventories");
+        List<FirebaseHandler.Inventory> inventoryData = new ArrayList<FirebaseHandler.Inventory>();
         Context mContext;
-        Drawable delete_draw;
-        Drawable exit_draw;
         RecyclerView rv;
 
-        public GroupRVAdapter(Context context){
+        public InventoryRVAdapter(Context context){
             mContext = context;
-            rv = (RecyclerView) ((AppCompatActivity)context).findViewById(R.id.recyclerview_group);
-            delete_draw = AppCompatResources.getDrawable(context, R.drawable.ic_delete_default);
-            exit_draw = AppCompatResources.getDrawable(context, R.drawable.ic_exit_default);
-            mGroupsReference.addChildEventListener(new ChildEventListener() {
+            rv = (RecyclerView) ((AppCompatActivity)context).findViewById(R.id.recyclerview_inventory);
+            mInventoriesReference.addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                    groupData.add(datasnapshotToGroupConverter(snapshot));
-                    rv.scrollToPosition(groupData.size()-1); //todo: take out if annoying
-                    GroupRVAdapter.this.notifyItemInserted(groupData.size()-1);
+                    inventoryData.add(datasnapshotToInventoryConverter(snapshot));
+                    rv.scrollToPosition(inventoryData.size()-1); //todo: take out if annoying
+                    InventoryRVAdapter.this.notifyItemInserted(inventoryData.size()-1);
                 }
 
                 @Override
                 public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                    String changedGroupID = snapshot.getKey().toString();
-                    int position = getPositionInRecyclerViewByID(changedGroupID);
+                    String changedInventoryID = snapshot.getKey().toString();
+                    int position = getPositionInRecyclerViewByID(changedInventoryID);
                     if(position != 1){
-                        groupData.remove(position);
-                        groupData.add(position, datasnapshotToGroupConverter(snapshot));
-                        GroupRVAdapter.this.notifyItemChanged(position);
+                        inventoryData.remove(position);
+                        inventoryData.add(position, datasnapshotToInventoryConverter(snapshot));
+                        InventoryRVAdapter.this.notifyItemChanged(position);
                     }
                 }
 
                 @Override
                 public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                    String changedGroupID = snapshot.getKey().toString();
-                    int position = getPositionInRecyclerViewByID(changedGroupID);
-                    if(position != 1){
-                        groupData.remove(position);
-                        GroupRVAdapter.this.notifyItemRemoved(position);
+                    String changedInventoryID = snapshot.getKey().toString();
+                    int position = getPositionInRecyclerViewByID(changedInventoryID);
+                    if(position != -1){
+                        inventoryData.remove(position);
+                        InventoryRVAdapter.this.notifyItemRemoved(position);
                     }
                 }
 
@@ -140,41 +138,49 @@ public class InventoryActivityOnline extends AppCompatActivity {
         @NonNull
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.tile_group, parent, false);
-            final ViewHolder viewHolder = new ViewHolder(v);
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.tile_inventory, parent, false);
+            final ViewHolder viewHolder = new InventoryActivityOnline.ViewHolder(v);
             return viewHolder;
         }
 
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            holder.groupName_et.setText(groupData.get(position).getGroupName());
-            holder.groupCode_tv.setText(groupData.get(position).getGroupCode());
-            holder.delete_btn.setOnClickListener(view ->
-                    new FirebaseHandler().RemoveGroup(groupData.get(holder.getAdapterPosition()).getGroupID()));
-            holder.delete_btn.setImageDrawable(
-                    (Objects.equals(groupData.get(holder.getAdapterPosition()).getGroupOwner(), currentUser.getUid())) ? delete_draw : exit_draw
-            );
+            holder.inventoryName.setText(inventoryData.get(position).getInventoryName());
+            holder.editBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(mContext, InventoryItemActivityOnline.class);
+                    intent.putExtra("inventoryID", inventoryData.get(holder.getAdapterPosition()).getInventoryID());
+                    intent.putExtra("inventoryName", inventoryData.get(holder.getAdapterPosition()).getInventoryName());
+                    intent.putExtra("groupID", mCurrentGroupID);
+                    startActivity(intent);
+                }
+            });
+            holder.deleteBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String inventoryID = inventoryData.get(holder.getAdapterPosition()).getInventoryID();
+                    new FirebaseHandler().RemoveInventoryFromGroup(mCurrentGroupID, inventoryID);
+                }
+            });
         }
 
         @Override
         public int getItemCount() {
-            return groupData.size();
+            return inventoryData.size();
         }
 
-        private FirebaseHandler.Group datasnapshotToGroupConverter(DataSnapshot snap){
-            String groupName = Objects.requireNonNull(snap.child("groupName").getValue()).toString();
-            String groupCode = Objects.requireNonNull(snap.child("groupCode").getValue()).toString();
-            String password = Objects.requireNonNull(snap.child("groupPasswordHashed").getValue()).toString();
-            String owner = Objects.requireNonNull(snap.child("groupOwner").getValue()).toString();
-            FirebaseHandler.Group groupObj = new FirebaseHandler.Group(groupName, groupCode, password, owner);
-            groupObj.setGroupID(snap.getKey());
-            return groupObj;
+        private FirebaseHandler.Inventory datasnapshotToInventoryConverter(DataSnapshot snap){
+            String inventoryName = Objects.requireNonNull(snap.child("inventoryName").getValue()).toString();
+            FirebaseHandler.Inventory inventoryObj = new FirebaseHandler.Inventory(inventoryName);
+            inventoryObj.setInventoryID(snap.getKey());
+            return inventoryObj;
         }
 
         private int getPositionInRecyclerViewByID(String id){
             int position = -1;
-            for (int i = 0; i<groupData.size(); i++){
-                if(groupData.get(i).getGroupID().equals(id)){
+            for (int i = 0; i< inventoryData.size(); i++){
+                if(inventoryData.get(i).getInventoryID().equals(id)){
                     position = i;
                     break;
                 }
@@ -183,117 +189,28 @@ public class InventoryActivityOnline extends AppCompatActivity {
         }
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView groupName_et;
-        public TextView groupCode_tv;
-        public ImageButton delete_btn;
-        public ViewHolder(View view){
-            super(view);
-            groupName_et = (TextView) view.findViewById(R.id.edittext_groupName);
-            groupCode_tv = (TextView) view.findViewById(R.id.textview_groupCode);
-            delete_btn = (ImageButton) view.findViewById(R.id.group_delete_btn);
-        }
-    }
+    public class ViewHolder extends RecyclerView.ViewHolder{
+        TextView inventoryName;
+        CardView parentLayout;
+        ImageButton editBtn;
+        ImageButton deleteBtn;
+        ImageButton reorderBtn;
 
-    public ValueEventListener CustomTextviewValueEventListener(TextView ui){
-        return new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                ui.setText(snapshot.getValue().toString());
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        };
-    }
-
-
-    public void ShowGroupCreationDialog(View view){
-        Toast.makeText(this, "nothing to see here", Toast.LENGTH_SHORT).show();
-    }
-
-    public void CreateGroupDialog(){
-        final Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.frag_creategroup);
-        Button submitBtn = (Button) dialog.findViewById(R.id.creategroup_submit_Btn);
-        Button cancelBtn = (Button) dialog.findViewById(R.id.creategroup_cancel_Btn);
-        EditText nameEditText = (EditText)dialog.findViewById(R.id.edittext_groupName);
-        EditText passwordEditText = (EditText)dialog.findViewById(R.id.edittext_groupPassword);
-        EditText codeEditText = (EditText)dialog.findViewById(R.id.edittext_groupCode);
-
-        //Set Max length of each edit text to make sure it matches the length allotted by the database
-        nameEditText.setFilters(new InputFilter[] { new InputFilter.LengthFilter(GlobalConstants.db_max_groupname_length) });
-        passwordEditText.setFilters(new InputFilter[] { new InputFilter.LengthFilter(GlobalConstants.db_max_password_length) });
-        codeEditText.setFilters(new InputFilter[] { new InputFilter.LengthFilter(GlobalConstants.db_max_code_length) });
-
-        //when focus has been lost, check if code is valid
-        codeEditText.setOnFocusChangeListener((view, hasFocus) -> {
-            if(!hasFocus){
-                Query query = FirebaseDatabase.getInstance().getReference("Groups")
-                        .orderByChild("groupCode")
-                        .equalTo(codeEditText.getText().toString());
-                query.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        long queryResultCount = snapshot.getChildrenCount();
-                        if(queryResultCount == 0)
-                            codeEditText.getBackground().clearColorFilter();
-                        else {
-                            codeEditText.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
-                            codeEditText.setText("");
-                            codeEditText.setHint("Group Code Already Taken");
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-                
-            }
-        });
-        submitBtn.setOnClickListener(v -> {
-            String nameText = nameEditText.getText().toString();
-            String passwordText = passwordEditText.getText().toString();
-            String codeText = codeEditText.getText().toString();
-            if(nameText.equals("") || passwordText.equals("") || codeText.equals(""))
-                return;
-            Query query = FirebaseDatabase.getInstance().getReference("Groups")
-                    .orderByChild("groupCode")
-                    .equalTo(codeEditText.getText().toString());
-            query.addListenerForSingleValueEvent(new ValueEventListener() {
+        public ViewHolder(View inventoryView) {
+            super(inventoryView);
+            inventoryName = inventoryView.findViewById(R.id.inventory_title_edittext);
+            parentLayout = inventoryView.findViewById(R.id.tile_inventory);
+            editBtn = (ImageButton) inventoryView.findViewById(R.id.inv_edit_btn);
+            editBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    long queryResultCount = snapshot.getChildrenCount();
-                    if(queryResultCount == 0){
-                        new FirebaseHandler().AddGroup(
-                                new FirebaseHandler.Group(nameText, codeText, passwordText, currentUser.getUid()));
-                        dialog.dismiss();
-                    }
-                    else {
-                        codeEditText.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
-                        codeEditText.setText("");
-                        codeEditText.setHint("Group Code Already Taken");
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
+                public void onClick(View view) {
+                    //Intent intent = new Intent(view.getContext(), InventoryItemActivity.class);
+                    //intent.putExtra("inventoryName", inventoryName.getText().toString());
+                    //view.getContext().startActivity(intent);
                 }
             });
-        });
-        cancelBtn.setOnClickListener(v -> {
-            codeEditText.getBackground().clearColorFilter();
-            dialog.dismiss();
-        });
-
-        dialog.show();
+            deleteBtn = (ImageButton) inventoryView.findViewById(R.id.inv_delete_btn);
+            reorderBtn = (ImageButton) inventoryView.findViewById(R.id.inv_reorder_btn);
+        }
     }
-
-
-
 }
