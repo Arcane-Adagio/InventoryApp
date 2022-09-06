@@ -20,6 +20,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.InputFilter;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -63,6 +65,13 @@ public class OnlineGroupFragment extends Fragment {
         super.onCreate(savedInstanceState);
         cActivity = getActivity();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.online_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override

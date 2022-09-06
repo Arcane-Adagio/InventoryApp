@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
                         fragment = new OfflineFragment();
                         break;
                     case R.id.nav_online:
-                        fragment = new OnlineGroupFragment();
+                        fragment = new OnlineLoginFragment();
                         break;
                     default:
                         fragment = new SettingsFragment();
