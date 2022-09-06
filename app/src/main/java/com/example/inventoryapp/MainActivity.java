@@ -12,6 +12,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 public class MainActivity extends AppCompatActivity {
 
     BottomNavigationView navView;
+    public static int fragmentContainerID = R.id.fragment_container;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         navView = (BottomNavigationView) findViewById(R.id.bottomnav_app);
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new OfflineFragment()).commit();
+        getSupportFragmentManager().beginTransaction().replace(fragmentContainerID, new OfflineFragment()).commit();
         navView.setSelectedItemId(R.id.nav_offline);
         navView.setOnNavigationItemSelectedListener(GetListener());
     }
@@ -40,13 +41,13 @@ public class MainActivity extends AppCompatActivity {
                         fragment = new OfflineFragment();
                         break;
                     case R.id.nav_online:
-                        fragment = new OnlineFragment();
+                        fragment = new OnlineGroupFragment();
                         break;
                     default:
                         fragment = new SettingsFragment();
                         break;
                 }
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
+                getSupportFragmentManager().beginTransaction().replace(fragmentContainerID, fragment).commit();
                 return true;
             }
         };
