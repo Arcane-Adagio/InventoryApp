@@ -1,4 +1,4 @@
-package com.example.inventoryapp;
+package com.example.inventoryapp.extrareferences;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -8,6 +8,7 @@ import android.util.Log;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
+import com.example.inventoryapp.R;
 import com.example.inventoryapp.offline.User;
 
 /* This class handles all calls and queries to the User Database */

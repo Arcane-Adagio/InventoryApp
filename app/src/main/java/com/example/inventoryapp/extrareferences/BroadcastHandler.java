@@ -1,4 +1,4 @@
-package com.example.inventoryapp.extras;
+package com.example.inventoryapp.extrareferences;
 
 import static com.example.inventoryapp.GlobalActions.Alert;
 
@@ -58,4 +58,14 @@ public class BroadcastHandler {
             Toast.makeText(context, context.getString(R.string.toast_broadcastreceived), Toast.LENGTH_SHORT).show();
         }
     };
+
+    /*
+    * Broadcast receivers are normally registered in an activities onCreate and unregistered in an activity's onDestroy
+    *   example (onCreate lines):
+    *           this.registerReceiver(BroadcastHandler.GetBatteryReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+    *           registerReceiver(BroadcastHandler.SharedInventoryReceiver, new IntentFilter(GlobalActions.EXPORT_ACTION));
+    *   examaple (onDestroy lines):
+    *           unregisterReceiver(BroadcastHandler.GetBatteryReceiver);
+    *           unregisterReceiver(BroadcastHandler.SharedInventoryReceiver);
+    * */
 }

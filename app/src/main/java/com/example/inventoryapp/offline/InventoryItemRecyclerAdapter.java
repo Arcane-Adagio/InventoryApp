@@ -16,7 +16,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.inventoryapp.GlobalActions;
-import com.example.inventoryapp.InventoryItem;
+import com.example.inventoryapp.data.InventoryItem;
 import com.example.inventoryapp.R;
 
 import java.util.ArrayList;

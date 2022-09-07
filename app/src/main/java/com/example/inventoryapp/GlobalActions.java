@@ -3,7 +3,7 @@ package com.example.inventoryapp;
 import static android.content.Context.MODE_PRIVATE;
 import static android.database.sqlite.SQLiteDatabase.openOrCreateDatabase;
 
-import static com.example.inventoryapp.LocalDBActions.RemoveUserFromDatabase;
+import static com.example.inventoryapp.extrareferences.LocalDBActions.RemoveUserFromDatabase;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -28,7 +28,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.example.inventoryapp.offline.InventoryRecyclerViewerAdapter;
 import com.example.inventoryapp.offline.User;
 
 import java.net.InetAddress;
@@ -92,6 +91,8 @@ public class GlobalActions {
 
     public static void LogoutBehavior(Context context){
         /* To logout, the user and main recyclerview adapter needs to be sanitized */
+        //Obsolete
+        /*
         if(!logoutInProgress){
             User.LogoutUser();
             if (InventoryRecyclerViewerAdapter.GetHomeRecyclerViewINSTANCE() != null)
@@ -101,6 +102,7 @@ public class GlobalActions {
             Toast.makeText(context, context.getString(R.string.Toast_LogOut), Toast.LENGTH_SHORT).show();
             logoutInProgress = true;
         }
+         */
     }
 
     public static void SetupToolbar(AppCompatActivity activity, int toolbarID){

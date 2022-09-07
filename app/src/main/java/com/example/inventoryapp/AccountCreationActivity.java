@@ -7,23 +7,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
-import android.util.Pair;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.Toast;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
+import com.example.inventoryapp.extrareferences.LocalDBActions;
 
 public class AccountCreationActivity extends AppCompatActivity {
 
@@ -53,19 +44,21 @@ public class AccountCreationActivity extends AppCompatActivity {
     }
 
     public void CreateAccountBehavior(View view){
-        /* Reads input from textbox and creates user account in database */
+        /* Reads input from textbox and creates user account in database
+        * obsolete */
         EditText username = (EditText) findViewById(R.id.username_editText);
         EditText password = (EditText) findViewById(R.id.password_edittext);
         String uname = username.getText().toString();
         String pass = password.getText().toString();
-        if(LocalDBActions.AddUserToDatabase(dataAdapter, uname, pass, this))
-            GlobalActions.NavigateToActivity(this, LoginActivity.class);
+        if(LocalDBActions.AddUserToDatabase(dataAdapter, uname, pass, this));
+            //GlobalActions.NavigateToActivity(this, LoginActivity.class);
     }
 
     public static void FinishAccountCreation(){
         /* this function is called by the async task, once an account is
-        * successfullly created */
-        GlobalActions.NavigateToActivity(_this, LoginActivity.class);
+        * successfullly created
+        * obsolete */
+        //GlobalActions.NavigateToActivity(_this, LoginActivity.class);
     }
 
     private void SetupUI(){

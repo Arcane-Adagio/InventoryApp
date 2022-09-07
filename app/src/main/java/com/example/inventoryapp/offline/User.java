@@ -5,7 +5,7 @@ package com.example.inventoryapp.offline;
 import android.util.Log;
 
 import com.example.inventoryapp.GlobalConstants;
-import com.example.inventoryapp.InventoryItem;
+import com.example.inventoryapp.data.InventoryItem;
 
 import org.json.JSONArray;
 import org.json.JSONException;

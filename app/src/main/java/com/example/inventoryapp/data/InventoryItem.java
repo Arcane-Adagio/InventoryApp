@@ -1,4 +1,4 @@
-package com.example.inventoryapp;
+package com.example.inventoryapp.data;
 
 import android.text.InputType;
 import android.view.View;
