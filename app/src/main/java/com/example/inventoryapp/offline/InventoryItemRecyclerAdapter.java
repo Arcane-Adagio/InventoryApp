@@ -1,13 +1,10 @@
-package com.example.inventoryapp;
+package com.example.inventoryapp.offline;
 
 import android.app.Activity;
-import android.content.ClipData;
 import android.content.Context;
 import android.text.InputType;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -17,6 +14,10 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.inventoryapp.GlobalActions;
+import com.example.inventoryapp.InventoryItem;
+import com.example.inventoryapp.R;
 
 import java.util.ArrayList;
 import java.util.List;

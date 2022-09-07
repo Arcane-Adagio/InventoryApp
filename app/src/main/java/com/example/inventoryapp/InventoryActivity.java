@@ -1,37 +1,19 @@
 package com.example.inventoryapp;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.Activity;
-import android.app.Dialog;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.InputFilter;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.Toast;
 
+import com.example.inventoryapp.extras.BroadcastHandler;
+import com.example.inventoryapp.offline.InventoryRecyclerViewerAdapter;
+import com.example.inventoryapp.offline.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 
 public class InventoryActivity extends AppCompatActivity {
 

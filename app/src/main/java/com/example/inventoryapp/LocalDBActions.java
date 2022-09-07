@@ -1,6 +1,5 @@
 package com.example.inventoryapp;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
@@ -8,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
+
+import com.example.inventoryapp.offline.User;
 
 /* This class handles all calls and queries to the User Database */
 
@@ -97,7 +98,7 @@ public class LocalDBActions {
     }
 
     public static void SaveInventoryJSON(Context context){
-        getUserDatabase(context).execSQL("UPDATE '"+ACCOUNTDB_TABLE_NAME+"' SET InventoryJSON = '"+User.getInventoryJSON()+"' WHERE Username = '"+User.getUsername()+"';");
+        getUserDatabase(context).execSQL("UPDATE '"+ACCOUNTDB_TABLE_NAME+"' SET InventoryJSON = '"+ User.getInventoryJSON()+"' WHERE Username = '"+User.getUsername()+"';");
     }
 
     public static void RemoveStringFromDatabaseTable(SQLiteDatabase database, String tableName, String columnName, SimpleCursorAdapter adapter, String string, Context context){

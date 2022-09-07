@@ -1,9 +1,11 @@
-package com.example.inventoryapp;
+package com.example.inventoryapp.offline;
 
 /* This class Follows the Singleton pattern to represent the logged in user */
 
 import android.util.Log;
-import android.widget.Toast;
+
+import com.example.inventoryapp.GlobalConstants;
+import com.example.inventoryapp.InventoryItem;
 
 import org.json.JSONArray;
 import org.json.JSONException;

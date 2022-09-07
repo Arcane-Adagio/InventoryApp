@@ -3,13 +3,17 @@ package com.example.inventoryapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.NavigationUI;
 
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.example.inventoryapp.offline.OfflineInventoryFragment;
+import com.google.android.material.bottomnavigation.BottomNavigationItemView;
+import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import java.util.prefs.Preferences;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,36 +30,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        GlobalActions.LoadUserInventory(this);
+        //GlobalActions.LoadUserInventory(this);
         navView = (BottomNavigationView) findViewById(R.id.bottomnav_app);
-        getSupportFragmentManager().beginTransaction().replace(fragmentContainerID, new OfflineInventoryFragment()).commit();
-        navView.setSelectedItemId(R.id.nav_offline);
-        navView.setOnNavigationItemSelectedListener(GetListener());
-    }
-
-
-    private BottomNavigationView.OnNavigationItemSelectedListener GetListener(){
-        return new BottomNavigationView.OnNavigationItemSelectedListener(){
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Fragment fragment = null;
-                switch (item.getItemId()){
-                    case R.id.nav_offline:
-                        getSupportActionBar().setTitle("Local Inventory");
-                        fragment = new OfflineInventoryFragment();
-                        break;
-                    case R.id.nav_online:
-                        getSupportActionBar().setTitle("Groups");
-                        fragment = new OnlineLoginFragment();
-                        break;
-                    default:
-                        getSupportActionBar().setTitle("Settings");
-                        fragment = new SettingsFragment();
-                        break;
-                }
-                getSupportFragmentManager().beginTransaction().replace(fragmentContainerID, fragment).commit();
-                return true;
-            }
-        };
+        NavController navController = Navigation.findNavController(this, R.id.fragment_container);
+        NavigationUI.setupWithNavController(navView, navController);
     }
 }

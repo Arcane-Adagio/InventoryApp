@@ -1,4 +1,4 @@
-package com.example.inventoryapp;
+package com.example.inventoryapp.extras;
 
 import android.app.job.JobInfo;
 import android.app.job.JobParameters;

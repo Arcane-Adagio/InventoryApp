@@ -17,6 +17,10 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
+import com.example.inventoryapp.extras.BroadcastHandler;
+import com.example.inventoryapp.offline.InventoryItemRecyclerAdapter;
+import com.example.inventoryapp.offline.InventoryRecyclerViewerAdapter;
+import com.example.inventoryapp.offline.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Objects;

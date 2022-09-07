@@ -1,13 +1,13 @@
-package com.example.inventoryapp;
+package com.example.inventoryapp.extras;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.widget.Toast;
+
+import com.example.inventoryapp.R;
 
 import java.util.Calendar;
 

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/app_nav"
+    app:startDestination="@id/offlineInventoryFragment">
+
+    <fragment
+        android:id="@+id/offlineInventoryFragment"
+        android:name="com.example.inventoryapp.offline.OfflineInventoryFragment"
+        android:label="frag_offline_inventory"
+        tools:layout="@layout/frag_offline_inventory" >
+        <action
+            android:id="@+id/action_offlineInventoryFragment_to_offlineItemFragment"
+            app:destination="@id/offlineItemFragment"
+            app:enterAnim="@android:anim/fade_in" />
+    </fragment>
+    <fragment
+        android:id="@+id/offlineItemFragment"
+        android:name="com.example.inventoryapp.offline.OfflineItemFragment"
+        android:label="frag_offline_item"
+        tools:layout="@layout/frag_offline_item" >
+        <argument
+            android:name="inventoryName"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/onlineLoginFragment"
+        android:name="com.example.inventoryapp.online.OnlineLoginFragment"
+        android:label="frag_online_login"
+        tools:layout="@layout/frag_online_login" >
+        <action
+            android:id="@+id/action_onlineLoginFragment_to_onlineGroupFragment"
+            app:destination="@id/onlineGroupFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/onlineGroupFragment"
+        android:name="com.example.inventoryapp.online.OnlineGroupFragment"
+        android:label="frag_online_group"
+        tools:layout="@layout/frag_online_group" >
+        <action
+            android:id="@+id/action_onlineGroupFragment_to_onlineInventoryFragment"
+            app:destination="@id/onlineInventoryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/onlineInventoryFragment"
+        android:name="com.example.inventoryapp.online.OnlineInventoryFragment"
+        android:label="frag_online_inventory"
+        tools:layout="@layout/frag_online_inventory" >
+        <action
+            android:id="@+id/action_onlineInventoryFragment_to_onlineItemFragment"
+            app:destination="@id/onlineItemFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/onlineItemFragment"
+        android:name="com.example.inventoryapp.online.OnlineItemFragment"
+        android:label="frag_online_item"
+        tools:layout="@layout/frag_online_item" />
+    <fragment
+        android:id="@+id/settingsFragment2"
+        android:name="com.example.inventoryapp.SettingsFragment"
+        android:label="frag_settings"
+        tools:layout="@layout/frag_settings" />
+</navigation>

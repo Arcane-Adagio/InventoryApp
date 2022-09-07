@@ -1,4 +1,4 @@
-package com.example.inventoryapp;
+package com.example.inventoryapp.online;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;

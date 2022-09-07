@@ -1,4 +1,4 @@
-package com.example.inventoryapp;
+package com.example.inventoryapp.offline;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -20,6 +20,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
+import com.example.inventoryapp.GlobalActions;
+import com.example.inventoryapp.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Objects;
@@ -58,12 +60,7 @@ public class OfflineItemFragment extends Fragment {
         }
         SetupItemRecyclerView();
         rv_fab = (FloatingActionButton) getView().findViewById(R.id.inventoryitem_fab);
-        rv_fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                InventoryItemRecyclerAdapter.GetItemRecyclerViewINSTANCE().AddItemToInventory();
-            }
-        });
+        rv_fab.setOnClickListener(view -> InventoryItemRecyclerAdapter.GetItemRecyclerViewINSTANCE().AddItemToInventory());
         SetupNameChangeDialog();
     }
 
@@ -131,7 +128,6 @@ public class OfflineItemFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        /* Handles behavior for when a menu option is selected */
         /* Handles behavior for when an appbar menu item is selected */
         if(MenuOptionsSelected(item))
             return true;

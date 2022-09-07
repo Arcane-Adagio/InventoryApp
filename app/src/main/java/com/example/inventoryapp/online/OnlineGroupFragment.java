@@ -1,4 +1,4 @@
-package com.example.inventoryapp;
+package com.example.inventoryapp.online;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -15,6 +15,8 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,6 +33,11 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.inventoryapp.GlobalActions;
+import com.example.inventoryapp.GlobalConstants;
+import com.example.inventoryapp.MainActivity;
+import com.example.inventoryapp.R;
+import com.example.inventoryapp.offline.OfflineInventoryFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -306,7 +313,7 @@ public class OnlineGroupFragment extends Fragment {
         rv.setAdapter(group_rva);
     }
 
-    private void NavigateToInventoryFragment(String groupID, String groupName){
+    private void NavigateToInventoryFragmentOLD(String groupID, String groupName){
         Bundle bundle = new Bundle();
         bundle.putString("groupID", groupID);
         bundle.putString("groupName", groupName);
@@ -317,5 +324,13 @@ public class OnlineGroupFragment extends Fragment {
         fragmentTransaction.replace(MainActivity.fragmentContainerID, frag);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
+    }
+
+    private void NavigateToInventoryFragment(String groupID, String groupName){
+        Bundle bundle = new Bundle();
+        bundle.putString("groupID", groupID);
+        bundle.putString("groupName", groupName);
+        NavController navController = NavHostFragment.findNavController(this);
+        navController.navigate(R.id.action_onlineGroupFragment_to_onlineInventoryFragment, bundle);
     }
 }

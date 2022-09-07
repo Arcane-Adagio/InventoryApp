@@ -1,4 +1,4 @@
-package com.example.inventoryapp;
+package com.example.inventoryapp.extras;
 
 import static com.example.inventoryapp.GlobalActions.Alert;
 
@@ -7,6 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.BatteryManager;
 import android.widget.Toast;
+
+import com.example.inventoryapp.GlobalActions;
+import com.example.inventoryapp.R;
 
 import java.util.Objects;
 

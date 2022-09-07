@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/nav_offline"
+        android:id="@+id/offlineInventoryFragment"
         android:title="Offline"
         android:icon="@drawable/ic_offlinehome_default1"
         />
     <item
-        android:id="@+id/nav_online"
+        android:id="@+id/onlineLoginFragment"
         android:title="Online"
         android:icon="@drawable/ic_onlinehome_default"
         />
     <item
-        android:id="@+id/settings"
+        android:id="@+id/settingsFragment2"
         android:title="Settings"
         android:icon="@drawable/ic_settings_default"
         />

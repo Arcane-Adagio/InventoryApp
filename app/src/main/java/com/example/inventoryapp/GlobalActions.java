@@ -4,7 +4,6 @@ import static android.content.Context.MODE_PRIVATE;
 import static android.database.sqlite.SQLiteDatabase.openOrCreateDatabase;
 
 import static com.example.inventoryapp.LocalDBActions.RemoveUserFromDatabase;
-import static com.example.inventoryapp.LocalDBActions.SaveInventoryJSON;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -29,12 +28,11 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.example.inventoryapp.offline.InventoryRecyclerViewerAdapter;
+import com.example.inventoryapp.offline.User;
 
 import java.net.InetAddress;
 import java.util.concurrent.Callable;
-import java.util.prefs.Preferences;
 
 public class GlobalActions {
     public static final String KEY_SHAREDINVENTORY = "SharedInventory";

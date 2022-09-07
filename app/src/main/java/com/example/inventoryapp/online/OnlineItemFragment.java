@@ -1,4 +1,4 @@
-package com.example.inventoryapp;
+package com.example.inventoryapp.online;
 
 import android.app.Activity;
 import android.content.Context;
@@ -24,6 +24,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.inventoryapp.GlobalActions;
+import com.example.inventoryapp.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;

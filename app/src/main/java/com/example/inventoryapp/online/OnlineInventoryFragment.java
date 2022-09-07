@@ -1,8 +1,7 @@
-package com.example.inventoryapp;
+package com.example.inventoryapp.online;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,6 +11,8 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,6 +26,9 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.inventoryapp.GlobalActions;
+import com.example.inventoryapp.MainActivity;
+import com.example.inventoryapp.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -102,7 +106,7 @@ public class OnlineInventoryFragment extends Fragment {
         SetupRecyclerView();
     }
 
-    private void NavigateToItemFragment(String groupID, String inventoryID, String inventoryName){
+    private void NavigateToItemFragmentOLD(String groupID, String inventoryID, String inventoryName){
         Bundle bundle = new Bundle();
         bundle.putString("groupID", groupID);
         bundle.putString("inventoryID", inventoryID);
@@ -114,6 +118,15 @@ public class OnlineInventoryFragment extends Fragment {
         fragmentTransaction.replace(MainActivity.fragmentContainerID, frag);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
+    }
+
+    private void NavigateToItemFragment(String groupID, String inventoryID, String inventoryName){
+        Bundle bundle = new Bundle();
+        bundle.putString("groupID", groupID);
+        bundle.putString("inventoryID", inventoryID);
+        bundle.putString("inventoryName", inventoryName);
+        NavController navController = NavHostFragment.findNavController(this);
+        navController.navigate(R.id.action_onlineInventoryFragment_to_onlineItemFragment, bundle);
     }
 
     private void SetupRecyclerView(){

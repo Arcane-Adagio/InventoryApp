@@ -5,11 +5,12 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
+import com.example.inventoryapp.offline.User;
 
 import java.io.File;
 import java.io.FileOutputStream;

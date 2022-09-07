@@ -1,8 +1,7 @@
-package com.example.inventoryapp;
+package com.example.inventoryapp.offline;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,14 +12,20 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.inventoryapp.MainActivity;
+import com.example.inventoryapp.R;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class InventoryRecyclerViewerAdapter extends RecyclerView.Adapter<InventoryRecyclerViewerAdapter.ViewHolder> {
 
@@ -129,15 +134,11 @@ public class InventoryRecyclerViewerAdapter extends RecyclerView.Adapter<Invento
     }
 
     private void NavigateToItemFragment(String inventoryName){
+        Fragment callingFragment = OfflineInventoryFragment.GetFragmentReference();
         Bundle bundle = new Bundle();
+        NavController navController = NavHostFragment.findNavController(callingFragment);
         bundle.putString("inventoryName", inventoryName);
-        OfflineItemFragment frag = new OfflineItemFragment();
-        frag.setArguments(bundle);
-        FragmentManager fragmentManager =  cActivity.getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(MainActivity.fragmentContainerID, frag);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
+        navController.navigate(R.id.action_offlineInventoryFragment_to_offlineItemFragment, bundle);
     }
 
 }

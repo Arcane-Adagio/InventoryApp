@@ -44,24 +44,24 @@
             android:exported="true"
             android:screenOrientation="portrait" />
         <service
-            android:name=".JobServicer$TestJobService"
+            android:name=".extras.JobServicer$TestJobService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <receiver
-            android:name=".BroadcastHandler$AppWideReceiver"
+            android:name=".extras.BroadcastHandler$AppWideReceiver"
             android:exported="true" >
             <intent-filter>
                 <action android:name="com.example.inventoryapp.share" />
             </intent-filter>
         </receiver>
         <receiver
-            android:name=".BroadcastHandler$PowerReceived"
+            android:name=".extras.BroadcastHandler$PowerReceived"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".AlarmHandler" />
+        <receiver android:name=".extras.AlarmHandler" />
 
         <activity
             android:name=".InventoryItemActivity"
