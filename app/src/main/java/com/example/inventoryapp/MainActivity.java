@@ -7,6 +7,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -19,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
 
     BottomNavigationView navView;
     public static int fragmentContainerID = R.id.fragment_container;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,4 +37,5 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.fragment_container);
         NavigationUI.setupWithNavController(navView, navController);
     }
+
 }

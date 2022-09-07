@@ -7,7 +7,10 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.MenuHost;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,6 +24,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.example.inventoryapp.GlobalActions;
 import com.example.inventoryapp.R;
@@ -139,6 +143,37 @@ public class OfflineItemFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        MenuHost menuHost = requireActivity();
+        menuHost.addMenuProvider(new addMenuProvider(getActivity()),
+                getViewLifecycleOwner(),
+                Lifecycle.State.RESUMED);
         return inflater.inflate(R.layout.frag_offline_item, container, false);
+    }
+
+    private class addMenuProvider implements MenuProvider{
+        private Activity cActivity;
+        public addMenuProvider(Activity activity){
+            cActivity = activity;
+        }
+
+        @Override
+        public void onPrepareMenu(@NonNull Menu menu) {
+            MenuProvider.super.onPrepareMenu(menu);
+        }
+
+        @Override
+        public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+            menuInflater.inflate(R.menu.home_appbar_menu, menu);
+        }
+
+        @Override
+        public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+            return GlobalActions.DefaultMenuOptionSelection(menuItem, cActivity, getParentFragment());
+        }
+
+        @Override
+        public void onMenuClosed(@NonNull Menu menu) {
+            MenuProvider.super.onMenuClosed(menu);
+        }
     }
 }
