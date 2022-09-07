@@ -86,7 +86,7 @@ public class OnlineGroupFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         /* Handles behavior for when a menu option is selected */
-        if (GlobalActions.DefaultMenuOptionSelection(item,cActivity, getActivity().getSupportFragmentManager()))
+        if (GlobalActions.DefaultMenuOptionSelection(item,cActivity, this))
             return true;
         return super.onOptionsItemSelected(item);
     }

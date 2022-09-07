@@ -76,7 +76,7 @@ public class OnlineLoginFragment extends Fragment {
         login_btn.setOnClickListener(view -> Login(null));
         createAccount_tbtn = (TextView) getView().findViewById(R.id.textbtn_createAccount);
         createAccount_tbtn.setOnClickListener(view -> NavigateToAccountCreationFragment());
-        if(mCurrentUser != null);
+        if(mCurrentUser != null)
             AutoLogin();
     }
 

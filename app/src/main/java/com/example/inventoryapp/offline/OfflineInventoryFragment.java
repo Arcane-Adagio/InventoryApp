@@ -22,8 +22,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 
 public class OfflineInventoryFragment extends Fragment {
-    static Activity cActivity;
-    private final String TAG = "Inventory Fragment";
+    Activity cActivity;
+    private final String TAG = "Local Inventory Fragment";
     FloatingActionButton fab;
     static RecyclerView recyclerView;
     private static Fragment mThis;
@@ -38,7 +38,7 @@ public class OfflineInventoryFragment extends Fragment {
         super.onCreate(savedInstanceState);
         cActivity = getActivity();
         mThis = this;
-        GlobalActions.LoadUserInventory(getActivity());
+        OfflineInventoryManager.LoadUserInventory(getActivity());
         setHasOptionsMenu(true);
     }
 
@@ -46,6 +46,7 @@ public class OfflineInventoryFragment extends Fragment {
         return mThis;
     }
 
+    
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.home_appbar_menu, menu);
@@ -55,7 +56,7 @@ public class OfflineInventoryFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         /* Handles behavior for when a menu option is selected */
-        if (GlobalActions.DefaultMenuOptionSelection(item,cActivity, getActivity().getSupportFragmentManager()))
+        if (GlobalActions.DefaultMenuOptionSelection(item,cActivity, mThis))
             return true;
         return super.onOptionsItemSelected(item);
     }
@@ -68,9 +69,8 @@ public class OfflineInventoryFragment extends Fragment {
     }
 
     private void SetupInventoryRecyclerView(){
-        recyclerView = getView().findViewById(R.id.inventorylist_view);
-        //RecyclerView recyclerView = requireView().findViewById(R.id.inventorylist_view);
-        InventoryRVAdapter adapter = InventoryRVAdapter.ConstructHomeRecyclerViewIfNotCreated( User.GetInventoryNames(), cActivity);
+        recyclerView = requireView().findViewById(R.id.inventorylist_view);
+        InventoryRVAdapter adapter = InventoryRVAdapter.ConstructHomeRecyclerViewIfNotCreated( OfflineInventoryManager.GetInventoryNames(), cActivity);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(cActivity));
     }
@@ -79,8 +79,18 @@ public class OfflineInventoryFragment extends Fragment {
     public void onStart() {
         Log.d(TAG, "onStart");
         SetupInventoryRecyclerView();
-        fab = (FloatingActionButton) getView().findViewById(R.id.inventory_fab); //TODO replace with requireview
-        fab.setOnClickListener(view -> InventoryRVAdapter.GetHomeRecyclerViewINSTANCE().AddInventory());
+        InventoryRVAdapter adapter = InventoryRVAdapter.GetHomeRecyclerViewINSTANCE();
+        fab = (FloatingActionButton) requireView().findViewById(R.id.inventory_fab);
+        if(adapter == null)
+            Log.d(TAG, "onStart: unable to get adapter reference");
+        else
+            fab.setOnClickListener(view -> OfflineInventoryManager.AddInventoryAndNotifyAdapter(adapter));
         super.onStart();
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.d(TAG, "onDestroy");
+        super.onDestroy();
     }
 }

@@ -9,12 +9,4 @@
         android:id="@+id/menu_inv_file_save"
         android:title="@string/btn_savetofile"
         app:showAsAction="never" />
-    <item
-        android:id="@+id/menu_logout"
-        android:title="@string/btn_logout"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/menu_delete_account"
-        android:title="@string/btn_deleteaccount"
-        app:showAsAction="never" />
 </menu>

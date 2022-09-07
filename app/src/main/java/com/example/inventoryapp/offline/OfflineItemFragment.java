@@ -1,5 +1,7 @@
 package com.example.inventoryapp.offline;
 
+import static com.example.inventoryapp.GlobalConstants.FRAGMENT_ARG_INVENTORY_NAME;
+
 import android.app.Activity;
 import android.os.Bundle;
 
@@ -35,8 +37,7 @@ public class OfflineItemFragment extends Fragment {
     ImageButton mConfirmNameButton;
     ImageButton mCancelNameButton;
     LinearLayout mNameChangeLayout;
-    public static final String KEY_INVENTORYNAME = "inventoryName";
-    private static int rvID = R.id.inventoryitemlist_view;
+    private static final int rvID = R.id.inventoryitemlist_view;
     Activity cActivity;
 
     public OfflineItemFragment() {
@@ -55,48 +56,45 @@ public class OfflineItemFragment extends Fragment {
     public void onStart() {
         super.onStart();
         if (getArguments() != null) {
-            mCurrentInventory = this.getArguments().getString(KEY_INVENTORYNAME);
+            mCurrentInventory = this.getArguments().getString(FRAGMENT_ARG_INVENTORY_NAME);
             Objects.requireNonNull(((AppCompatActivity)getActivity()).getSupportActionBar()).setTitle(mCurrentInventory);
         }
         SetupItemRecyclerView();
-        rv_fab = (FloatingActionButton) getView().findViewById(R.id.inventoryitem_fab);
+        rv_fab = (FloatingActionButton) requireView().findViewById(R.id.inventoryitem_fab);
         rv_fab.setOnClickListener(view -> ItemRVAdapter.GetItemRecyclerViewINSTANCE().AddItemToInventory());
         SetupNameChangeDialog();
     }
 
     private void RenameInventory(String newName){
         /* The background data must also be updated */
-        int position = User.GetPositionOfInventory(mCurrentInventory);
-        User.RenameInventory(mCurrentInventory, newName);
+        int position = OfflineInventoryManager.GetPositionOfInventory(mCurrentInventory);
+        OfflineInventoryManager.RenameInventory(mCurrentInventory, newName);
         mCurrentInventory = newName;
-        ItemRVAdapter.GetItemRecyclerViewINSTANCE().UpdateCurrentInventoryName(mCurrentInventory);
-        //InventoryRecyclerViewerAdapter.GetHomeRecyclerViewINSTANCE().notifyItemChanged(position);
-        //OfflineInventoryFragment.recyclerView.getAdapter().notifyItemChanged(position);
-        InventoryRVAdapter.GetHomeRecyclerViewINSTANCE().RenameInventory(position, newName);
-
-        Objects.requireNonNull(((AppCompatActivity)getActivity()).getSupportActionBar()).setTitle(newName);
+        ItemRVAdapter.UpdateCurrentInventoryName(mCurrentInventory);
+        Objects.requireNonNull(InventoryRVAdapter.GetHomeRecyclerViewINSTANCE()).RenameInventory(position, newName);
+        Objects.requireNonNull(((AppCompatActivity) requireActivity()).getSupportActionBar()).setTitle(newName);
     }
 
     private void SetupItemRecyclerView(){
-        RecyclerView recyclerView = getView().findViewById(rvID);
+        RecyclerView recyclerView = requireView().findViewById(rvID);
         ItemRVAdapter adapter =  ItemRVAdapter.ConstructItemRecyclerView(
-                mCurrentInventory, User.GetInventoryItems(mCurrentInventory), cActivity, rvID);
+                mCurrentInventory, OfflineInventoryManager.GetInventoryItems(mCurrentInventory), cActivity, rvID);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(cActivity));
     }
 
     private void SetupNameChangeDialog(){
-        mCancelNameButton = (ImageButton) getView().findViewById(R.id.inv_btn_namechange_cancel);
+        mCancelNameButton = (ImageButton) requireView().findViewById(R.id.inv_btn_namechange_cancel);
         mCancelNameButton.setOnClickListener(view -> {
             mNameChangeEditText.setText("");
             mNameChangeLayout.setVisibility(View.GONE);
         });
-        mConfirmNameButton = (ImageButton) getView().findViewById(R.id.inv_btn_namechange_confirm);
+        mConfirmNameButton = (ImageButton) requireView().findViewById(R.id.inv_btn_namechange_confirm);
         mConfirmNameButton.setOnClickListener(view -> {
             RenameInventory(mNameChangeEditText.getText().toString());
             mNameChangeLayout.setVisibility(View.GONE);
         });
-        mNameChangeEditText = (EditText) getView().findViewById(R.id.newInventoryNameEditText);
+        mNameChangeEditText = (EditText) requireView().findViewById(R.id.newInventoryNameEditText);
         mNameChangeEditText.setOnKeyListener((v, keyCode, event) -> {
             if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
                     (keyCode == KeyEvent.KEYCODE_ENTER)) {
@@ -106,7 +104,7 @@ public class OfflineItemFragment extends Fragment {
             }
             return false;
         });
-        mNameChangeLayout = (LinearLayout) getView().findViewById(R.id.namechange_view);
+        mNameChangeLayout = (LinearLayout) requireView().findViewById(R.id.namechange_view);
     }
 
     @Override
@@ -131,7 +129,7 @@ public class OfflineItemFragment extends Fragment {
         /* Handles behavior for when an appbar menu item is selected */
         if(MenuOptionsSelected(item))
             return true;
-        else if (GlobalActions.DefaultMenuOptionSelection(item,cActivity, getActivity().getSupportFragmentManager()))
+        else if (GlobalActions.DefaultMenuOptionSelection(item,cActivity, this))
             return true;
         else
             return super.onOptionsItemSelected(item);

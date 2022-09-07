@@ -1,15 +1,24 @@
 package com.example.inventoryapp.extrareferences;
 
 import android.app.AlarmManager;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Toast;
+
+import androidx.fragment.app.DialogFragment;
 
 import com.example.inventoryapp.R;
 
 import java.util.Calendar;
+import java.util.concurrent.Callable;
 
 public class AlarmHandler extends BroadcastReceiver {
     @Override
@@ -54,5 +63,38 @@ public class AlarmHandler extends BroadcastReceiver {
         PendingIntent sender = PendingIntent.getBroadcast(context, 0, intent, 0);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(sender);
+    }
+
+    public static class MyAlertDialogFragmentWithCustomLayout extends DialogFragment {
+        static Callable<Void> positiveCallback;
+
+        public static MyAlertDialogFragmentWithCustomLayout newInstance(int layout, Callable<Void> positiveFunc){
+            MyAlertDialogFragmentWithCustomLayout frag = new MyAlertDialogFragmentWithCustomLayout();
+            positiveCallback = positiveFunc;
+            Bundle args = new Bundle();
+            args.putInt("layout", layout);
+            frag.setArguments(args);
+            return frag;
+        }
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState){
+            int layout = getArguments().getInt("layout");
+            final int list = getArguments().getInt("list");
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            LayoutInflater layoutInflater = getLayoutInflater();
+            View view = layoutInflater.inflate(layout, null);
+            return builder.setView(view)
+                    .setPositiveButton("Create", (dialogInterface, i) -> {
+                        try {
+                            positiveCallback.call();
+                        } catch (Exception e) {
+                            Log.d("error", "onCreateDialog: "+e.toString());
+                            e.printStackTrace();
+                        }
+                    }).setNegativeButton("cancel", (dialogInterface, i) -> {
+                        //do nothing
+                    }).create();
+        }
     }
 }

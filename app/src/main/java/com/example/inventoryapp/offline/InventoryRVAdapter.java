@@ -1,7 +1,8 @@
 package com.example.inventoryapp.offline;
 
+import static com.example.inventoryapp.GlobalConstants.FRAGMENT_ARG_INVENTORY_NAME;
+
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,13 +32,13 @@ public class InventoryRVAdapter extends RecyclerView.Adapter<InventoryRVAdapter.
     private static RecyclerView mRecyclerView;
     private static FragmentActivity cActivity;
 
-    private InventoryRVAdapter(List<String> imageNames, Context context){
+    private InventoryRVAdapter(List<String> imageNames){
         mInventoryNames = imageNames;
     }
 
     public static InventoryRVAdapter ConstructHomeRecyclerViewIfNotCreated(List<String> invNames, Activity context){
         if (INSTANCE == null){
-            INSTANCE = new InventoryRVAdapter(invNames, context);
+            INSTANCE = new InventoryRVAdapter(invNames);
             cActivity = (FragmentActivity) context;
             mInventoryNames = invNames;
         }
@@ -51,17 +52,14 @@ public class InventoryRVAdapter extends RecyclerView.Adapter<InventoryRVAdapter.
             return INSTANCE;
     }
 
-    public void AddInventory(){
-        String newInventoryName = User.AddInventory();
-        //mInventoryNames.add(newInventoryName);
+    public void NotifyElementAdded(){
         notifyItemInserted(getItemCount());
         mRecyclerView.scrollToPosition(getItemCount()-1);
         Log.d(TAG, "AddInventory: "+String.valueOf(mInventoryNames));
     }
 
     public void DeleteInventory(String inventoryName, int position){
-        User.RemoveInventory(inventoryName);
-        //mInventoryNames.remove(position);
+        OfflineInventoryManager.RemoveInventory(inventoryName);
         notifyItemRemoved(position);
     }
 
@@ -80,15 +78,9 @@ public class InventoryRVAdapter extends RecyclerView.Adapter<InventoryRVAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-
         holder.inventoryName.setText(mInventoryNames.get(position));
-        holder.parentLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d("Debug", "onBind: "+String.valueOf(mInventoryNames.get(holder.getAdapterPosition())));
-
-            }
-        });
+        holder.parentLayout.setOnClickListener(view ->
+                Log.d("Debug", "onBind: "+String.valueOf(mInventoryNames.get(holder.getAdapterPosition()))));
     }
 
     @Override
@@ -133,7 +125,7 @@ public class InventoryRVAdapter extends RecyclerView.Adapter<InventoryRVAdapter.
         Fragment callingFragment = OfflineInventoryFragment.GetFragmentReference();
         Bundle bundle = new Bundle();
         NavController navController = NavHostFragment.findNavController(callingFragment);
-        bundle.putString("inventoryName", inventoryName);
+        bundle.putString(FRAGMENT_ARG_INVENTORY_NAME, inventoryName);
         navController.navigate(R.id.action_offlineInventoryFragment_to_offlineItemFragment, bundle);
     }
 

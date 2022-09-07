@@ -1,8 +1,5 @@
 package com.example.inventoryapp.online;
 
-import android.app.Activity;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -14,10 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.SimpleCursorAdapter;
 
 import com.example.inventoryapp.R;
-import com.example.inventoryapp.extrareferences.LocalDBActions;
 
 
 public class AccountCreationFragment extends Fragment {

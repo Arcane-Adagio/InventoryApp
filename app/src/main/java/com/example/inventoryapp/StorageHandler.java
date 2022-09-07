@@ -10,7 +10,7 @@ import android.widget.Toast;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.example.inventoryapp.offline.User;
+import com.example.inventoryapp.offline.OfflineInventoryManager;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -29,7 +29,7 @@ public class StorageHandler {
     }
 
     public void WriteToFile(){
-        String inventoryText = User.getInventoryJSON();
+        String inventoryText = OfflineInventoryManager.getInventoryJSON();
         //Seeks permission and checks hardware write-ability before
         //performing file writing
         if(checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)){

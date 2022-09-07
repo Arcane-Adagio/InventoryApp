@@ -1,8 +1,14 @@
 package com.example.inventoryapp.online;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 
+import com.example.inventoryapp.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -14,6 +20,7 @@ import com.google.firebase.database.Transaction;
 import java.util.List;
 
 public class FirebaseHandler {
+    private static final String TAG = "Firebase Handler";
     private DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
     public static final String FIREBASE_KEY_GROUPS = "Groups";
     public static final String FIREBASE_KEY_INVENTORIES = "Inventories";
@@ -242,6 +249,18 @@ public class FirebaseHandler {
 
             }
         };
+    }
+
+    public static void LogoutBehavior(Fragment callingFragment){
+        /* To logout, the user and main recyclerview adapter needs to be sanitized */
+        FirebaseAuth.getInstance().signOut();
+        NavController navController = NavHostFragment.findNavController(callingFragment);
+        try{
+            navController.navigate(R.id.action_onlineFragment_to_onlineLoginFragment);
+        }
+        catch (Exception e){
+            Log.d(TAG, "LogoutBehaviorException: "+e.toString());
+        }
     }
 
 }

@@ -3,11 +3,10 @@ package com.example.inventoryapp;
 import static android.content.Context.MODE_PRIVATE;
 import static android.database.sqlite.SQLiteDatabase.openOrCreateDatabase;
 
-import static com.example.inventoryapp.extrareferences.LocalDBActions.RemoveUserFromDatabase;
+import static com.example.inventoryapp.GlobalConstants.FRAGMENT_ARG_INVENTORY_NAME;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,56 +15,40 @@ import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 
-import com.example.inventoryapp.offline.User;
+import com.example.inventoryapp.offline.OfflineInventoryFragment;
+import com.example.inventoryapp.offline.OfflineInventoryManager;
+import com.example.inventoryapp.online.FirebaseHandler;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.net.InetAddress;
-import java.util.concurrent.Callable;
 
 public class GlobalActions {
     public static final String KEY_SHAREDINVENTORY = "SharedInventory";
-    public static final String EXPORT_ACTION = "com.example.inventoryapp.share";
-    public static final String SHARED_PREF_FILENAME = "com.example.inventoryapp.LOCALINVENTORY";
-    public static boolean logoutInProgress = false;
-    public static boolean online = true;
 
-
-    public static boolean DefaultMenuOptionSelection(@NonNull MenuItem item, Context context, FragmentManager fM) {
+    public static boolean DefaultMenuOptionSelection(@NonNull MenuItem item, Context context, Fragment callingFragment) {
         // This function is called when an icon is selected in the Actionbar
         switch (item.getItemId()){
-            case R.id.menu_logout:
-                Toast.makeText(context, "logout not implemented", Toast.LENGTH_SHORT).show();
-                return true;
-            case R.id.menu_delete_account:
-                if(User.getUsername() != null)
-                    RemoveUserFromDatabase(User.getUsername(), context);
-                    //LogoutBehavior(context);
-                else
-                    Toast.makeText(context, context.getString(R.string.Toast_No), Toast.LENGTH_LONG).show();
-                return true;
             case R.id.online_logout:
-                //FirebaseHandler.mCurrentUser.signOut();
-                //FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                FirebaseHandler.LogoutBehavior(callingFragment);
                 return true;
             case R.id.online_deleteaccount:
                 Toast.makeText(context, "online account deletion not implemented", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.menu_user_save:
-                SaveUserInventory(context);
-
-
-                Toast.makeText(context, User.getInventoryJSON(), Toast.LENGTH_SHORT).show();
+                OfflineInventoryManager.SaveUserInventory(context);
                 return true;
             case R.id.menu_inv_file_save:
                 new StorageHandler((Activity) context).WriteToFile();
@@ -76,34 +59,6 @@ public class GlobalActions {
         }
     }
 
-    public static void SaveUserInventory(Context context){
-        SharedPreferences pref = ((Activity)context).getSharedPreferences(SHARED_PREF_FILENAME, MODE_PRIVATE);
-        SharedPreferences.Editor editor = pref.edit();
-        editor.putString("InventoryJSON", User.getInventoryJSON());
-        editor.commit();
-    }
-
-    public static void LoadUserInventory(Context context){
-        SharedPreferences pref = ((Activity)context).getSharedPreferences(SHARED_PREF_FILENAME, MODE_PRIVATE);
-        String savedString = pref.getString("InventoryJSON","");
-        User.ConvertStringToInventory(savedString);
-    }
-
-    public static void LogoutBehavior(Context context){
-        /* To logout, the user and main recyclerview adapter needs to be sanitized */
-        //Obsolete
-        /*
-        if(!logoutInProgress){
-            User.LogoutUser();
-            if (InventoryRecyclerViewerAdapter.GetHomeRecyclerViewINSTANCE() != null)
-                InventoryRecyclerViewerAdapter.GetHomeRecyclerViewINSTANCE().notifyDataSetChanged();
-            InventoryRecyclerViewerAdapter.ResetRecyclerView();
-            NavigateToActivity(context, LoginActivity.class);
-            Toast.makeText(context, context.getString(R.string.Toast_LogOut), Toast.LENGTH_SHORT).show();
-            logoutInProgress = true;
-        }
-         */
-    }
 
     public static void SetupToolbar(AppCompatActivity activity, int toolbarID){
         /*
@@ -117,43 +72,6 @@ public class GlobalActions {
             return;
     }
 
-    public static class MyAlertDialogFragmentWithCustomLayout extends DialogFragment {
-        static Callable<Void> positiveCallback;
-
-        public static MyAlertDialogFragmentWithCustomLayout newInstance(int layout, Callable<Void> positiveFunc){
-            MyAlertDialogFragmentWithCustomLayout frag = new MyAlertDialogFragmentWithCustomLayout();
-            positiveCallback = positiveFunc;
-            Bundle args = new Bundle();
-            args.putInt("layout", layout);
-            frag.setArguments(args);
-            return frag;
-        }
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState){
-            int layout = getArguments().getInt("layout");
-            final int list = getArguments().getInt("list");
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            LayoutInflater layoutInflater = getLayoutInflater();
-            View view = layoutInflater.inflate(layout, null);
-            return builder.setView(view)
-                    .setPositiveButton("Create", (dialogInterface, i) -> {
-                        try {
-                            positiveCallback.call();
-                        } catch (Exception e) {
-                            Log.d("error", "onCreateDialog: "+e.toString());
-                            e.printStackTrace();
-                        }
-                    }).setNegativeButton("cancel", (dialogInterface, i) -> {
-                        //do nothing
-                    }).create();
-        }
-    }
-
-    public static void NavigateToActivity(Context context, Class ActivityClass){
-        Intent intent = new Intent(context, ActivityClass);
-        context.startActivity(intent);
-    }
 
     public static void LogAllKeysinBundle(Intent intent){
         /* Debug Function */

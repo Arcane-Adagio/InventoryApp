@@ -44,6 +44,9 @@
         <action
             android:id="@+id/action_onlineGroupFragment_to_onlineInventoryFragment"
             app:destination="@id/onlineInventoryFragment" />
+        <action
+            android:id="@+id/action_onlineFragment_to_onlineLoginFragment"
+            app:destination="@id/onlineLoginFragment" />
     </fragment>
     <fragment
         android:id="@+id/onlineInventoryFragment"
@@ -53,12 +56,19 @@
         <action
             android:id="@+id/action_onlineInventoryFragment_to_onlineItemFragment"
             app:destination="@id/onlineItemFragment" />
+        <action
+            android:id="@+id/action_onlineFragment_to_onlineLoginFragment"
+            app:destination="@id/onlineLoginFragment" />
     </fragment>
     <fragment
         android:id="@+id/onlineItemFragment"
         android:name="com.example.inventoryapp.online.OnlineItemFragment"
         android:label="frag_online_item"
-        tools:layout="@layout/frag_online_item" />
+        tools:layout="@layout/frag_online_item" >
+        <action
+            android:id="@+id/action_onlineFragment_to_onlineLoginFragment"
+            app:destination="@id/onlineLoginFragment" />
+    </fragment>
     <fragment
         android:id="@+id/settingsFragment2"
         android:name="com.example.inventoryapp.SettingsFragment"

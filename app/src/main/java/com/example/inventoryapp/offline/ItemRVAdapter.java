@@ -29,22 +29,11 @@ public class ItemRVAdapter extends RecyclerView.Adapter<ItemRVAdapter.ViewHolder
     private static List<InventoryItem> mItems = new ArrayList<>();
     private static String currentInventoryName;
     static RecyclerView mRecyclerView;
+    private static final String DEFAULT_ITEM_NAME_PREFIX = "Item #";
 
-
-
-    private ItemRVAdapter(String inventoryName, List<InventoryItem> items, Context context){
+    private ItemRVAdapter(String inventoryName, List<InventoryItem> items){
         mItems = items;
         currentInventoryName = inventoryName;
-    }
-
-    public static ItemRVAdapter ConstructItemRecyclerViewIfNotCreated(String inventoryName, List<InventoryItem> items, Context context){
-        //Safe construction
-        if (INSTANCE == null){
-            INSTANCE = new ItemRVAdapter(inventoryName, items, context);
-            mItems = items;
-            currentInventoryName = inventoryName;
-        }
-        return INSTANCE;
     }
 
     public static void UpdateCurrentInventoryName(String newName){
@@ -53,15 +42,11 @@ public class ItemRVAdapter extends RecyclerView.Adapter<ItemRVAdapter.ViewHolder
 
     public static ItemRVAdapter ConstructItemRecyclerView(
             String inventoryName, List<InventoryItem> items, Context context, int recyclerViewID){
-        INSTANCE = new ItemRVAdapter(inventoryName, items, context);
+        INSTANCE = new ItemRVAdapter(inventoryName, items);
         mItems = items;
         currentInventoryName = inventoryName;
         mRecyclerView = ((Activity) context).findViewById(recyclerViewID);
         return INSTANCE;
-    }
-
-    public static void SetCurrentInventory(String inventory){
-        currentInventoryName = inventory;
     }
 
     public static ItemRVAdapter GetItemRecyclerViewINSTANCE(){
@@ -72,8 +57,8 @@ public class ItemRVAdapter extends RecyclerView.Adapter<ItemRVAdapter.ViewHolder
     }
 
     public void AddItemToInventory(){
-        InventoryItem newItem = new InventoryItem( "Item #"+String.valueOf(mItems.size()), "","");
-        User.AddInventoryItem(currentInventoryName, newItem);
+        InventoryItem newItem = new InventoryItem( DEFAULT_ITEM_NAME_PREFIX+mItems.size(), "","");
+        OfflineInventoryManager.AddInventoryItem(currentInventoryName, newItem);
         notifyItemInserted(getItemCount());
         mRecyclerView.scrollToPosition(mItems.size()-1);
     }
@@ -82,8 +67,7 @@ public class ItemRVAdapter extends RecyclerView.Adapter<ItemRVAdapter.ViewHolder
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.tile_inventory_item, parent, false);
-        ViewHolder holder = new ViewHolder(view);
-        return holder;
+        return new ViewHolder(view);
     }
 
     @Override
@@ -119,40 +103,30 @@ public class ItemRVAdapter extends RecyclerView.Adapter<ItemRVAdapter.ViewHolder
         public final ImageButton deleteBtn;
         public final ImageButton reorderBtn;
 
-        public ViewHolder(View itemview) {
-            super(itemview);
+        public ViewHolder(View itemView) {
+            super(itemView);
 
-            itemNeedfulCB = (CheckBox) itemview.findViewById(R.id.item_needful_checkbox);
-            itemNameTV = (TextView) itemview.findViewById(R.id.item_title);
-            itemNameTV.setOnKeyListener(new View.OnKeyListener() {
-                public boolean onKey(View v, int keyCode, KeyEvent event) {
-                    if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
-                            (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                        ToggleEditMode_VH();
-                        return true;
-                    }
-                    return false;
-                }
-            });
-            itemDateTV = (TextView) itemview.findViewById(R.id.item_date_text);
-            itemQuantityTV = (TextView) itemview.findViewById(R.id.item_quantity);
-            itemStatusPB = (ProgressBar) itemview.findViewById(R.id.item_progressbar);
-            editBtn = (ImageButton) itemview.findViewById(R.id.item_edit_btn);
-            editBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+            itemNeedfulCB = (CheckBox) itemView.findViewById(R.id.item_needful_checkbox);
+            itemNameTV = (TextView) itemView.findViewById(R.id.item_title);
+            itemNameTV.setOnKeyListener((v, keyCode, event) -> {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+                        (keyCode == KeyEvent.KEYCODE_ENTER)) {
                     ToggleEditMode_VH();
+                    return true;
                 }
+                return false;
             });
-            deleteBtn = (ImageButton) itemview.findViewById(R.id.item_delete_btn);
-            deleteBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    User.RemoveItemFromInventory(currentInventoryName, mItems.get(getAdapterPosition()));
-                    notifyItemRemoved(getAdapterPosition());
-                }
+            itemDateTV = (TextView) itemView.findViewById(R.id.item_date_text);
+            itemQuantityTV = (TextView) itemView.findViewById(R.id.item_quantity);
+            itemStatusPB = (ProgressBar) itemView.findViewById(R.id.item_progressbar);
+            editBtn = (ImageButton) itemView.findViewById(R.id.item_edit_btn);
+            editBtn.setOnClickListener(view -> ToggleEditMode_VH());
+            deleteBtn = (ImageButton) itemView.findViewById(R.id.item_delete_btn);
+            deleteBtn.setOnClickListener(view -> {
+                OfflineInventoryManager.RemoveItemFromInventory(currentInventoryName, mItems.get(getAdapterPosition()));
+                notifyItemRemoved(getAdapterPosition());
             });
-            reorderBtn = (ImageButton) itemview.findViewById(R.id.item_reorder_btn);
+            reorderBtn = (ImageButton) itemView.findViewById(R.id.item_reorder_btn);
 
         }
         public void ToggleEditMode_VH(){
