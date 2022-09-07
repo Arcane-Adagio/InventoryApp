@@ -1,7 +1,9 @@
 package com.example.inventoryapp;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,10 +13,14 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class InventoryRecyclerViewerAdapter extends RecyclerView.Adapter<InventoryRecyclerViewerAdapter.ViewHolder> {
 
@@ -22,14 +28,16 @@ public class InventoryRecyclerViewerAdapter extends RecyclerView.Adapter<Invento
     private static InventoryRecyclerViewerAdapter INSTANCE = null;
     private static List<String> mInventoryNames = new ArrayList<>();
     private static RecyclerView mRecyclerView;
+    private static FragmentActivity cActivity;
 
     private InventoryRecyclerViewerAdapter(List<String> imageNames, Context context){
         mInventoryNames = imageNames;
     }
 
-    public static InventoryRecyclerViewerAdapter ConstructHomeRecyclerViewIfNotCreated(List<String> invNames, Context context){
+    public static InventoryRecyclerViewerAdapter ConstructHomeRecyclerViewIfNotCreated(List<String> invNames, Activity context){
         if (INSTANCE == null){
             INSTANCE = new InventoryRecyclerViewerAdapter(invNames, context);
+            cActivity = (FragmentActivity) context;
             mInventoryNames = invNames;
         }
         return INSTANCE;
@@ -43,9 +51,22 @@ public class InventoryRecyclerViewerAdapter extends RecyclerView.Adapter<Invento
     }
 
     public void AddInventory(){
-        User.AddInventory();
+        String newInventoryName = User.AddInventory();
+        //mInventoryNames.add(newInventoryName);
         notifyItemInserted(getItemCount());
         mRecyclerView.scrollToPosition(getItemCount()-1);
+        Log.d(TAG, "AddInventory: "+String.valueOf(mInventoryNames));
+    }
+
+    public void DeleteInventory(String inventoryName, int position){
+        User.RemoveInventory(inventoryName);
+        //mInventoryNames.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    public void RenameInventory(int position, String newName){
+        mInventoryNames.set(position, newName);
+        notifyItemChanged(position);
     }
 
     @NonNull
@@ -88,22 +109,9 @@ public class InventoryRecyclerViewerAdapter extends RecyclerView.Adapter<Invento
             inventoryName = itemview.findViewById(R.id.inventory_title_edittext);
             parentLayout = itemview.findViewById(R.id.tile_inventory);
             editBtn = (ImageButton) itemview.findViewById(R.id.inv_edit_btn);
-            editBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(view.getContext(), InventoryItemActivity.class);
-                    intent.putExtra("inventoryName", inventoryName.getText().toString());
-                    view.getContext().startActivity(intent);
-                }
-            });
+            editBtn.setOnClickListener(view -> NavigateToItemFragment(inventoryName.getText().toString()));
             deleteBtn = (ImageButton) itemview.findViewById(R.id.inv_delete_btn);
-            deleteBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    User.RemoveInventory(inventoryName.getText().toString());
-                    notifyItemRemoved(getAdapterPosition());
-                }
-            });
+            deleteBtn.setOnClickListener(view -> DeleteInventory( inventoryName.getText().toString(),getAdapterPosition()));
             reorderBtn = (ImageButton) itemview.findViewById(R.id.inv_reorder_btn);
         }
     }
@@ -119,4 +127,17 @@ public class InventoryRecyclerViewerAdapter extends RecyclerView.Adapter<Invento
         super.onAttachedToRecyclerView(recyclerView);
         mRecyclerView = recyclerView;
     }
+
+    private void NavigateToItemFragment(String inventoryName){
+        Bundle bundle = new Bundle();
+        bundle.putString("inventoryName", inventoryName);
+        OfflineItemFragment frag = new OfflineItemFragment();
+        frag.setArguments(bundle);
+        FragmentManager fragmentManager =  cActivity.getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(MainActivity.fragmentContainerID, frag);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+
 }

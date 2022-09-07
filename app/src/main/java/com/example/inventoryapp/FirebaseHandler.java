@@ -18,7 +18,7 @@ public class FirebaseHandler {
     public static final String FIREBASE_KEY_GROUPS = "Groups";
     public static final String FIREBASE_KEY_INVENTORIES = "Inventories";
     public static final String FIREBASE_KEY_INVENTORYITEMS = "Items";
-
+    public static FirebaseAuth mCurrentUser;
 
     public static class Group {
         private String groupID;

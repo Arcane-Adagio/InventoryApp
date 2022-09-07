@@ -235,7 +235,7 @@ public class User {
 
     public static List<String> GetInventoryNames(){
         if (InventoryNames == null || InventoryNames.size() == 0){
-            return null;
+            return new ArrayList<>();
         }
         else
             return InventoryNames;
@@ -298,13 +298,14 @@ public class User {
         return InventoryItems.get(position);
     }
 
-    public static void RemoveInventory(String inventoryName){
+    public static int RemoveInventory(String inventoryName){
         int position = GetInventoryNames().indexOf(inventoryName);
         InventoryNames.remove(position);
         InventoryItems.remove(position);
+        return position;
     }
 
-    public static void AddInventory(){
+    public static String AddInventory(){
         /* New inventory name should not be a duplicate of an existing name */
         String defaultInventoryName;
         int counter = InventoryNames.size();
@@ -314,6 +315,7 @@ public class User {
         while (InventoryNames.contains(defaultInventoryName));
         InventoryNames.add(defaultInventoryName);
         InventoryItems.add(new ArrayList<InventoryItem>());
+        return defaultInventoryName;
     }
 
     public static void AddInventoryItem(String inventoryName, InventoryItem newItem){

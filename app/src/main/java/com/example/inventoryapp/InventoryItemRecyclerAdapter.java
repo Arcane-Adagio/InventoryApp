@@ -1,5 +1,6 @@
 package com.example.inventoryapp;
 
+import android.app.Activity;
 import android.content.ClipData;
 import android.content.Context;
 import android.text.InputType;
@@ -49,10 +50,12 @@ public class InventoryItemRecyclerAdapter extends RecyclerView.Adapter<Inventory
         currentInventoryName = newName;
     }
 
-    public static InventoryItemRecyclerAdapter ConstructItemRecyclerView(String inventoryName, List<InventoryItem> items, Context context){
+    public static InventoryItemRecyclerAdapter ConstructItemRecyclerView(
+            String inventoryName, List<InventoryItem> items, Context context, int recyclerViewID){
         INSTANCE = new InventoryItemRecyclerAdapter(inventoryName, items, context);
         mItems = items;
         currentInventoryName = inventoryName;
+        mRecyclerView = ((Activity) context).findViewById(recyclerViewID);
         return INSTANCE;
     }
 

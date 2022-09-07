@@ -112,19 +112,4 @@ public class InventoryActivity extends AppCompatActivity {
         GlobalActions.LogoutBehavior(this);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        /* Inflates appbar to include menu options */
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.home_appbar_menu, menu);;
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        /* Handles behavior for when a menu option is selected */
-        if (GlobalActions.DefaultMenuOptionSelection(item,this, getSupportFragmentManager()))
-            return true;
-        return super.onOptionsItemSelected(item);
-    }
 }

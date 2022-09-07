@@ -1,5 +1,6 @@
 package com.example.inventoryapp;
 
+import static android.content.Context.MODE_PRIVATE;
 import static android.database.sqlite.SQLiteDatabase.openOrCreateDatabase;
 
 import static com.example.inventoryapp.LocalDBActions.RemoveUserFromDatabase;
@@ -11,6 +12,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
@@ -27,12 +29,17 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import java.net.InetAddress;
 import java.util.concurrent.Callable;
+import java.util.prefs.Preferences;
 
 public class GlobalActions {
     public static final String KEY_SHAREDINVENTORY = "SharedInventory";
     public static final String EXPORT_ACTION = "com.example.inventoryapp.share";
+    public static final String SHARED_PREF_FILENAME = "com.example.inventoryapp.LOCALINVENTORY";
     public static boolean logoutInProgress = false;
     public static boolean online = true;
 
@@ -41,26 +48,27 @@ public class GlobalActions {
         // This function is called when an icon is selected in the Actionbar
         switch (item.getItemId()){
             case R.id.menu_logout:
-                LogoutBehavior(context);
+                Toast.makeText(context, "logout not implemented", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.menu_delete_account:
-                if(User.getUsername() != null){
-                    if(!online) {
-                        RemoveUserFromDatabase(User.getUsername(), context);
-                    }
-                    else {
-                        Toast.makeText(context, "online account deletion not implemented", Toast.LENGTH_SHORT).show();
-                    }
-                    LogoutBehavior(context);
-                }
+                if(User.getUsername() != null)
+                    RemoveUserFromDatabase(User.getUsername(), context);
+                    //LogoutBehavior(context);
                 else
                     Toast.makeText(context, context.getString(R.string.Toast_No), Toast.LENGTH_LONG).show();
                 return true;
+            case R.id.online_logout:
+                //FirebaseHandler.mCurrentUser.signOut();
+                //FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                return true;
+            case R.id.online_deleteaccount:
+                Toast.makeText(context, "online account deletion not implemented", Toast.LENGTH_SHORT).show();
+                return true;
             case R.id.menu_user_save:
-                if (online)
-                    Toast.makeText(context, "online saving not implemented", Toast.LENGTH_SHORT).show();
-                else
-                    SaveInventoryJSON(context);
+                SaveUserInventory(context);
+
+
+                Toast.makeText(context, User.getInventoryJSON(), Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.menu_inv_file_save:
                 new StorageHandler((Activity) context).WriteToFile();
@@ -69,6 +77,19 @@ public class GlobalActions {
                 Toast.makeText(context, context.getString(R.string.Toast_menu_default), Toast.LENGTH_LONG).show();
                 return false;
         }
+    }
+
+    public static void SaveUserInventory(Context context){
+        SharedPreferences pref = ((Activity)context).getSharedPreferences(SHARED_PREF_FILENAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString("InventoryJSON", User.getInventoryJSON());
+        editor.commit();
+    }
+
+    public static void LoadUserInventory(Context context){
+        SharedPreferences pref = ((Activity)context).getSharedPreferences(SHARED_PREF_FILENAME, MODE_PRIVATE);
+        String savedString = pref.getString("InventoryJSON","");
+        User.ConvertStringToInventory(savedString);
     }
 
     public static void LogoutBehavior(Context context){

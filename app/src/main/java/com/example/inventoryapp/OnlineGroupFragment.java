@@ -22,6 +22,7 @@ import android.text.InputFilter;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -65,6 +66,7 @@ public class OnlineGroupFragment extends Fragment {
         super.onCreate(savedInstanceState);
         cActivity = getActivity();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        setHasOptionsMenu(true);
     }
 
 
@@ -72,6 +74,14 @@ public class OnlineGroupFragment extends Fragment {
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.online_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        /* Handles behavior for when a menu option is selected */
+        if (GlobalActions.DefaultMenuOptionSelection(item,cActivity, getActivity().getSupportFragmentManager()))
+            return true;
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

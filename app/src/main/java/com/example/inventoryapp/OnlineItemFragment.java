@@ -13,6 +13,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.InputType;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -60,6 +63,22 @@ public class OnlineItemFragment extends Fragment {
             Objects.requireNonNull(((AppCompatActivity)getActivity()).getSupportActionBar()).setTitle(this.getArguments().getString(KEY_INVENTORYNAME));
         }
         cActivity = getActivity();
+        setHasOptionsMenu(true);
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.online_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        /* Handles behavior for when a menu option is selected */
+        if (GlobalActions.DefaultMenuOptionSelection(item,cActivity, getActivity().getSupportFragmentManager()))
+            return true;
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

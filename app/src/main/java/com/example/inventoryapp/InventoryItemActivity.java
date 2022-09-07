@@ -100,13 +100,13 @@ public class InventoryItemActivity extends AppCompatActivity {
         User.RenameInventory(mCurrentInventory, newName);
         mCurrentInventory = newName;
         InventoryItemRecyclerAdapter.GetItemRecyclerViewINSTANCE().UpdateCurrentInventoryName(mCurrentInventory);
-        InventoryRecyclerViewerAdapter.GetHomeRecyclerViewINSTANCE().notifyItemChanged(position);
+        InventoryRecyclerViewerAdapter.GetHomeRecyclerViewINSTANCE().RenameInventory(position, newName);
         Objects.requireNonNull(getSupportActionBar()).setTitle(newName);
     }
 
     private void SetupInventoryItemRecyclerView(String inventoryName){
         RecyclerView recyclerView = findViewById(R.id.inventoryitemlist_view);
-        InventoryItemRecyclerAdapter adapter = InventoryItemRecyclerAdapter.ConstructItemRecyclerView(inventoryName, User.GetInventoryItems(inventoryName), this);
+        InventoryItemRecyclerAdapter adapter = InventoryItemRecyclerAdapter.ConstructItemRecyclerView(inventoryName, User.GetInventoryItems(inventoryName), this, R.id.inventoryitemlist_view);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
