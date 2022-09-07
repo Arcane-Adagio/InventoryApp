@@ -60,7 +60,7 @@ public class OfflineItemFragment extends Fragment {
         }
         SetupItemRecyclerView();
         rv_fab = (FloatingActionButton) getView().findViewById(R.id.inventoryitem_fab);
-        rv_fab.setOnClickListener(view -> InventoryItemRecyclerAdapter.GetItemRecyclerViewINSTANCE().AddItemToInventory());
+        rv_fab.setOnClickListener(view -> ItemRVAdapter.GetItemRecyclerViewINSTANCE().AddItemToInventory());
         SetupNameChangeDialog();
     }
 
@@ -69,17 +69,17 @@ public class OfflineItemFragment extends Fragment {
         int position = User.GetPositionOfInventory(mCurrentInventory);
         User.RenameInventory(mCurrentInventory, newName);
         mCurrentInventory = newName;
-        InventoryItemRecyclerAdapter.GetItemRecyclerViewINSTANCE().UpdateCurrentInventoryName(mCurrentInventory);
+        ItemRVAdapter.GetItemRecyclerViewINSTANCE().UpdateCurrentInventoryName(mCurrentInventory);
         //InventoryRecyclerViewerAdapter.GetHomeRecyclerViewINSTANCE().notifyItemChanged(position);
         //OfflineInventoryFragment.recyclerView.getAdapter().notifyItemChanged(position);
-        InventoryRecyclerViewerAdapter.GetHomeRecyclerViewINSTANCE().RenameInventory(position, newName);
+        InventoryRVAdapter.GetHomeRecyclerViewINSTANCE().RenameInventory(position, newName);
 
         Objects.requireNonNull(((AppCompatActivity)getActivity()).getSupportActionBar()).setTitle(newName);
     }
 
     private void SetupItemRecyclerView(){
         RecyclerView recyclerView = getView().findViewById(rvID);
-        InventoryItemRecyclerAdapter adapter =  InventoryItemRecyclerAdapter.ConstructItemRecyclerView(
+        ItemRVAdapter adapter =  ItemRVAdapter.ConstructItemRecyclerView(
                 mCurrentInventory, User.GetInventoryItems(mCurrentInventory), cActivity, rvID);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(cActivity));

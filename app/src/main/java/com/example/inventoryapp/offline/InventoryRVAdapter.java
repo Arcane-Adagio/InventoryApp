@@ -14,41 +14,37 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.inventoryapp.MainActivity;
 import com.example.inventoryapp.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class InventoryRecyclerViewerAdapter extends RecyclerView.Adapter<InventoryRecyclerViewerAdapter.ViewHolder> {
+public class InventoryRVAdapter extends RecyclerView.Adapter<InventoryRVAdapter.ViewHolder> {
 
     private static final String TAG = "InventoryListRecyclerViewAdapter";
-    private static InventoryRecyclerViewerAdapter INSTANCE = null;
+    private static InventoryRVAdapter INSTANCE = null;
     private static List<String> mInventoryNames = new ArrayList<>();
     private static RecyclerView mRecyclerView;
     private static FragmentActivity cActivity;
 
-    private InventoryRecyclerViewerAdapter(List<String> imageNames, Context context){
+    private InventoryRVAdapter(List<String> imageNames, Context context){
         mInventoryNames = imageNames;
     }
 
-    public static InventoryRecyclerViewerAdapter ConstructHomeRecyclerViewIfNotCreated(List<String> invNames, Activity context){
+    public static InventoryRVAdapter ConstructHomeRecyclerViewIfNotCreated(List<String> invNames, Activity context){
         if (INSTANCE == null){
-            INSTANCE = new InventoryRecyclerViewerAdapter(invNames, context);
+            INSTANCE = new InventoryRVAdapter(invNames, context);
             cActivity = (FragmentActivity) context;
             mInventoryNames = invNames;
         }
         return INSTANCE;
     }
 
-    public static InventoryRecyclerViewerAdapter GetHomeRecyclerViewINSTANCE(){
+    public static InventoryRVAdapter GetHomeRecyclerViewINSTANCE(){
         if (INSTANCE == null)
             return null;
         else

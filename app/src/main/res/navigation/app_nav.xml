@@ -32,6 +32,9 @@
         <action
             android:id="@+id/action_onlineLoginFragment_to_onlineGroupFragment"
             app:destination="@id/onlineGroupFragment" />
+        <action
+            android:id="@+id/action_onlineLoginFragment_to_accountCreationFragment"
+            app:destination="@id/accountCreationFragment" />
     </fragment>
     <fragment
         android:id="@+id/onlineGroupFragment"
@@ -61,4 +64,13 @@
         android:name="com.example.inventoryapp.SettingsFragment"
         android:label="frag_settings"
         tools:layout="@layout/frag_settings" />
+    <fragment
+        android:id="@+id/accountCreationFragment"
+        android:name="com.example.inventoryapp.online.AccountCreationFragment"
+        android:label="frag_online_acc_creation"
+        tools:layout="@layout/frag_online_acc_creation" >
+        <action
+            android:id="@+id/action_accountCreationFragment_to_onlineLoginFragment"
+            app:destination="@id/onlineLoginFragment" />
+    </fragment>
 </navigation>

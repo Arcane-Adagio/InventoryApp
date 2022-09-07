@@ -5,7 +5,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -71,7 +70,7 @@ public class OfflineInventoryFragment extends Fragment {
     private void SetupInventoryRecyclerView(){
         recyclerView = getView().findViewById(R.id.inventorylist_view);
         //RecyclerView recyclerView = requireView().findViewById(R.id.inventorylist_view);
-        InventoryRecyclerViewerAdapter adapter = InventoryRecyclerViewerAdapter.ConstructHomeRecyclerViewIfNotCreated( User.GetInventoryNames(), cActivity);
+        InventoryRVAdapter adapter = InventoryRVAdapter.ConstructHomeRecyclerViewIfNotCreated( User.GetInventoryNames(), cActivity);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(cActivity));
     }
@@ -81,7 +80,7 @@ public class OfflineInventoryFragment extends Fragment {
         Log.d(TAG, "onStart");
         SetupInventoryRecyclerView();
         fab = (FloatingActionButton) getView().findViewById(R.id.inventory_fab); //TODO replace with requireview
-        fab.setOnClickListener(view -> InventoryRecyclerViewerAdapter.GetHomeRecyclerViewINSTANCE().AddInventory());
+        fab.setOnClickListener(view -> InventoryRVAdapter.GetHomeRecyclerViewINSTANCE().AddInventory());
         super.onStart();
     }
 }

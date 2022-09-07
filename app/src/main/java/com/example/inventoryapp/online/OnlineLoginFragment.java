@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.inventoryapp.MainActivity;
@@ -36,6 +37,7 @@ public class OnlineLoginFragment extends Fragment {
     private FirebaseAuth mAuth;
     private EditText email_tb;
     private EditText password_tb;
+    private TextView createAccount_tbtn;
     private final String TAG = "OnlineLoginActivity";
     private FirebaseUser mCurrentUser;
     private Button login_btn;
@@ -72,7 +74,9 @@ public class OnlineLoginFragment extends Fragment {
         password_tb = (EditText) getView().findViewById(R.id.edittext_TextPassword);
         login_btn = (Button) getView().findViewById(R.id.login_btn);
         login_btn.setOnClickListener(view -> Login(null));
-        if(mCurrentUser != null)
+        createAccount_tbtn = (TextView) getView().findViewById(R.id.textbtn_createAccount);
+        createAccount_tbtn.setOnClickListener(view -> NavigateToAccountCreationFragment());
+        if(mCurrentUser != null);
             AutoLogin();
     }
 
@@ -90,6 +94,11 @@ public class OnlineLoginFragment extends Fragment {
     private void NavigateToGroupsFragment(){
         NavController navController = NavHostFragment.findNavController(this);
         navController.navigate(R.id.action_onlineLoginFragment_to_onlineGroupFragment);
+    }
+
+    private void NavigateToAccountCreationFragment(){
+        NavController navController = NavHostFragment.findNavController(this);
+        navController.navigate(R.id.action_onlineLoginFragment_to_accountCreationFragment);
     }
 
     public void createAccount(String email, String password){

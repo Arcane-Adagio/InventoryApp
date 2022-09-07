@@ -22,25 +22,25 @@ import com.example.inventoryapp.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InventoryItemRecyclerAdapter extends RecyclerView.Adapter<InventoryItemRecyclerAdapter.ViewHolder> {
+public class ItemRVAdapter extends RecyclerView.Adapter<ItemRVAdapter.ViewHolder> {
 
     private static final String TAG = "InventoryListRecyclerViewAdapter";
-    private static InventoryItemRecyclerAdapter INSTANCE = null;
+    private static ItemRVAdapter INSTANCE = null;
     private static List<InventoryItem> mItems = new ArrayList<>();
     private static String currentInventoryName;
     static RecyclerView mRecyclerView;
 
 
 
-    private InventoryItemRecyclerAdapter(String inventoryName, List<InventoryItem> items, Context context){
+    private ItemRVAdapter(String inventoryName, List<InventoryItem> items, Context context){
         mItems = items;
         currentInventoryName = inventoryName;
     }
 
-    public static InventoryItemRecyclerAdapter ConstructItemRecyclerViewIfNotCreated(String inventoryName, List<InventoryItem> items, Context context){
+    public static ItemRVAdapter ConstructItemRecyclerViewIfNotCreated(String inventoryName, List<InventoryItem> items, Context context){
         //Safe construction
         if (INSTANCE == null){
-            INSTANCE = new InventoryItemRecyclerAdapter(inventoryName, items, context);
+            INSTANCE = new ItemRVAdapter(inventoryName, items, context);
             mItems = items;
             currentInventoryName = inventoryName;
         }
@@ -51,9 +51,9 @@ public class InventoryItemRecyclerAdapter extends RecyclerView.Adapter<Inventory
         currentInventoryName = newName;
     }
 
-    public static InventoryItemRecyclerAdapter ConstructItemRecyclerView(
+    public static ItemRVAdapter ConstructItemRecyclerView(
             String inventoryName, List<InventoryItem> items, Context context, int recyclerViewID){
-        INSTANCE = new InventoryItemRecyclerAdapter(inventoryName, items, context);
+        INSTANCE = new ItemRVAdapter(inventoryName, items, context);
         mItems = items;
         currentInventoryName = inventoryName;
         mRecyclerView = ((Activity) context).findViewById(recyclerViewID);
@@ -64,7 +64,7 @@ public class InventoryItemRecyclerAdapter extends RecyclerView.Adapter<Inventory
         currentInventoryName = inventory;
     }
 
-    public static InventoryItemRecyclerAdapter GetItemRecyclerViewINSTANCE(){
+    public static ItemRVAdapter GetItemRecyclerViewINSTANCE(){
         if (INSTANCE == null)
             return null;
         else

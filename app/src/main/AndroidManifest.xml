@@ -55,12 +55,6 @@
         </receiver>
         <receiver android:name=".extrareferences.AlarmHandler" />
 
-        <activity
-            android:name=".AccountCreationActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustNothing"
-            />
     </application>
 
 </manifest>
