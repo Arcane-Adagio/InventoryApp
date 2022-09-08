@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.InputFilter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -59,6 +58,7 @@ public class OnlineGroupFragment extends Fragment {
     FirebaseUser currentUser;
     FloatingActionButton createGroup_fab;
     FloatingActionButton addGroup_fab;
+    FloatingActionButton test_fab;
     Activity cActivity;
     private static final String APPBAR_TITLE_FOR_FRAGMENT = "Groups";
 
@@ -101,6 +101,8 @@ public class OnlineGroupFragment extends Fragment {
         createGroup_fab.setOnClickListener(view -> CreateGroupDialog());
         addGroup_fab = (FloatingActionButton) requireView().findViewById(R.id.fab_joinGroup);
         addGroup_fab.setOnClickListener(view -> JoinGroupDialog());
+        test_fab = (FloatingActionButton) requireView().findViewById(R.id.fab_test);
+        test_fab.setOnClickListener(view -> Test());
         SetupGroupRecyclerView();
         Objects.requireNonNull(((AppCompatActivity)getActivity()).getSupportActionBar()).setTitle(APPBAR_TITLE_FOR_FRAGMENT);
     }
@@ -126,7 +128,7 @@ public class OnlineGroupFragment extends Fragment {
             mGroupsReference.addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                    if(isNotForMe(snapshot))
+                    if(isNotAGroupMemberOf(snapshot))
                         return;
                     groupData.add(datasnapshotToGroupConverter(snapshot));
                     rv.scrollToPosition(groupData.size()-1); //todo: take out if annoying
@@ -135,21 +137,35 @@ public class OnlineGroupFragment extends Fragment {
 
                 @Override
                 public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                    //if(isNotForMe(snapshot))
-                    //    return;
                     String changedGroupID = snapshot.getKey().toString();
                     int position = getPositionInRecyclerViewByID(changedGroupID);
-                    if(position != -1){
-                        groupData.remove(position);
-                        groupData.add(position, datasnapshotToGroupConverter(snapshot));
-                        GroupRVAdapter.this.notifyItemChanged(position);
+                    if(isNotAGroupMemberOf(snapshot)){
+                        if(position != -1){
+                            //user is no longer apart of a group
+                            //so it should be removed from recycler view
+                            groupData.remove(position);
+                            GroupRVAdapter.this.notifyItemRemoved(position);
+                        }
+                    }
+                    else{
+                        if(position == -1){
+                            //user has joined the group, so
+                            //the group needs to be displayed
+                            groupData.add(datasnapshotToGroupConverter(snapshot));
+                            GroupRVAdapter.this.notifyItemInserted(groupData.size()-1);
+                        }
+                        else {
+                            //user is apart of the group and the group is displayed
+                            //but the value needs to be updated
+                            groupData.remove(position);
+                            groupData.add(position, datasnapshotToGroupConverter(snapshot));
+                            GroupRVAdapter.this.notifyItemChanged(position);
+                        }
                     }
                 }
 
                 @Override
                 public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                    if(isNotForMe(snapshot))
-                        return;
                     String changedGroupID = snapshot.getKey().toString();
                     int position = getPositionInRecyclerViewByID(changedGroupID);
                     if(position != 1){
@@ -170,15 +186,16 @@ public class OnlineGroupFragment extends Fragment {
             });
         }
 
-        private boolean isNotForMe(DataSnapshot snap){
-            //String groupName = Objects.requireNonNull(snap.child("groupName").child("Members").getValue()).toString();
-            if(!snap.hasChild("Members"))
+        private boolean isNotAGroupMemberOf(DataSnapshot snap){
+            if(!snap.hasChild("groupOwner"))
+                return true; // means its not a group object
+            if(Objects.equals((String) snap.child("groupOwner").getValue(), currentUser.getUid()))
                 return false;
-            for(DataSnapshot snapshot : snap.child("Members").getChildren()){
-                snapshot.hasChild(currentUser.getUid());
-                return true;
-            }
-            return false;
+            if(snap.hasChild("Members"))
+                if(snap.child("Members").hasChild(currentUser.getUid())){
+                        return false;
+                }
+            return true;
         }
 
         @NonNull
@@ -197,7 +214,7 @@ public class OnlineGroupFragment extends Fragment {
                     groupData.get(holder.getAdapterPosition()).getGroupID(),
                     groupData.get(holder.getAdapterPosition()).getGroupName()));
             holder.delete_btn.setOnClickListener(view ->
-                    new FirebaseHandler().RemoveGroup(groupData.get(holder.getAdapterPosition()).getGroupID()));
+                    new FirebaseHandler().RemoveGroup(groupData.get(holder.getAdapterPosition())));
             holder.delete_btn.setImageDrawable(
                     (Objects.equals(groupData.get(holder.getAdapterPosition()).getGroupOwner(), currentUser.getUid())) ? delete_draw : exit_draw
             );
@@ -333,39 +350,7 @@ public class OnlineGroupFragment extends Fragment {
         codeEditText.setFilters(new InputFilter[] { new InputFilter.LengthFilter(GlobalConstants.db_max_code_length) });
         //when focus has been lost, check if code is valid
         submitBtn.setOnClickListener(v -> {
-            String codeText = codeEditText.getText().toString();
-            if(codeText.equals(""))
-                return;
-            Query query = FirebaseDatabase.getInstance().getReference("Groups")
-                    .orderByChild("groupCode")
-                    .equalTo(codeEditText.getText().toString());
-            query.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    long queryResultCount = snapshot.getChildrenCount();
-                    if(queryResultCount == 0){
-                        codeEditText.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
-                        codeEditText.setText("");
-                        codeEditText.setHint("Group Does Not Exist");
-                    }
-                    else {
-                        String groupID = "";
-                        for(DataSnapshot snap : snapshot.getChildren()){
-                            groupID = snap.getKey();
-                            break;
-                        }
-                        if(!groupID.isEmpty())
-                            new FirebaseHandler().AddMemberToGroup(groupID, currentUser);
-                        //CreateOnlineGroup(codeText);
-                        dialog.dismiss();
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
+        AttemptToJoinGroup(codeEditText, dialog);
         });
         cancelBtn.setOnClickListener(v -> {
             codeEditText.getBackground().clearColorFilter();
@@ -375,10 +360,49 @@ public class OnlineGroupFragment extends Fragment {
         dialog.show();
     }
 
+    public void AttemptToJoinGroup(EditText codeEditText, Dialog dialog){
+        String codeText = codeEditText.getText().toString();
+        if(codeText.equals(""))
+            return;
+        Query query = FirebaseDatabase.getInstance().getReference("Groups")
+                .orderByChild("groupCode")
+                .equalTo(codeEditText.getText().toString());
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                long queryResultCount = snapshot.getChildrenCount();
+                if(queryResultCount == 0){
+                    codeEditText.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
+                    codeEditText.setText("");
+                    codeEditText.setHint("Group Does Not Exist");
+                }
+                else {
+                    String groupID = "";
+                    for(DataSnapshot snap : snapshot.getChildren()){
+                        groupID = snap.getKey();
+                        break;
+                    }
+                    if(!groupID.isEmpty())
+                        new FirebaseHandler().AddMemberToGroup(groupID, currentUser);
+                    //CreateOnlineGroup(codeText);
+                    dialog.dismiss();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
     public void CreateOnlineGroup(String name, String code, String passwordText){
-        String groupID = new FirebaseHandler().AddGroup(
+        new FirebaseHandler().AddGroup(
                 new FirebaseHandler.Group(name, code, passwordText, currentUser.getUid()));
-        new FirebaseHandler().AddMemberToGroup(groupID,currentUser);
+    }
+
+    public void Test(){
+        group_rva.notifyDataSetChanged();
     }
 
     private void SetupGroupRecyclerView(){

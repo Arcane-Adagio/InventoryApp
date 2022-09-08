@@ -16,6 +16,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -158,6 +159,8 @@ public class OnlineInventoryFragment extends Fragment {
             mInventoriesReference.addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                    if(mInventoriesReference == null)
+                        Log.d(TAG, "onChildAdded: invalid reference");
                     inventoryData.add(datasnapshotToInventoryConverter(snapshot));
                     rv.scrollToPosition(inventoryData.size()-1); //todo: take out if annoying
                     InventoryRVAdapter.this.notifyItemInserted(inventoryData.size()-1);
@@ -226,6 +229,11 @@ public class OnlineInventoryFragment extends Fragment {
         }
 
         private FirebaseHandler.Inventory datasnapshotToInventoryConverter(DataSnapshot snap){
+            if(!snap.hasChild("inventoryName")){
+                Log.d(TAG, "datasnapshotToInventoryConverter: no child");
+                return null;
+            }
+
             String inventoryName = Objects.requireNonNull(snap.child("inventoryName").getValue()).toString();
             FirebaseHandler.Inventory inventoryObj = new FirebaseHandler.Inventory(inventoryName);
             inventoryObj.setInventoryID(snap.getKey());
