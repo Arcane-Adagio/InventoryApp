@@ -38,6 +38,7 @@ public class OnlineLoginFragment extends Fragment {
     private EditText email_tb;
     private EditText password_tb;
     private TextView createAccount_tbtn;
+    private TextView forgotPassword_tv;
     private final String TAG = "OnlineLoginActivity";
     private FirebaseUser mCurrentUser;
     private Button login_btn;
@@ -70,11 +71,13 @@ public class OnlineLoginFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        email_tb = (EditText) getView().findViewById(R.id.edittext_loginEmail);
-        password_tb = (EditText) getView().findViewById(R.id.edittext_TextPassword);
-        login_btn = (Button) getView().findViewById(R.id.login_btn);
+        email_tb = (EditText) requireView().findViewById(R.id.edittext_loginEmail);
+        password_tb = (EditText) requireView().findViewById(R.id.edittext_TextPassword);
+        forgotPassword_tv = (TextView) requireView().findViewById(R.id.textbtn_forgotPassword);
+        forgotPassword_tv.setOnClickListener(v -> {NavigateToPasswordResetFragment();});
+        login_btn = (Button) requireView().findViewById(R.id.login_btn);
         login_btn.setOnClickListener(view -> Login(null));
-        createAccount_tbtn = (TextView) getView().findViewById(R.id.textbtn_createAccount);
+        createAccount_tbtn = (TextView) requireView().findViewById(R.id.textbtn_createAccount);
         createAccount_tbtn.setOnClickListener(view -> NavigateToAccountCreationFragment());
         if(mCurrentUser != null)
             AutoLogin();
@@ -101,15 +104,20 @@ public class OnlineLoginFragment extends Fragment {
         navController.navigate(R.id.action_onlineLoginFragment_to_accountCreationFragment);
     }
 
+    private void NavigateToPasswordResetFragment(){
+        NavController navController = NavHostFragment.findNavController(this);
+        navController.navigate(R.id.action_onlineLoginFragment_to_accountResetFragment);
+    }
+
     public void createAccount(String email, String password){
         //could add SendVerificationEMail
         mAuth.createUserWithEmailAndPassword(email, password).addOnSuccessListener(cActivity, authResult -> {
             Log.d(TAG, "createAccount: success");
-            FirebaseUser user = mAuth.getCurrentUser();
+            //FirebaseUser user = mAuth.getCurrentUser();
             Toast.makeText(cActivity, "Authentication Succeeded.", Toast.LENGTH_SHORT).show();
         }).addOnFailureListener(cActivity, e -> {
             Log.d(TAG, "createAccount: failure");
-            FirebaseUser user = mAuth.getCurrentUser();
+            //FirebaseUser user = mAuth.getCurrentUser();
             Toast.makeText(cActivity, "Auth Failure"+e.getMessage(), Toast.LENGTH_SHORT).show();
         });
     }

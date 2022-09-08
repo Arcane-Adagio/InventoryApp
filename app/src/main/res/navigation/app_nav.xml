@@ -35,6 +35,9 @@
         <action
             android:id="@+id/action_onlineLoginFragment_to_accountCreationFragment"
             app:destination="@id/accountCreationFragment" />
+        <action
+            android:id="@+id/action_onlineLoginFragment_to_accountResetFragment"
+            app:destination="@id/accountResetFragment" />
     </fragment>
     <fragment
         android:id="@+id/onlineGroupFragment"
@@ -81,6 +84,15 @@
         tools:layout="@layout/frag_online_acc_creation" >
         <action
             android:id="@+id/action_accountCreationFragment_to_onlineLoginFragment"
+            app:destination="@id/onlineLoginFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/accountResetFragment"
+        android:name="com.example.inventoryapp.online.AccountResetFragment"
+        android:label="frag_online_acc_reset"
+        tools:layout="@layout/frag_online_acc_reset" >
+        <action
+            android:id="@+id/action_accountResetFragment_to_onlineLoginFragment"
             app:destination="@id/onlineLoginFragment" />
     </fragment>
 </navigation>

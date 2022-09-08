@@ -47,4 +47,9 @@
     <string name="alarm_sample_text">The alarm has been rung!!!</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="error_invalidEmail">Please enter a valid email</string>
+    <string name="toast_accountcreated">Account Created</string>
+    <string name="error_emptytextbox">Textbox cannot be empty</string>
+    <string name="error_shortpassword">Password is too short</string>
+    <string name="toast_emailSent">Email Sent</string>
 </resources>

@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.InputFilter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -99,7 +100,7 @@ public class OnlineGroupFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        addition_fab = (FloatingActionButton) getView().findViewById(R.id.fab_group);
+        addition_fab = (FloatingActionButton) requireView().findViewById(R.id.fab_group);
         addition_fab.setOnClickListener(view -> CreateGroupDialog());
         SetupGroupRecyclerView();
         Objects.requireNonNull(((AppCompatActivity)getActivity()).getSupportActionBar()).setTitle(APPBAR_TITLE_FOR_FRAGMENT);
@@ -119,9 +120,15 @@ public class OnlineGroupFragment extends Fragment {
             rv = (RecyclerView) ((AppCompatActivity)context).findViewById(R.id.recyclerview_group);
             delete_draw = AppCompatResources.getDrawable(context, R.drawable.ic_delete_default);
             exit_draw = AppCompatResources.getDrawable(context, R.drawable.ic_exit_default);
+            Query query = FirebaseDatabase.getInstance().getReference("Groups")
+                    .orderByChild("groupCode")
+                    .equalTo("");
+
             mGroupsReference.addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                    if(isNotForMe(snapshot))
+                        return;
                     groupData.add(datasnapshotToGroupConverter(snapshot));
                     rv.scrollToPosition(groupData.size()-1); //todo: take out if annoying
                     GroupRVAdapter.this.notifyItemInserted(groupData.size()-1);
@@ -129,6 +136,8 @@ public class OnlineGroupFragment extends Fragment {
 
                 @Override
                 public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                    if(isNotForMe(snapshot))
+                        return;
                     String changedGroupID = snapshot.getKey().toString();
                     int position = getPositionInRecyclerViewByID(changedGroupID);
                     if(position != -1){
@@ -140,6 +149,8 @@ public class OnlineGroupFragment extends Fragment {
 
                 @Override
                 public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+                    if(isNotForMe(snapshot))
+                        return;
                     String changedGroupID = snapshot.getKey().toString();
                     int position = getPositionInRecyclerViewByID(changedGroupID);
                     if(position != 1){
@@ -158,6 +169,16 @@ public class OnlineGroupFragment extends Fragment {
                     Toast.makeText(context, "Database cancelled updating RecyclerView", Toast.LENGTH_SHORT).show();
                 }
             });
+        }
+
+        private boolean isNotForMe(DataSnapshot snap){
+            String groupName = Objects.requireNonNull(snap.child("groupName").getValue()).toString();
+            if(!groupName.equals("asd")){
+                Log.d("test","isNotForMe: "+groupName);
+                return true;
+            }
+            else
+                return false;
         }
 
         @NonNull
@@ -278,8 +299,7 @@ public class OnlineGroupFragment extends Fragment {
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     long queryResultCount = snapshot.getChildrenCount();
                     if(queryResultCount == 0){
-                        new FirebaseHandler().AddGroup(
-                                new FirebaseHandler.Group(nameText, codeText, passwordText, currentUser.getUid()));
+                        CreateOnlineGroup(nameText, codeText, passwordText);
                         dialog.dismiss();
                     }
                     else {
@@ -303,6 +323,12 @@ public class OnlineGroupFragment extends Fragment {
         dialog.show();
     }
 
+    public void CreateOnlineGroup(String name, String code, String passwordText){
+        String groupID = new FirebaseHandler().AddGroup(
+                new FirebaseHandler.Group(name, code, passwordText, currentUser.getUid()));
+        new FirebaseHandler().AddMemberToGroup(groupID,currentUser);
+    }
+
     private void SetupGroupRecyclerView(){
         rv=(RecyclerView) getView().findViewById(R.id.recyclerview_group);
         LinearLayoutManager layoutManager = new LinearLayoutManager(cActivity);
@@ -313,18 +339,6 @@ public class OnlineGroupFragment extends Fragment {
         rv.setAdapter(group_rva);
     }
 
-    private void NavigateToInventoryFragmentOLD(String groupID, String groupName){
-        Bundle bundle = new Bundle();
-        bundle.putString("groupID", groupID);
-        bundle.putString("groupName", groupName);
-        OnlineInventoryFragment frag = new OnlineInventoryFragment();
-        frag.setArguments(bundle);
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(MainActivity.fragmentContainerID, frag);
-        fragmentTransaction.addToBackStack(null);
-        fragmentTransaction.commit();
-    }
 
     private void NavigateToInventoryFragment(String groupID, String groupName){
         Bundle bundle = new Bundle();

@@ -10,6 +10,7 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.inventoryapp.R;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -17,6 +18,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FirebaseHandler {
@@ -25,6 +27,7 @@ public class FirebaseHandler {
     public static final String FIREBASE_KEY_GROUPS = "Groups";
     public static final String FIREBASE_KEY_INVENTORIES = "Inventories";
     public static final String FIREBASE_KEY_INVENTORYITEMS = "Items";
+    public static final String FIREBASE_KEY_MEMBERS = "Members";
     public static FirebaseAuth mCurrentUser;
 
     public static class Group {
@@ -34,6 +37,7 @@ public class FirebaseHandler {
         private String groupPasswordHashed;
         private String groupOwner;
         public List<Inventory> inventories;
+        public List<String> members = new ArrayList<>();
 
         public Group(String name, String code, String password, String owner){
             groupName = name;
@@ -65,6 +69,10 @@ public class FirebaseHandler {
         public String getGroupOwner(){
             return groupOwner;
         }
+
+        public List<String> getMembers(){return members;}
+
+        public void setMembers(List<String> newMemberList){members = newMemberList;}
     }
 
     public static class Inventory {
@@ -86,6 +94,28 @@ public class FirebaseHandler {
 
         public String getInventoryName() {
             return inventoryName;
+        }
+    }
+
+    public static class Member {
+        public String memberID;
+        public String userID;
+
+
+        Member(String _userID){
+            userID = _userID;
+        }
+
+        public void setMemberID(String mid){
+            memberID = mid;
+        }
+
+        public String getMemberID() {
+            return memberID;
+        }
+
+        public String getUserID() {
+            return userID;
         }
     }
 
@@ -152,17 +182,28 @@ public class FirebaseHandler {
         public void setItemNeedful(boolean ItemNeedful) {itemNeedful = ItemNeedful;}
     }
 
-    public void AddGroup(Group group){
+    public String AddGroup(Group group){
         DatabaseReference groupsRef = mRootRef.child(FIREBASE_KEY_GROUPS);
         DatabaseReference newAdditionRef = groupsRef.push();
         group.setGroupID(newAdditionRef.getKey());
         newAdditionRef.runTransaction(PerformSetValueTransaction(newAdditionRef, group));
+        return newAdditionRef.getKey();
     }
 
     public void RemoveGroup(String groupID){
         DatabaseReference groupsRef = mRootRef.child(FIREBASE_KEY_GROUPS);
         DatabaseReference groupRef = groupsRef.child(groupID);
         groupRef.runTransaction(PerformDeletionTransaction(groupRef));
+    }
+
+    public void AddMemberToGroup(String groupID, FirebaseUser currentUser){
+        Member member = new Member(currentUser.getUid());
+        DatabaseReference groupsRef = mRootRef.child(FIREBASE_KEY_GROUPS);
+        DatabaseReference groupRef = groupsRef.child(groupID);
+        DatabaseReference inventoriesRef = groupRef.child(FIREBASE_KEY_MEMBERS);
+        DatabaseReference newAdditionRef = inventoriesRef.push();
+        member.setMemberID(newAdditionRef.getKey());
+        newAdditionRef.runTransaction(PerformSetValueTransaction(newAdditionRef, member));
     }
 
     public void AddInventoryToGroup(String groupID, Inventory inventory){

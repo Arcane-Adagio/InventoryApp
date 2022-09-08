@@ -30,7 +30,6 @@ public class InventoryRVAdapter extends RecyclerView.Adapter<InventoryRVAdapter.
     private static InventoryRVAdapter INSTANCE = null;
     private static List<String> mInventoryNames = new ArrayList<>();
     private static RecyclerView mRecyclerView;
-    private static FragmentActivity cActivity;
 
     private InventoryRVAdapter(List<String> imageNames){
         mInventoryNames = imageNames;
@@ -39,9 +38,14 @@ public class InventoryRVAdapter extends RecyclerView.Adapter<InventoryRVAdapter.
     public static InventoryRVAdapter ConstructHomeRecyclerViewIfNotCreated(List<String> invNames, Activity context){
         if (INSTANCE == null){
             INSTANCE = new InventoryRVAdapter(invNames);
-            cActivity = (FragmentActivity) context;
             mInventoryNames = invNames;
         }
+        return INSTANCE;
+    }
+
+    public static InventoryRVAdapter ReconstructRecyclerView(List<String> invNames){
+        INSTANCE = new InventoryRVAdapter(invNames);
+        mInventoryNames = invNames;
         return INSTANCE;
     }
 
@@ -53,6 +57,9 @@ public class InventoryRVAdapter extends RecyclerView.Adapter<InventoryRVAdapter.
     }
 
     public void NotifyElementAdded(){
+        //if(mInventoryNames.size() == 0)
+            //on first boot, make sure adapter gets first
+            //mInventoryNames = OfflineInventoryManager.InventoryNames;
         notifyItemInserted(getItemCount());
         mRecyclerView.scrollToPosition(getItemCount()-1);
         Log.d(TAG, "AddInventory: "+String.valueOf(mInventoryNames));

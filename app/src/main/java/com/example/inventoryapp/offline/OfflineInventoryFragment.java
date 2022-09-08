@@ -29,6 +29,7 @@ public class OfflineInventoryFragment extends Fragment implements MenuProvider {
     private final String TAG = "Local Inventory Fragment";
     FloatingActionButton fab;
     static RecyclerView recyclerView;
+    private InventoryRVAdapter adapter;
     private static Fragment mThis;
 
     public OfflineInventoryFragment() {
@@ -60,7 +61,14 @@ public class OfflineInventoryFragment extends Fragment implements MenuProvider {
 
     private void SetupInventoryRecyclerView(){
         recyclerView = requireView().findViewById(R.id.inventorylist_view);
-        InventoryRVAdapter adapter = InventoryRVAdapter.ConstructHomeRecyclerViewIfNotCreated( OfflineInventoryManager.GetInventoryNames(), cActivity);
+        adapter = InventoryRVAdapter.ConstructHomeRecyclerViewIfNotCreated( OfflineInventoryManager.GetInventoryNames(), cActivity);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(cActivity));
+    }
+
+    private void ResetInventoryRecyclerView(){
+        recyclerView = requireView().findViewById(R.id.inventorylist_view);
+        adapter = InventoryRVAdapter.ReconstructRecyclerView( OfflineInventoryManager.GetInventoryNames());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(cActivity));
     }
@@ -69,12 +77,17 @@ public class OfflineInventoryFragment extends Fragment implements MenuProvider {
     public void onStart() {
         Log.d(TAG, "onStart");
         SetupInventoryRecyclerView();
-        InventoryRVAdapter adapter = InventoryRVAdapter.GetHomeRecyclerViewINSTANCE();
         fab = (FloatingActionButton) requireView().findViewById(R.id.inventory_fab);
         if(adapter == null)
             Log.d(TAG, "onStart: unable to get adapter reference");
         else
-            fab.setOnClickListener(view -> OfflineInventoryManager.AddInventoryAndNotifyAdapter(adapter));
+        {
+            fab.setOnClickListener(view ->{
+                OfflineInventoryManager.AddInventoryAndNotifyAdapter(adapter);
+                if(adapter.getItemCount() == 0)
+                    ResetInventoryRecyclerView();
+            });
+        }
         super.onStart();
     }
 
