@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".online.OnlineGroupFragment"
-    android:background="@color/royal_yellow1">
+    android:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -38,7 +38,7 @@
         </androidx.recyclerview.widget.RecyclerView>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_group"
+            android:id="@+id/fab_createGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -47,8 +47,22 @@
             android:layout_marginTop="50dp"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="20dp"
-            android:contentDescription="add group item"
+            android:contentDescription="create group item"
             android:src="@drawable/ic_add_default"
+            app:rippleColor="?colorAccent" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_joinGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginEnd="94dp"
+            android:layout_marginBottom="20dp"
+            android:contentDescription="add group item"
+            android:src="@drawable/ic_add_group_default"
             app:rippleColor="?colorAccent" />
 
     </RelativeLayout>

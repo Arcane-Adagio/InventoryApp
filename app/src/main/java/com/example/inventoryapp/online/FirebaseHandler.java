@@ -197,13 +197,10 @@ public class FirebaseHandler {
     }
 
     public void AddMemberToGroup(String groupID, FirebaseUser currentUser){
-        Member member = new Member(currentUser.getUid());
         DatabaseReference groupsRef = mRootRef.child(FIREBASE_KEY_GROUPS);
         DatabaseReference groupRef = groupsRef.child(groupID);
-        DatabaseReference inventoriesRef = groupRef.child(FIREBASE_KEY_MEMBERS);
-        DatabaseReference newAdditionRef = inventoriesRef.push();
-        member.setMemberID(newAdditionRef.getKey());
-        newAdditionRef.runTransaction(PerformSetValueTransaction(newAdditionRef, member));
+        DatabaseReference membersRef = groupRef.child(FIREBASE_KEY_MEMBERS);
+        membersRef.runTransaction(PerformSetKeyValueTransaction(membersRef, currentUser.getUid(),currentUser.getDisplayName()));
     }
 
     public void AddInventoryToGroup(String groupID, Inventory inventory){
@@ -265,6 +262,23 @@ public class FirebaseHandler {
             @Override
             public Transaction.Result doTransaction(@NonNull MutableData currentData) {
                 ref.setValue(value);
+                return Transaction.success(currentData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError error, boolean committed, @Nullable DataSnapshot currentData) {
+
+            }
+        };
+    }
+
+    private <T> Transaction.Handler PerformSetKeyValueTransaction(DatabaseReference ref, String key, T value){
+        //Firebase Built-in method to prevent corruption from simultaneous accesses
+        return new Transaction.Handler(){
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData currentData) {
+                ref.child(key).setValue(value);
                 return Transaction.success(currentData);
             }
 

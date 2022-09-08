@@ -13,8 +13,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -36,9 +34,7 @@ import android.widget.Toast;
 
 import com.example.inventoryapp.GlobalActions;
 import com.example.inventoryapp.GlobalConstants;
-import com.example.inventoryapp.MainActivity;
 import com.example.inventoryapp.R;
-import com.example.inventoryapp.offline.OfflineInventoryFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -61,7 +57,8 @@ public class OnlineGroupFragment extends Fragment {
     RecyclerView rv;
     GroupRVAdapter group_rva;
     FirebaseUser currentUser;
-    FloatingActionButton addition_fab;
+    FloatingActionButton createGroup_fab;
+    FloatingActionButton addGroup_fab;
     Activity cActivity;
     private static final String APPBAR_TITLE_FOR_FRAGMENT = "Groups";
 
@@ -100,8 +97,10 @@ public class OnlineGroupFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        addition_fab = (FloatingActionButton) requireView().findViewById(R.id.fab_group);
-        addition_fab.setOnClickListener(view -> CreateGroupDialog());
+        createGroup_fab = (FloatingActionButton) requireView().findViewById(R.id.fab_createGroup);
+        createGroup_fab.setOnClickListener(view -> CreateGroupDialog());
+        addGroup_fab = (FloatingActionButton) requireView().findViewById(R.id.fab_joinGroup);
+        addGroup_fab.setOnClickListener(view -> JoinGroupDialog());
         SetupGroupRecyclerView();
         Objects.requireNonNull(((AppCompatActivity)getActivity()).getSupportActionBar()).setTitle(APPBAR_TITLE_FOR_FRAGMENT);
     }
@@ -136,8 +135,8 @@ public class OnlineGroupFragment extends Fragment {
 
                 @Override
                 public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                    if(isNotForMe(snapshot))
-                        return;
+                    //if(isNotForMe(snapshot))
+                    //    return;
                     String changedGroupID = snapshot.getKey().toString();
                     int position = getPositionInRecyclerViewByID(changedGroupID);
                     if(position != -1){
@@ -172,13 +171,14 @@ public class OnlineGroupFragment extends Fragment {
         }
 
         private boolean isNotForMe(DataSnapshot snap){
-            String groupName = Objects.requireNonNull(snap.child("groupName").getValue()).toString();
-            if(!groupName.equals("asd")){
-                Log.d("test","isNotForMe: "+groupName);
+            //String groupName = Objects.requireNonNull(snap.child("groupName").child("Members").getValue()).toString();
+            if(!snap.hasChild("Members"))
+                return false;
+            for(DataSnapshot snapshot : snap.child("Members").getChildren()){
+                snapshot.hasChild(currentUser.getUid());
                 return true;
             }
-            else
-                return false;
+            return false;
         }
 
         @NonNull
@@ -306,6 +306,58 @@ public class OnlineGroupFragment extends Fragment {
                         codeEditText.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
                         codeEditText.setText("");
                         codeEditText.setHint("Group Code Already Taken");
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        });
+        cancelBtn.setOnClickListener(v -> {
+            codeEditText.getBackground().clearColorFilter();
+            dialog.dismiss();
+        });
+
+        dialog.show();
+    }
+
+    public void JoinGroupDialog(){
+        final Dialog dialog = new Dialog(cActivity);
+        dialog.setContentView(R.layout.dlog_addgroup);
+        Button submitBtn = (Button) dialog.findViewById(R.id.btn_joinGroup_submit);
+        Button cancelBtn = (Button) dialog.findViewById(R.id.btn_joinGroup_cancel);
+        EditText codeEditText = (EditText)dialog.findViewById(R.id.edittext_groupCode);
+        //Set Max length of each edit text to make sure it matches the length allotted by the database
+        codeEditText.setFilters(new InputFilter[] { new InputFilter.LengthFilter(GlobalConstants.db_max_code_length) });
+        //when focus has been lost, check if code is valid
+        submitBtn.setOnClickListener(v -> {
+            String codeText = codeEditText.getText().toString();
+            if(codeText.equals(""))
+                return;
+            Query query = FirebaseDatabase.getInstance().getReference("Groups")
+                    .orderByChild("groupCode")
+                    .equalTo(codeEditText.getText().toString());
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    long queryResultCount = snapshot.getChildrenCount();
+                    if(queryResultCount == 0){
+                        codeEditText.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
+                        codeEditText.setText("");
+                        codeEditText.setHint("Group Does Not Exist");
+                    }
+                    else {
+                        String groupID = "";
+                        for(DataSnapshot snap : snapshot.getChildren()){
+                            groupID = snap.getKey();
+                            break;
+                        }
+                        if(!groupID.isEmpty())
+                            new FirebaseHandler().AddMemberToGroup(groupID, currentUser);
+                        //CreateOnlineGroup(codeText);
+                        dialog.dismiss();
                     }
                 }
 
