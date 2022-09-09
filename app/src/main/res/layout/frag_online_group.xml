@@ -65,20 +65,6 @@
             android:src="@drawable/ic_add_group_default"
             app:rippleColor="?colorAccent" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_test"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="50dp"
-            android:layout_marginTop="50dp"
-            android:layout_marginEnd="169dp"
-            android:layout_marginBottom="19dp"
-            android:contentDescription="add group item"
-            android:src="@drawable/ic_settings_default"
-            app:rippleColor="?colorAccent" />
-
     </RelativeLayout>
 
 </FrameLayout>

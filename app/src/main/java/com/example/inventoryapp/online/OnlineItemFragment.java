@@ -1,5 +1,7 @@
 package com.example.inventoryapp.online;
 
+import static com.example.inventoryapp.GlobalConstants.OUT_OF_BOUNDS;
+
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -138,7 +140,7 @@ public class OnlineItemFragment extends Fragment {
                 public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                     String changedItemID = snapshot.getKey().toString();
                     int position = getPositionInRecyclerViewByID(changedItemID);
-                    if(position != 1){
+                    if(position != OUT_OF_BOUNDS){
                         itemData.remove(position);
                         itemData.add(position, datasnapshotToItemConverter(snapshot));
                         InventoryItemRVAdapter.this.notifyItemChanged(position);
@@ -149,7 +151,7 @@ public class OnlineItemFragment extends Fragment {
                 public void onChildRemoved(@NonNull DataSnapshot snapshot) {
                     String changedItemID = snapshot.getKey().toString();
                     int position = getPositionInRecyclerViewByID(changedItemID);
-                    if(position != -1){
+                    if(position != OUT_OF_BOUNDS){
                         itemData.remove(position);
                         InventoryItemRVAdapter.this.notifyItemRemoved(position);
                     }
@@ -205,7 +207,7 @@ public class OnlineItemFragment extends Fragment {
         }
 
         private int getPositionInRecyclerViewByID(String id){
-            int position = -1;
+            int position = OUT_OF_BOUNDS;
             for (int i = 0; i< itemData.size(); i++){
                 if(itemData.get(i).getItemID().equals(id)){
                     position = i;

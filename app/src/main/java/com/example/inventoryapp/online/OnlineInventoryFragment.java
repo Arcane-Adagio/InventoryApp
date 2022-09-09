@@ -1,5 +1,7 @@
 package com.example.inventoryapp.online;
 
+import static com.example.inventoryapp.GlobalConstants.OUT_OF_BOUNDS;
+
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -28,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.inventoryapp.GlobalActions;
+import com.example.inventoryapp.GlobalConstants;
 import com.example.inventoryapp.MainActivity;
 import com.example.inventoryapp.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -170,7 +173,7 @@ public class OnlineInventoryFragment extends Fragment {
                 public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                     String changedInventoryID = snapshot.getKey().toString();
                     int position = getPositionInRecyclerViewByID(changedInventoryID);
-                    if(position != 1){
+                    if(position != OUT_OF_BOUNDS){
                         inventoryData.remove(position);
                         inventoryData.add(position, datasnapshotToInventoryConverter(snapshot));
                         InventoryRVAdapter.this.notifyItemChanged(position);
@@ -181,7 +184,7 @@ public class OnlineInventoryFragment extends Fragment {
                 public void onChildRemoved(@NonNull DataSnapshot snapshot) {
                     String changedInventoryID = snapshot.getKey().toString();
                     int position = getPositionInRecyclerViewByID(changedInventoryID);
-                    if(position != -1){
+                    if(position != OUT_OF_BOUNDS){
                         inventoryData.remove(position);
                         InventoryRVAdapter.this.notifyItemRemoved(position);
                     }
@@ -217,6 +220,7 @@ public class OnlineInventoryFragment extends Fragment {
             holder.deleteBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    //potential runtime exception if user presses button too fast
                     String inventoryID = inventoryData.get(holder.getAdapterPosition()).getInventoryID();
                     new FirebaseHandler().RemoveInventoryFromGroup(mCurrentGroupID, inventoryID);
                 }
@@ -241,7 +245,7 @@ public class OnlineInventoryFragment extends Fragment {
         }
 
         private int getPositionInRecyclerViewByID(String id){
-            int position = -1;
+            int position = GlobalConstants.OUT_OF_BOUNDS;
             for (int i = 0; i< inventoryData.size(); i++){
                 if(inventoryData.get(i).getInventoryID().equals(id)){
                     position = i;

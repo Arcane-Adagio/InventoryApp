@@ -14,5 +14,6 @@ public class GlobalConstants {
     public static final int db_max_password_length = 15;
     public static final String FRAGMENT_ARG_INVENTORY_NAME = "inventoryName";
     public static final String SHARED_PREF_FILENAME = "com.example.inventoryapp.LOCALINVENTORY";
+    public static final int OUT_OF_BOUNDS = -1;
 
 }

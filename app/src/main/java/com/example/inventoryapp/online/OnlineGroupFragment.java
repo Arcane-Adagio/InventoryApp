@@ -1,5 +1,7 @@
 package com.example.inventoryapp.online;
 
+import static com.example.inventoryapp.GlobalConstants.OUT_OF_BOUNDS;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -58,7 +60,6 @@ public class OnlineGroupFragment extends Fragment {
     FirebaseUser currentUser;
     FloatingActionButton createGroup_fab;
     FloatingActionButton addGroup_fab;
-    FloatingActionButton test_fab;
     Activity cActivity;
     private static final String APPBAR_TITLE_FOR_FRAGMENT = "Groups";
 
@@ -101,8 +102,6 @@ public class OnlineGroupFragment extends Fragment {
         createGroup_fab.setOnClickListener(view -> CreateGroupDialog());
         addGroup_fab = (FloatingActionButton) requireView().findViewById(R.id.fab_joinGroup);
         addGroup_fab.setOnClickListener(view -> JoinGroupDialog());
-        test_fab = (FloatingActionButton) requireView().findViewById(R.id.fab_test);
-        test_fab.setOnClickListener(view -> Test());
         SetupGroupRecyclerView();
         Objects.requireNonNull(((AppCompatActivity)getActivity()).getSupportActionBar()).setTitle(APPBAR_TITLE_FOR_FRAGMENT);
     }
@@ -140,7 +139,7 @@ public class OnlineGroupFragment extends Fragment {
                     String changedGroupID = snapshot.getKey().toString();
                     int position = getPositionInRecyclerViewByID(changedGroupID);
                     if(isNotAGroupMemberOf(snapshot)){
-                        if(position != -1){
+                        if(position != OUT_OF_BOUNDS){
                             //user is no longer apart of a group
                             //so it should be removed from recycler view
                             groupData.remove(position);
@@ -148,7 +147,7 @@ public class OnlineGroupFragment extends Fragment {
                         }
                     }
                     else{
-                        if(position == -1){
+                        if(position == OUT_OF_BOUNDS){
                             //user has joined the group, so
                             //the group needs to be displayed
                             groupData.add(datasnapshotToGroupConverter(snapshot));
@@ -168,7 +167,7 @@ public class OnlineGroupFragment extends Fragment {
                 public void onChildRemoved(@NonNull DataSnapshot snapshot) {
                     String changedGroupID = snapshot.getKey().toString();
                     int position = getPositionInRecyclerViewByID(changedGroupID);
-                    if(position != 1){
+                    if(position != OUT_OF_BOUNDS){
                         groupData.remove(position);
                         GroupRVAdapter.this.notifyItemRemoved(position);
                     }
@@ -236,7 +235,7 @@ public class OnlineGroupFragment extends Fragment {
         }
 
         private int getPositionInRecyclerViewByID(String id){
-            int position = -1;
+            int position = OUT_OF_BOUNDS;
             for (int i = 0; i<groupData.size(); i++){
                 if(groupData.get(i).getGroupID().equals(id)){
                     position = i;
@@ -345,12 +344,13 @@ public class OnlineGroupFragment extends Fragment {
         dialog.setContentView(R.layout.dlog_addgroup);
         Button submitBtn = (Button) dialog.findViewById(R.id.btn_joinGroup_submit);
         Button cancelBtn = (Button) dialog.findViewById(R.id.btn_joinGroup_cancel);
+        EditText passwordEditText = (EditText) dialog.findViewById(R.id.edittext_groupPassword);
         EditText codeEditText = (EditText)dialog.findViewById(R.id.edittext_groupCode);
         //Set Max length of each edit text to make sure it matches the length allotted by the database
         codeEditText.setFilters(new InputFilter[] { new InputFilter.LengthFilter(GlobalConstants.db_max_code_length) });
         //when focus has been lost, check if code is valid
         submitBtn.setOnClickListener(v -> {
-        AttemptToJoinGroup(codeEditText, dialog);
+        AttemptToJoinGroup(codeEditText.getText().toString(), passwordEditText, dialog);
         });
         cancelBtn.setOnClickListener(v -> {
             codeEditText.getBackground().clearColorFilter();
@@ -360,33 +360,37 @@ public class OnlineGroupFragment extends Fragment {
         dialog.show();
     }
 
-    public void AttemptToJoinGroup(EditText codeEditText, Dialog dialog){
-        String codeText = codeEditText.getText().toString();
-        if(codeText.equals(""))
+    public void AttemptToJoinGroup(String gCode, EditText passwordEditText, Dialog dialog){
+        if(gCode.equals("") || passwordEditText.getText().toString().isEmpty())
             return;
+        int givenPasswordHashed = passwordEditText.getText().toString().hashCode();
         Query query = FirebaseDatabase.getInstance().getReference("Groups")
                 .orderByChild("groupCode")
-                .equalTo(codeEditText.getText().toString());
+                .equalTo(gCode);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                long queryResultCount = snapshot.getChildrenCount();
-                if(queryResultCount == 0){
-                    codeEditText.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
-                    codeEditText.setText("");
-                    codeEditText.setHint("Group Does Not Exist");
+                if(snapshot.getChildrenCount() == 0){
+                    passwordEditText.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
+                    passwordEditText.setText("");
+                    passwordEditText.setHint("Group Does Not Exist");
+                    return;
                 }
-                else {
-                    String groupID = "";
-                    for(DataSnapshot snap : snapshot.getChildren()){
-                        groupID = snap.getKey();
-                        break;
+                for(DataSnapshot snap : snapshot.getChildren())
+                    if(snap.hasChild("groupPasswordHashed")){
+                        if(snap.child("groupPasswordHashed").getValue().equals(String.valueOf(givenPasswordHashed))){
+                            new FirebaseHandler().AddMemberToGroup(snap.getKey(), currentUser);
+                            Toast.makeText(cActivity, "joining group", Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                            break;
+                        }
+                        else {
+                            passwordEditText.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
+                            passwordEditText.setText("");
+                            passwordEditText.setHint("Password is incorrect");
+                            break;
+                        }
                     }
-                    if(!groupID.isEmpty())
-                        new FirebaseHandler().AddMemberToGroup(groupID, currentUser);
-                    //CreateOnlineGroup(codeText);
-                    dialog.dismiss();
-                }
             }
 
             @Override
