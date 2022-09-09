@@ -165,6 +165,10 @@ public class OnlineGroupFragment extends Fragment {
 
                 @Override
                 public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+
+
+
+
                     String changedGroupID = snapshot.getKey().toString();
                     int position = getPositionInRecyclerViewByID(changedGroupID);
                     if(position != OUT_OF_BOUNDS){

@@ -1,6 +1,7 @@
 package com.example.inventoryapp.online;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,6 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.Callable;
 
 public class FirebaseHandler {
     private static final String TAG = "Firebase Handler";
@@ -31,6 +33,11 @@ public class FirebaseHandler {
     public static final String FIREBASE_KEY_INVENTORYITEMS = "Items";
     public static final String FIREBASE_KEY_MEMBERS = "Members";
     public static FirebaseAuth mCurrentUser;
+
+    public static interface OnlineFragmentBehavior{
+        void HandleFragmentInvalidation();
+        void HandleInventoryInvalidation();
+    }
 
     public static class Group {
         private String groupID;
@@ -99,28 +106,6 @@ public class FirebaseHandler {
         }
     }
 
-    public static class Member {
-        public String memberID;
-        public String userID;
-
-
-        Member(String _userID){
-            userID = _userID;
-        }
-
-        public void setMemberID(String mid){
-            memberID = mid;
-        }
-
-        public String getMemberID() {
-            return memberID;
-        }
-
-        public String getUserID() {
-            return userID;
-        }
-    }
-
     public static class InventoryItem {
         public String itemName;
         public String itemID;
@@ -184,6 +169,8 @@ public class FirebaseHandler {
         public void setItemNeedful(boolean ItemNeedful) {itemNeedful = ItemNeedful;}
     }
 
+
+
     public void AddGroup(Group group){
         DatabaseReference groupsRef = mRootRef.child(FIREBASE_KEY_GROUPS);
         DatabaseReference newGroupRef = groupsRef.push();
@@ -216,7 +203,64 @@ public class FirebaseHandler {
 
     }
 
-    public void AddInventoryToGroup(String groupID, Inventory inventory){
+    public void RenameGroup(String groupID, String newName, FirebaseUser currentUser, OnlineFragmentBehavior callback){
+        DatabaseReference groupsRef = mRootRef.child(FIREBASE_KEY_GROUPS);
+        groupsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.hasChild(groupID)){
+                    if(currentUser.getUid().equals(snapshot.child(groupID).child("groupOwner").getValue())){
+                        DatabaseReference groupRef = groupsRef.child(groupID);
+                        DatabaseReference groupNameRef = groupRef.child("groupName");
+                        groupNameRef.runTransaction(PerformSetValueTransaction(groupNameRef, newName));
+                    }
+                }
+                else{
+                    //means group got deleted and a callback should be provided here
+                    callback.HandleFragmentInvalidation();
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    public void RenameInventory(String groupID, String inventoryID, String newName, FirebaseUser currentUser, OnlineFragmentBehavior callback){
+        DatabaseReference groupsRef = mRootRef.child(FIREBASE_KEY_GROUPS);
+        groupsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.hasChild(groupID)){
+                    DataSnapshot groupObj = snapshot.child(groupID);
+                    DatabaseReference groupRef = groupsRef.child(groupID);
+                    /* Only the owner is in charge of inventory names */
+                    if(currentUser.getUid().equals(groupObj.child("groupOwner").getValue())){
+                        if(groupObj.child(FIREBASE_KEY_INVENTORIES).hasChild(inventoryID)){
+                            DataSnapshot inventoryObj = groupObj.child(FIREBASE_KEY_INVENTORIES).child(inventoryID);
+                            DatabaseReference inventoryRef = groupRef.child(FIREBASE_KEY_INVENTORIES).child(inventoryID);
+                            DatabaseReference inventoryNameRef = inventoryRef.child("inventoryName");
+                            inventoryNameRef.runTransaction(PerformSetValueTransaction(inventoryNameRef, newName));
+                        }
+                    }
+                    else {
+                        //Notify user that only the owner can rename the inventory
+                    }
+                }
+                else{
+                    //means group got deleted and a callback should be provided here
+                    callback.HandleFragmentInvalidation();
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    public <T> void AddInventoryToGroup(String groupID, Inventory inventory, OnlineFragmentBehavior callback){
         DatabaseReference groupsRef = mRootRef.child(FIREBASE_KEY_GROUPS);
         groupsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -229,7 +273,8 @@ public class FirebaseHandler {
                     newAdditionRef.runTransaction(PerformSetValueTransaction(newAdditionRef, inventory));
                 }
                 else{
-                    //means group got deleted and a callback should be provided here
+                    //means group got deleted
+                    callback.HandleFragmentInvalidation();
                 }
             }
             @Override
@@ -247,7 +292,7 @@ public class FirebaseHandler {
         inventoryRef.runTransaction(PerformDeletionTransaction(inventoryRef));
     }
 
-    public void AddInventoryItemToInventory(String groupID, String inventoryID, InventoryItem item){
+    public void AddInventoryItemToInventory(String groupID, String inventoryID, InventoryItem item, OnlineFragmentBehavior callback){
         DatabaseReference groupsRef = mRootRef.child(FIREBASE_KEY_GROUPS);
         groupsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -263,9 +308,14 @@ public class FirebaseHandler {
                         item.setItemID(newAdditionRef.getKey());
                         newAdditionRef.runTransaction(PerformSetValueTransaction(newAdditionRef, item));
                     }
+                    else{
+                        //means the inventory got deleted
+                        callback.HandleInventoryInvalidation();
+                    }
                 }
                 else{
-                    //means group or inventory got deleted and a callback should be provided here
+                    //means group or inventory got deleted
+                    callback.HandleFragmentInvalidation();
                 }
             }
             @Override
@@ -285,7 +335,7 @@ public class FirebaseHandler {
         inventoryItemRef.runTransaction(PerformDeletionTransaction(inventoryItemRef));
     }
 
-    public void UpdateInventoryItem(String groupID, String inventoryID, InventoryItem item){
+    public void UpdateInventoryItem(String groupID, String inventoryID, InventoryItem item, OnlineFragmentBehavior callback){
         DatabaseReference groupsRef = mRootRef.child(FIREBASE_KEY_GROUPS);
         groupsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -305,7 +355,8 @@ public class FirebaseHandler {
                     }
                 }
                 else{
-                    //means group or inventory got deleted and a callback should be provided here
+                    //means group or inventory got deleted
+                    callback.HandleFragmentInvalidation();
                 }
             }
             @Override

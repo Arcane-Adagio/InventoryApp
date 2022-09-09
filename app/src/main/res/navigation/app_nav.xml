@@ -62,6 +62,9 @@
         <action
             android:id="@+id/action_onlineFragment_to_onlineLoginFragment"
             app:destination="@id/onlineLoginFragment" />
+        <action
+            android:id="@+id/action_onlineInventoryFragment_to_onlineGroupFragment"
+            app:destination="@id/onlineGroupFragment" />
     </fragment>
     <fragment
         android:id="@+id/onlineItemFragment"
@@ -71,6 +74,9 @@
         <action
             android:id="@+id/action_onlineFragment_to_onlineLoginFragment"
             app:destination="@id/onlineLoginFragment" />
+        <action
+            android:id="@+id/action_onlineItemFragment_to_onlineInventoryFragment"
+            app:destination="@id/onlineInventoryFragment" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment2"
