@@ -38,31 +38,45 @@
         </androidx.recyclerview.widget.RecyclerView>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_createGroup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="50dp"
-            android:layout_marginTop="50dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="20dp"
-            android:contentDescription="create group item"
-            android:src="@drawable/ic_add_default"
-            app:rippleColor="?colorAccent" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_joinGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_above="@+id/fab_createGroup"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="5dp"
+            android:contentDescription="add group item"
+            android:src="@drawable/ic_add_group_default"
+            android:visibility="gone"
+            app:rippleColor="?colorAccent" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_createGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/fab_moreOptions"
+            android:layout_alignStart="@+id/fab_moreOptions"
+            android:layout_alignEnd="@+id/fab_moreOptions"
+            android:layout_marginBottom="5dp"
+            android:contentDescription="create group item"
+            android:src="@drawable/ic_create_group_freepik"
+            android:visibility="gone"
+            app:rippleColor="?colorAccent" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_moreOptions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_marginStart="50dp"
-            android:layout_marginTop="50dp"
-            android:layout_marginEnd="94dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="20dp"
             android:layout_marginBottom="20dp"
             android:contentDescription="add group item"
-            android:src="@drawable/ic_add_group_default"
+            android:src="@drawable/ic_more_kozlov"
             app:rippleColor="?colorAccent" />
 
     </RelativeLayout>

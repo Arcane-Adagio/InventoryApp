@@ -27,6 +27,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -60,7 +62,15 @@ public class OnlineGroupFragment extends Fragment {
     FirebaseUser currentUser;
     FloatingActionButton createGroup_fab;
     FloatingActionButton addGroup_fab;
+    FloatingActionButton moreOptions_fab;
     Activity cActivity;
+    Animation rotateOpen;
+    Animation rotateClose;
+    Animation expandOpen;
+    Animation minimizeClose;
+    Boolean fab_open = false;
+
+
     private static final String APPBAR_TITLE_FOR_FRAGMENT = "Groups";
 
     public OnlineGroupFragment() {
@@ -102,8 +112,47 @@ public class OnlineGroupFragment extends Fragment {
         createGroup_fab.setOnClickListener(view -> CreateGroupDialog());
         addGroup_fab = (FloatingActionButton) requireView().findViewById(R.id.fab_joinGroup);
         addGroup_fab.setOnClickListener(view -> JoinGroupDialog());
+        rotateOpen = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_open_anim);
+        rotateClose = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_close_anim);
+        expandOpen = AnimationUtils.loadAnimation(getContext(), R.anim.expand_anim);
+        minimizeClose = AnimationUtils.loadAnimation(getContext(), R.anim.minimize_anim);
+        moreOptions_fab = (FloatingActionButton) requireView().findViewById(R.id.fab_moreOptions);
+        moreOptions_fab.setOnClickListener(view -> MoreOptionsButtonBehavior());
+
         SetupGroupRecyclerView();
         Objects.requireNonNull(((AppCompatActivity)getActivity()).getSupportActionBar()).setTitle(APPBAR_TITLE_FOR_FRAGMENT);
+    }
+
+    private void MoreOptionsButtonBehavior(){
+        if(!fab_open){
+            //make visible
+            createGroup_fab.setVisibility(View.VISIBLE);
+            addGroup_fab.setVisibility(View.VISIBLE);
+
+            //start animations
+            createGroup_fab.setAnimation(expandOpen);
+            addGroup_fab.setAnimation(expandOpen);
+            moreOptions_fab.startAnimation(rotateOpen);
+
+            //make clickable
+            createGroup_fab.setEnabled(true);
+            addGroup_fab.setEnabled(true);
+        }
+        else {
+            //make invisible
+            createGroup_fab.setVisibility(View.GONE);
+            addGroup_fab.setVisibility(View.GONE);
+
+            //start animations
+            createGroup_fab.setAnimation(minimizeClose);
+            addGroup_fab.setAnimation(minimizeClose);
+            moreOptions_fab.startAnimation(rotateClose);
+
+            //make unclickable
+            createGroup_fab.setEnabled(false);
+            addGroup_fab.setEnabled(false);
+        }
+        fab_open = !fab_open;
     }
 
     public class GroupRVAdapter extends RecyclerView.Adapter<ViewHolder>{

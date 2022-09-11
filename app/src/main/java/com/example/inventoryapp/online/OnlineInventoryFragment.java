@@ -144,7 +144,9 @@ public class OnlineInventoryFragment extends Fragment implements FirebaseHandler
 
     @Override
     public void HandleFragmentInvalidation() {
-        Toast.makeText(getActivity(), "Group was deleted", Toast.LENGTH_SHORT).show();
+        GlobalActions.ShowCustomAlertToast(
+                getLayoutInflater(), getContext(), requireView(),
+                R.layout.toast_groupdeleted, R.id.toast_groupDisconnect);
         NavController navController = NavHostFragment.findNavController(this);
         navController.navigate(R.id.action_onlineFragment_to_onlineLoginFragment);
     }
