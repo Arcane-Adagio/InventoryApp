@@ -1,6 +1,7 @@
 package com.example.inventoryapp.online;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -10,6 +11,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +20,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.inventoryapp.GlobalActions;
 import com.example.inventoryapp.MainActivity;
 import com.example.inventoryapp.R;
 import com.example.inventoryapp.offline.OfflineInventoryFragment;
@@ -77,6 +80,15 @@ public class OnlineLoginFragment extends Fragment {
         forgotPassword_tv.setOnClickListener(v -> {NavigateToPasswordResetFragment();});
         login_btn = (Button) requireView().findViewById(R.id.login_btn);
         login_btn.setOnClickListener(view -> Login(null));
+
+
+
+//        login_btn.setOnClickListener(view -> GlobalActions.ShowCustomAlertToast(
+//                getLayoutInflater(), getContext(), requireView(),
+//                R.layout.toast_groupdeleted, R.id.toast_groupDisconnect));
+
+
+
         createAccount_tbtn = (TextView) requireView().findViewById(R.id.textbtn_createAccount);
         createAccount_tbtn.setOnClickListener(view -> NavigateToAccountCreationFragment());
         if(mCurrentUser != null)
