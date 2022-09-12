@@ -14,7 +14,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
@@ -23,7 +22,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.InputFilter;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -35,10 +33,8 @@ import android.widget.Toast;
 import com.example.inventoryapp.GlobalActions;
 import com.example.inventoryapp.GlobalConstants;
 import com.example.inventoryapp.R;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -52,13 +48,11 @@ import java.util.List;
 import java.util.Objects;
 
 
-public class OnlineGroupFragment extends Fragment{
+public class OnlineGroupFragment extends OnlineFragment{
 
-    DatabaseReference mRootReference = FirebaseDatabase.getInstance().getReference();
     public final String TAG = "Online Group Fragment";
     RecyclerView rv;
     GroupRVAdapter group_rva;
-    FirebaseUser currentUser;
     FloatingActionButton createGroup_fab;
     FloatingActionButton addGroup_fab;
     FloatingActionButton moreOptions_fab;
@@ -82,7 +76,7 @@ public class OnlineGroupFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //Inflate Menu
-        requireActivity().addMenuProvider(new OnlineFragmentHandler(this), getViewLifecycleOwner(), Lifecycle.State.RESUMED);
+        requireActivity().addMenuProvider(new OnlineMenuProvider(this), getViewLifecycleOwner(), Lifecycle.State.RESUMED);
         return inflater.inflate(R.layout.frag_online_group, container, false);
     }
 
@@ -91,15 +85,10 @@ public class OnlineGroupFragment extends Fragment{
         super.onStart();
         SetupFloatingActionButtons();
         SetupGroupRecyclerView();
-        Objects.requireNonNull(((AppCompatActivity)getActivity()).getSupportActionBar()).setTitle(APPBAR_TITLE_FOR_FRAGMENT);
+        RenameAppBar(APPBAR_TITLE_FOR_FRAGMENT);
         SetupBottomNav();
     }
 
-    public void SetupBottomNav(){
-        BottomNavigationView nav = getActivity().findViewById(R.id.bottomnav_app);
-        MenuItem item = nav.getMenu().findItem(R.id.onlineLoginFragment);
-        item.setChecked(true);
-    }
 
     public void SetupFloatingActionButtons(){
         createGroup_fab = (FloatingActionButton) requireView().findViewById(R.id.fab_createGroup);
@@ -420,9 +409,6 @@ public class OnlineGroupFragment extends Fragment{
                 new FirebaseHandler.Group(name, code, passwordText, currentUser.getUid()));
     }
 
-    public void Test(){
-        group_rva.notifyDataSetChanged();
-    }
 
     private void SetupGroupRecyclerView(){
         rv=(RecyclerView) getView().findViewById(R.id.recyclerview_group);

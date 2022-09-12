@@ -4,7 +4,6 @@ import static com.example.inventoryapp.GlobalConstants.ONLINE_KEY_GROUPID;
 import static com.example.inventoryapp.GlobalConstants.ONLINE_KEY_GROUPNAME;
 import static com.example.inventoryapp.GlobalConstants.OUT_OF_BOUNDS;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
@@ -13,7 +12,6 @@ import android.os.Bundle;
 import android.text.InputFilter;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -26,7 +24,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
@@ -35,12 +32,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.inventoryapp.GlobalActions;
 import com.example.inventoryapp.GlobalConstants;
-import com.example.inventoryapp.MainActivity;
 import com.example.inventoryapp.R;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -52,34 +46,24 @@ import java.util.List;
 import java.util.Objects;
 
 
-public class OnlineInventoryFragment extends Fragment implements FirebaseHandler.OnlineFragmentBehavior {
+public class OnlineInventoryFragment extends OnlineFragment {
 
-    Activity cActivity;
     private final String TAG = "Inventory Activity Online";
-    DatabaseReference mRootReference = FirebaseDatabase.getInstance().getReference();
-    DatabaseReference mInventoryReference;
-    private static String mCurrentGroupID;
     RecyclerView rv;
     InventoryRVAdapter inv_rva;
-    FirebaseUser currentUser;
     FloatingActionButton addition_fab;
     FloatingActionButton edit_fab;
     FloatingActionButton moreOptions_fab;
     Boolean isOpen_FABMenu;
 
-
-
     public OnlineInventoryFragment() {
         // Required empty public constructor
     }
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        cActivity = getActivity();
-        mCurrentGroupID = this.getArguments().getString(ONLINE_KEY_GROUPID);
-
+        currentGroupID = this.getArguments().getString(ONLINE_KEY_GROUPID);
     }
 
 
@@ -87,7 +71,7 @@ public class OnlineInventoryFragment extends Fragment implements FirebaseHandler
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the menu
-        requireActivity().addMenuProvider(new OnlineFragmentHandler(this), getViewLifecycleOwner(), Lifecycle.State.RESUMED);
+        requireActivity().addMenuProvider(new OnlineMenuProvider(this), getViewLifecycleOwner(), Lifecycle.State.RESUMED);
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.frag_online_inventory, container, false);
     }
@@ -97,15 +81,9 @@ public class OnlineInventoryFragment extends Fragment implements FirebaseHandler
     public void onStart() {
         super.onStart();
         SetupFloatingActionButtons();
-        Objects.requireNonNull(((AppCompatActivity)getActivity()).getSupportActionBar()).setTitle(this.getArguments().getString(ONLINE_KEY_GROUPNAME));
+        RenameAppBar(this.getArguments().getString(ONLINE_KEY_GROUPNAME));
         SetupRecyclerView();
         SetupBottomNav();
-    }
-
-    public void SetupBottomNav(){
-        BottomNavigationView nav = getActivity().findViewById(R.id.bottomnav_app);
-        MenuItem item = nav.getMenu().findItem(R.id.onlineLoginFragment);
-        item.setChecked(true);
     }
 
     public void SetupFloatingActionButtons(){
@@ -123,7 +101,6 @@ public class OnlineInventoryFragment extends Fragment implements FirebaseHandler
                 new FloatingActionButton[] {addition_fab, edit_fab}, getContext());
     }
 
-
     private void NavigateToItemFragment(String groupID, String inventoryID, String inventoryName){
         Bundle bundle = new Bundle();
         bundle.putString("groupID", groupID);
@@ -136,16 +113,16 @@ public class OnlineInventoryFragment extends Fragment implements FirebaseHandler
 
     private void SetupRecyclerView(){
         rv=(RecyclerView) getView().findViewById(R.id.recyclerview_inventory);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(cActivity);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         layoutManager.scrollToPosition(0);
         rv.setLayoutManager(layoutManager);
-        inv_rva =new InventoryRVAdapter(cActivity);
+        inv_rva =new InventoryRVAdapter(getActivity());
         rv.setAdapter(inv_rva);
     }
 
     private void AddInventory(){
-        new FirebaseHandler().AddInventoryToGroup(mCurrentGroupID, new FirebaseHandler.Inventory(GlobalConstants.SAMPLE_INVENTORYNAME), this);
+        new FirebaseHandler().AddInventoryToGroup(currentGroupID, new FirebaseHandler.Inventory(GlobalConstants.SAMPLE_INVENTORYNAME), this);
     }
 
     @Override
@@ -153,20 +130,15 @@ public class OnlineInventoryFragment extends Fragment implements FirebaseHandler
         GlobalActions.ShowCustomAlertToast(
                 getLayoutInflater(), getContext(), requireView(),
                 R.layout.toast_groupdeleted, R.id.toast_groupDisconnect);
-        NavController navController = NavHostFragment.findNavController(this);
-        navController.navigate(R.id.action_onlineFragment_to_onlineLoginFragment);
+        super.HandleFragmentInvalidation();
     }
 
-    @Override
-    public void HandleInventoryInvalidation() {
-        //do nothing
-    }
 
 
     public class InventoryRVAdapter extends RecyclerView.Adapter<ViewHolder>{
         DatabaseReference mRootReference = FirebaseDatabase.getInstance().getReference();
         DatabaseReference groupsRef = mRootReference.child("Groups");
-        DatabaseReference groupRef = groupsRef.child(mCurrentGroupID);
+        DatabaseReference groupRef = groupsRef.child(currentGroupID);
         DatabaseReference mInventoriesReference = groupRef.child("Inventories");
         List<FirebaseHandler.Inventory> inventoryData = new ArrayList<FirebaseHandler.Inventory>();
         Context mContext;
@@ -231,14 +203,14 @@ public class OnlineInventoryFragment extends Fragment implements FirebaseHandler
             holder.inventoryName.setText(inventoryData.get(position).getInventoryName());
             holder.editBtn.setOnClickListener(view ->
                     NavigateToItemFragment(
-                            mCurrentGroupID, inventoryData.get(holder.getAdapterPosition()).getInventoryID(),
+                            currentGroupID, inventoryData.get(holder.getAdapterPosition()).getInventoryID(),
                             inventoryData.get(holder.getAdapterPosition()).getInventoryName()));
             holder.deleteBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     //potential runtime exception if user presses button too fast
                     String inventoryID = inventoryData.get(holder.getAdapterPosition()).getInventoryID();
-                    new FirebaseHandler().RemoveInventoryFromGroup(mCurrentGroupID, inventoryID);
+                    new FirebaseHandler().RemoveInventoryFromGroup(currentGroupID, inventoryID);
                 }
             });
         }
@@ -273,7 +245,7 @@ public class OnlineInventoryFragment extends Fragment implements FirebaseHandler
     }
 
     public void ShowRenameGroupDialog(){
-        final Dialog dialog = new Dialog(cActivity);
+        final Dialog dialog = new Dialog(getContext());
         dialog.setContentView(R.layout.dlog_renamegroup);
         Button submitBtn = (Button) dialog.findViewById(R.id.btn_renameGroup_submit);
         Button cancelBtn = (Button) dialog.findViewById(R.id.btn_renameGroup_cancel);
@@ -301,8 +273,8 @@ public class OnlineInventoryFragment extends Fragment implements FirebaseHandler
             return;
         }
         String newName = nameEditText.getText().toString();
-        new FirebaseHandler().RenameGroup(mCurrentGroupID, newName, FirebaseAuth.getInstance().getCurrentUser(), this);
-        Objects.requireNonNull(((AppCompatActivity)getActivity()).getSupportActionBar()).setTitle(newName);
+        new FirebaseHandler().RenameGroup(currentGroupID, newName, FirebaseAuth.getInstance().getCurrentUser(), this);
+        RenameAppBar(newName);
         dialog.dismiss();
     }
 
