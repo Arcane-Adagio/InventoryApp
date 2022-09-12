@@ -1,8 +1,12 @@
 package com.example.inventoryapp.offline;
 
+import static com.example.inventoryapp.online.OnlineFragment.currentGroupID;
+import static com.example.inventoryapp.online.OnlineFragment.currentInventoryID;
+
 import android.app.Activity;
 import android.content.Context;
 import android.text.InputType;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.inventoryapp.GlobalActions;
 import com.example.inventoryapp.data.InventoryItem;
 import com.example.inventoryapp.R;
+import com.example.inventoryapp.online.FirebaseHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -123,8 +128,14 @@ public class ItemRVAdapter extends RecyclerView.Adapter<ItemRVAdapter.ViewHolder
             editBtn.setOnClickListener(view -> ToggleEditMode_VH());
             deleteBtn = (ImageButton) itemView.findViewById(R.id.item_delete_btn);
             deleteBtn.setOnClickListener(view -> {
-                OfflineInventoryManager.RemoveItemFromInventory(currentInventoryName, mItems.get(getAdapterPosition()));
-                notifyItemRemoved(getAdapterPosition());
+                //potential runtime exception if user presses button too fast
+                try{
+                    OfflineInventoryManager.RemoveItemFromInventory(currentInventoryName, mItems.get(getAdapterPosition()));
+                    notifyItemRemoved(getAdapterPosition());
+                }
+                catch (Exception e){
+                    Log.d(TAG, "onBindViewHolder: "+e.getMessage());
+                }
             });
             reorderBtn = (ImageButton) itemView.findViewById(R.id.item_reorder_btn);
 

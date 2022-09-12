@@ -1,6 +1,8 @@
 package com.example.inventoryapp.offline;
 
 import static com.example.inventoryapp.GlobalConstants.FRAGMENT_ARG_INVENTORY_NAME;
+import static com.example.inventoryapp.online.OnlineFragment.currentGroupID;
+import static com.example.inventoryapp.online.OnlineFragment.currentInventoryID;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -20,6 +22,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.inventoryapp.R;
+import com.example.inventoryapp.online.FirebaseHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,8 +72,14 @@ public class InventoryRVAdapter extends RecyclerView.Adapter<InventoryRVAdapter.
     }
 
     public void DeleteInventory(String inventoryName, int position){
-        OfflineInventoryManager.RemoveInventory(inventoryName);
-        notifyItemRemoved(position);
+        //potential runtime exception if user presses button too fast
+        try{
+            OfflineInventoryManager.RemoveInventory(inventoryName);
+            notifyItemRemoved(position);
+        }
+        catch (Exception e){
+            Log.d(TAG, "onBindViewHolder: "+e.getMessage());
+        }
     }
 
     public void RenameInventory(int position, String newName){

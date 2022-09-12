@@ -1,10 +1,15 @@
 package com.example.inventoryapp.online;
 
 import static com.example.inventoryapp.GlobalConstants.OUT_OF_BOUNDS;
+import static com.example.inventoryapp.online.OnlineFragment.currentGroupID;
 import static com.example.inventoryapp.online.OnlineFragment.currentUser;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,8 +34,11 @@ import com.google.firebase.database.Query;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class GroupRVAOnline extends RecyclerView.Adapter<GroupRVAOnline.ViewHolder>{
+    private static final String TAG = "Group Recyclerview Adapter";
     DatabaseReference mRootReference = FirebaseDatabase.getInstance().getReference();
     DatabaseReference mGroupsReference = mRootReference.child("Groups");
     List<FirebaseHandler.Group> groupData = new ArrayList<FirebaseHandler.Group>();
@@ -39,6 +47,8 @@ public class GroupRVAOnline extends RecyclerView.Adapter<GroupRVAOnline.ViewHold
     Drawable exit_draw;
     RecyclerView rv;
     OnlineFragment.SimpleCallback navigationCallback;
+    ExecutorService executor = Executors.newSingleThreadExecutor();
+    Handler handler = new Handler(Looper.getMainLooper());
 
     public GroupRVAOnline(Context context, OnlineFragment.SimpleCallback navCallback){
         mContext = context;
@@ -53,50 +63,64 @@ public class GroupRVAOnline extends RecyclerView.Adapter<GroupRVAOnline.ViewHold
         mGroupsReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                if(isNotAGroupMemberOf(snapshot))
-                    return;
-                groupData.add(datasnapshotToGroupConverter(snapshot));
-                rv.scrollToPosition(groupData.size()-1); //todo: take out if annoying
-                GroupRVAOnline.this.notifyItemInserted(groupData.size()-1);
+                executor.execute(() -> { //Background work
+                    boolean notForMe = isNotAGroupMemberOf(snapshot);
+                    handler.post(() -> { //UI work
+                        if(notForMe)
+                            return;
+                        groupData.add(datasnapshotToGroupConverter(snapshot));
+                        rv.scrollToPosition(groupData.size()-1); //todo: take out if annoying
+                        GroupRVAOnline.this.notifyItemInserted(groupData.size()-1);
+                    });
+                });
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                String changedGroupID = snapshot.getKey().toString();
-                int position = getPositionInRecyclerViewByID(changedGroupID);
-                if(isNotAGroupMemberOf(snapshot)){
-                    if(position != OUT_OF_BOUNDS){
-                        //user is no longer apart of a group
-                        //so it should be removed from recycler view
-                        groupData.remove(position);
-                        GroupRVAOnline.this.notifyItemRemoved(position);
-                    }
-                }
-                else{
-                    if(position == OUT_OF_BOUNDS){
-                        //user has joined the group, so
-                        //the group needs to be displayed
-                        groupData.add(datasnapshotToGroupConverter(snapshot));
-                        GroupRVAOnline.this.notifyItemInserted(groupData.size()-1);
-                    }
-                    else {
-                        //user is apart of the group and the group is displayed
-                        //but the value needs to be updated
-                        groupData.remove(position);
-                        groupData.add(position, datasnapshotToGroupConverter(snapshot));
-                        GroupRVAOnline.this.notifyItemChanged(position);
-                    }
-                }
+                executor.execute(() -> { //Background work here
+                    String changedGroupID = snapshot.getKey().toString();
+                    int position = getPositionInRecyclerViewByID(changedGroupID);
+                    boolean notForMe = isNotAGroupMemberOf(snapshot);
+                    handler.post(() -> { //UI Thread work here
+                        if(notForMe){
+                            if(position != OUT_OF_BOUNDS){
+                                //user is no longer apart of a group
+                                //so it should be removed from recycler view
+                                groupData.remove(position);
+                                GroupRVAOnline.this.notifyItemRemoved(position);
+                            }
+                        }
+                        else{
+                            if(position == OUT_OF_BOUNDS){
+                                //user has joined the group, so
+                                //the group needs to be displayed
+                                groupData.add(datasnapshotToGroupConverter(snapshot));
+                                GroupRVAOnline.this.notifyItemInserted(groupData.size()-1);
+                            }
+                            else {
+                                //user is apart of the group and the group is displayed
+                                //but the value needs to be updated
+                                groupData.remove(position);
+                                groupData.add(position, datasnapshotToGroupConverter(snapshot));
+                                GroupRVAOnline.this.notifyItemChanged(position);
+                            }
+                        }
+                    });
+                });
             }
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                String changedGroupID = snapshot.getKey().toString();
-                int position = getPositionInRecyclerViewByID(changedGroupID);
-                if(position != OUT_OF_BOUNDS){
-                    groupData.remove(position);
-                    GroupRVAOnline.this.notifyItemRemoved(position);
-                }
+                executor.execute(() -> {
+                    String changedGroupID = snapshot.getKey().toString();
+                    int position = getPositionInRecyclerViewByID(changedGroupID);
+                    handler.post(() -> {
+                        if(position != OUT_OF_BOUNDS){
+                            groupData.remove(position);
+                            GroupRVAOnline.this.notifyItemRemoved(position);
+                        }
+                    });
+                });
             }
 
             @Override
@@ -138,8 +162,14 @@ public class GroupRVAOnline extends RecyclerView.Adapter<GroupRVAOnline.ViewHold
         holder.edit_btn.setOnClickListener(view -> navigationCallback.CallableFunction(new String[] {
                 groupData.get(holder.getAdapterPosition()).getGroupID(),
                 groupData.get(holder.getAdapterPosition()).getGroupName()}));
-        holder.delete_btn.setOnClickListener(view ->
-                new FirebaseHandler().RemoveGroup(groupData.get(holder.getAdapterPosition())));
+        holder.delete_btn.setOnClickListener(view -> {
+            try { //potential runtime exception if user presses button too fast
+                new FirebaseHandler().RemoveGroup(groupData.get(holder.getAdapterPosition()));
+            }
+            catch (Exception e){
+                Log.d(TAG, "onBindViewHolder: "+e.getMessage());
+            }
+        });
         holder.delete_btn.setImageDrawable(
                 (Objects.equals(groupData.get(holder.getAdapterPosition()).getGroupOwner(), currentUser.getUid())) ? delete_draw : exit_draw
         );

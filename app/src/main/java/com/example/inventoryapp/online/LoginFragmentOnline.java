@@ -100,19 +100,6 @@ public class LoginFragmentOnline extends OnlineFragment {
         navController.navigate(R.id.action_onlineLoginFragment_to_accountResetFragment);
     }
 
-    public void createAccount(String email, String password){
-        //could add SendVerificationEMail
-        mAuth.createUserWithEmailAndPassword(email, password).addOnSuccessListener(cActivity, authResult -> {
-            Log.d(TAG, "createAccount: success");
-            //FirebaseUser user = mAuth.getCurrentUser();
-            Toast.makeText(cActivity, "Authentication Succeeded.", Toast.LENGTH_SHORT).show();
-        }).addOnFailureListener(cActivity, e -> {
-            Log.d(TAG, "createAccount: failure");
-            //FirebaseUser user = mAuth.getCurrentUser();
-            Toast.makeText(cActivity, "Auth Failure"+e.getMessage(), Toast.LENGTH_SHORT).show();
-        });
-    }
-
     public void Login (View view){
         if(!textboxValidation())
             return;

@@ -4,6 +4,8 @@ import static com.example.inventoryapp.GlobalConstants.OUT_OF_BOUNDS;
 import static com.example.inventoryapp.online.OnlineFragment.currentGroupID;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +31,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class InventoryRVAOnline extends RecyclerView.Adapter<InventoryRVAOnline.ViewHolder>{
     DatabaseReference mRootReference = FirebaseDatabase.getInstance().getReference();
@@ -40,6 +44,8 @@ public class InventoryRVAOnline extends RecyclerView.Adapter<InventoryRVAOnline.
     Context mContext;
     RecyclerView rv;
     OnlineFragment.SimpleCallback mCallback;
+    ExecutorService executor = Executors.newSingleThreadExecutor();
+    Handler handler = new Handler(Looper.getMainLooper());
 
     public InventoryRVAOnline(Context context, OnlineFragment.SimpleCallback sCallback){
         mContext = context;
@@ -48,8 +54,6 @@ public class InventoryRVAOnline extends RecyclerView.Adapter<InventoryRVAOnline.
         mInventoriesReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                if(mInventoriesReference == null)
-                    Log.d(TAG, "onChildAdded: invalid reference");
                 inventoryData.add(datasnapshotToInventoryConverter(snapshot));
                 rv.scrollToPosition(inventoryData.size()-1); //todo: take out if annoying
                 InventoryRVAOnline.this.notifyItemInserted(inventoryData.size()-1);
@@ -57,23 +61,31 @@ public class InventoryRVAOnline extends RecyclerView.Adapter<InventoryRVAOnline.
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                String changedInventoryID = snapshot.getKey().toString();
-                int position = getPositionInRecyclerViewByID(changedInventoryID);
-                if(position != OUT_OF_BOUNDS){
-                    inventoryData.remove(position);
-                    inventoryData.add(position, datasnapshotToInventoryConverter(snapshot));
-                    InventoryRVAOnline.this.notifyItemChanged(position);
-                }
+                executor.execute(() -> { // done on background thread
+                    String changedInventoryID = snapshot.getKey().toString();
+                    int position = getPositionInRecyclerViewByID(changedInventoryID);
+                    handler.post(() -> { // done on ui thread
+                        if(position != OUT_OF_BOUNDS){
+                            inventoryData.remove(position);
+                            inventoryData.add(position, datasnapshotToInventoryConverter(snapshot));
+                            InventoryRVAOnline.this.notifyItemChanged(position);
+                        }
+                    });
+                });
             }
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                String changedInventoryID = snapshot.getKey().toString();
-                int position = getPositionInRecyclerViewByID(changedInventoryID);
-                if(position != OUT_OF_BOUNDS){
-                    inventoryData.remove(position);
-                    InventoryRVAOnline.this.notifyItemRemoved(position);
-                }
+                executor.execute(() -> {
+                    String changedInventoryID = snapshot.getKey().toString();
+                    int position = getPositionInRecyclerViewByID(changedInventoryID);
+                    handler.post(() -> {
+                        if(position != OUT_OF_BOUNDS){
+                            inventoryData.remove(position);
+                            InventoryRVAOnline.this.notifyItemRemoved(position);
+                        }
+                    });
+                });
             }
 
             @Override
@@ -105,8 +117,13 @@ public class InventoryRVAOnline extends RecyclerView.Adapter<InventoryRVAOnline.
         ));
         holder.deleteBtn.setOnClickListener(view -> {
             //potential runtime exception if user presses button too fast
-            String inventoryID = inventoryData.get(holder.getAdapterPosition()).getInventoryID();
-            new FirebaseHandler().RemoveInventoryFromGroup(currentGroupID, inventoryID);
+            try{
+                String inventoryID = inventoryData.get(holder.getAdapterPosition()).getInventoryID();
+                new FirebaseHandler().RemoveInventoryFromGroup(currentGroupID, inventoryID);
+            }
+            catch (Exception e){
+                Log.d(TAG, "onBindViewHolder: "+e.getMessage());
+            }
         });
     }
 

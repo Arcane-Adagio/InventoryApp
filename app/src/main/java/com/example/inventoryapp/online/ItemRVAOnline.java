@@ -6,7 +6,10 @@ import static com.example.inventoryapp.online.OnlineFragment.currentInventoryID;
 import static com.example.inventoryapp.online.OnlineFragment.groupsRef;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +34,8 @@ import com.google.firebase.database.DatabaseReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ItemRVAOnline extends  RecyclerView.Adapter<ItemRVAOnline.ViewHolder>{
 
@@ -42,6 +47,9 @@ public class ItemRVAOnline extends  RecyclerView.Adapter<ItemRVAOnline.ViewHolde
     Context mContext;
     RecyclerView rv;
     Fragment cFragment;
+    private final String TAG = "ItemRVA - Online";
+    ExecutorService executor = Executors.newSingleThreadExecutor();
+    Handler handler = new Handler(Looper.getMainLooper());
 
     public ItemRVAOnline(Context context, RecyclerView recyclerView, Fragment callingFragment){
         mContext = context;
@@ -57,23 +65,31 @@ public class ItemRVAOnline extends  RecyclerView.Adapter<ItemRVAOnline.ViewHolde
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                String changedItemID = snapshot.getKey().toString();
-                int position = getPositionInRecyclerViewByID(changedItemID);
-                if(position != OUT_OF_BOUNDS){
-                    itemData.remove(position);
-                    itemData.add(position, datasnapshotToItemConverter(snapshot));
-                    ItemRVAOnline.this.notifyItemChanged(position);
-                }
+                executor.execute(() -> {
+                    String changedItemID = snapshot.getKey().toString();
+                    int position = getPositionInRecyclerViewByID(changedItemID);
+                    handler.post(() -> {
+                        if(position != OUT_OF_BOUNDS){
+                            itemData.remove(position);
+                            itemData.add(position, datasnapshotToItemConverter(snapshot));
+                            ItemRVAOnline.this.notifyItemChanged(position);
+                        }
+                    });
+                });
             }
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                String changedItemID = snapshot.getKey().toString();
-                int position = getPositionInRecyclerViewByID(changedItemID);
-                if(position != OUT_OF_BOUNDS){
-                    itemData.remove(position);
-                    ItemRVAOnline.this.notifyItemRemoved(position);
-                }
+                executor.execute(() -> {
+                    String changedItemID = snapshot.getKey().toString();
+                    int position = getPositionInRecyclerViewByID(changedItemID);
+                    handler.post(() -> {
+                        if(position != OUT_OF_BOUNDS){
+                            itemData.remove(position);
+                            ItemRVAOnline.this.notifyItemRemoved(position);
+                        }
+                    });
+                });
             }
 
             @Override
@@ -105,8 +121,14 @@ public class ItemRVAOnline extends  RecyclerView.Adapter<ItemRVAOnline.ViewHolde
         holder.itemNeedfulCB.setChecked(item.getItemNeedful());
         holder.editBtn.setOnClickListener(view -> holder.ToggleEditMode_VH(item));
         holder.deleteBtn.setOnClickListener(view -> {
-            String inventoryItemID = itemData.get(holder.getAdapterPosition()).getItemID();
-            new FirebaseHandler().RemoveInventoryItemFromInventory(currentGroupID, currentInventoryID, inventoryItemID);
+            //potential runtime exception if user presses button too fast
+            try{
+                String inventoryItemID = itemData.get(holder.getAdapterPosition()).getItemID();
+                new FirebaseHandler().RemoveInventoryItemFromInventory(currentGroupID, currentInventoryID, inventoryItemID);
+            }
+            catch (Exception e){
+                Log.d(TAG, "onBindViewHolder: "+e.getMessage());
+            }
         });
     }
 
