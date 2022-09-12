@@ -72,28 +72,45 @@
             android:layout_marginVertical="10dp" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/inventoryitem_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/fab_renameInventory"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="5dp"
+            android:contentDescription="add item"
+            android:src="@drawable/ic_add_iconhubs"
+            android:visibility="gone"
+            app:rippleColor="?colorAccent" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_renameInventory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/fab_moreOptions"
+            android:layout_alignStart="@+id/fab_moreOptions"
+            android:layout_alignEnd="@+id/fab_moreOptions"
+            android:layout_marginBottom="5dp"
+            android:contentDescription="rename inventory"
+            android:src="@drawable/ic_edit_default"
+            android:visibility="gone"
+            app:rippleColor="?colorAccent" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_moreOptions"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_marginStart="50dp"
-            android:layout_marginTop="50dp"
-            android:layout_marginEnd="129dp"
-            android:layout_marginBottom="51dp"
-            android:contentDescription="add inventory item"
-            android:src="@drawable/ic_edit_default"
-            app:rippleColor="?colorAccent" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/inventoryitem_fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_margin="50dp"
-            android:contentDescription="@string/fab_addinventoryitem_contentdescription"
-            android:src="@drawable/ic_add_default"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="20dp"
+            android:contentDescription="see more options"
+            android:src="@drawable/ic_more_kozlov"
             app:rippleColor="?colorAccent" />
 
     </RelativeLayout>

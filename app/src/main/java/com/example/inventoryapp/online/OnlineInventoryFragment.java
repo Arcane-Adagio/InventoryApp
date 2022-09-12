@@ -13,8 +13,6 @@ import android.os.Bundle;
 import android.text.InputFilter;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +27,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -36,7 +35,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.inventoryapp.GlobalActions;
 import com.example.inventoryapp.GlobalConstants;
+import com.example.inventoryapp.MainActivity;
 import com.example.inventoryapp.R;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -63,6 +64,8 @@ public class OnlineInventoryFragment extends Fragment implements FirebaseHandler
     FirebaseUser currentUser;
     FloatingActionButton addition_fab;
     FloatingActionButton edit_fab;
+    FloatingActionButton moreOptions_fab;
+    Boolean isOpen_FABMenu;
 
 
 
@@ -76,26 +79,15 @@ public class OnlineInventoryFragment extends Fragment implements FirebaseHandler
         super.onCreate(savedInstanceState);
         cActivity = getActivity();
         mCurrentGroupID = this.getArguments().getString(ONLINE_KEY_GROUPID);
-        setHasOptionsMenu(true);
+
     }
 
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.online_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        /* Handles behavior for when a menu option is selected */
-        if (GlobalActions.DefaultMenuOptionSelection(item,cActivity, this))
-            return true;
-        return super.onOptionsItemSelected(item);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // Inflate the menu
+        requireActivity().addMenuProvider(new OnlineFragmentHandler(this), getViewLifecycleOwner(), Lifecycle.State.RESUMED);
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.frag_online_inventory, container, false);
     }
@@ -104,17 +96,31 @@ public class OnlineInventoryFragment extends Fragment implements FirebaseHandler
     @Override
     public void onStart() {
         super.onStart();
-        addition_fab = (FloatingActionButton) getView().findViewById(R.id.fab_inventory);
-        addition_fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AddInventory();
-            }
-        });
-        edit_fab = (FloatingActionButton) getView().findViewById(R.id.fab_renameGroup);
-        edit_fab.setOnClickListener(view -> ShowRenameGroupDialog());
+        SetupFloatingActionButtons();
         Objects.requireNonNull(((AppCompatActivity)getActivity()).getSupportActionBar()).setTitle(this.getArguments().getString(ONLINE_KEY_GROUPNAME));
         SetupRecyclerView();
+        SetupBottomNav();
+    }
+
+    public void SetupBottomNav(){
+        BottomNavigationView nav = getActivity().findViewById(R.id.bottomnav_app);
+        MenuItem item = nav.getMenu().findItem(R.id.onlineLoginFragment);
+        item.setChecked(true);
+    }
+
+    public void SetupFloatingActionButtons(){
+        addition_fab = (FloatingActionButton) getView().findViewById(R.id.fab_inventory);
+        addition_fab.setOnClickListener(view -> AddInventory());
+        edit_fab = (FloatingActionButton) getView().findViewById(R.id.fab_renameGroup);
+        edit_fab.setOnClickListener(view -> ShowRenameGroupDialog());
+        moreOptions_fab = (FloatingActionButton) getView().findViewById(R.id.fab_moreOptions);
+        moreOptions_fab.setOnClickListener(view -> ToggleFABMenu());
+        isOpen_FABMenu = addition_fab.isShown();
+    }
+
+    private void ToggleFABMenu(){
+        isOpen_FABMenu = GlobalActions.ExpandableFABDefaultBehavior(isOpen_FABMenu, moreOptions_fab,
+                new FloatingActionButton[] {addition_fab, edit_fab}, getContext());
     }
 
 
@@ -296,7 +302,7 @@ public class OnlineInventoryFragment extends Fragment implements FirebaseHandler
         }
         String newName = nameEditText.getText().toString();
         new FirebaseHandler().RenameGroup(mCurrentGroupID, newName, FirebaseAuth.getInstance().getCurrentUser(), this);
-        Objects.requireNonNull(((AppCompatActivity)getActivity()).getSupportActionBar()).setTitle(this.getArguments().getString(newName));
+        Objects.requireNonNull(((AppCompatActivity)getActivity()).getSupportActionBar()).setTitle(newName);
         dialog.dismiss();
     }
 

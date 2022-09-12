@@ -20,6 +20,8 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -34,6 +36,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.example.inventoryapp.offline.OfflineInventoryFragment;
 import com.example.inventoryapp.offline.OfflineInventoryManager;
 import com.example.inventoryapp.online.FirebaseHandler;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -115,6 +118,43 @@ public class GlobalActions {
         toast.setDuration(Toast.LENGTH_LONG);
         toast.setView(layout);
         toast.show();
+    }
+
+    public static boolean ExpandableFABDefaultBehavior(Boolean menuOpen
+            , FloatingActionButton moreOptions_fab, FloatingActionButton[] subMenu, Context context){
+        /* Function used to expand and minimize a floating action button menu */
+
+        //Animations Used;
+        Animation rotateOpen = AnimationUtils.loadAnimation(context, R.anim.rotate_open_anim);
+        Animation rotateClose = AnimationUtils.loadAnimation(context, R.anim.rotate_close_anim);
+        Animation expandOpen = AnimationUtils.loadAnimation(context, R.anim.expand_anim);
+        Animation minimizeClose = AnimationUtils.loadAnimation(context, R.anim.minimize_anim);
+
+        //if menu is closed, make submenu open and clickable
+        //and play respective animation
+        if(!menuOpen){
+            for(int i = 0; i<subMenu.length; i++){
+                FloatingActionButton fab = subMenu[i];
+                fab.setVisibility(View.VISIBLE);
+                fab.setAnimation(expandOpen);
+                fab.setEnabled(true);
+            }
+            moreOptions_fab.startAnimation(rotateOpen);
+        }
+        //if menu is open, make submenu closed and un-clickable
+        //and play respective animation
+        else {
+            for(int i = 0; i<subMenu.length; i++){
+                FloatingActionButton fab = subMenu[i];
+                fab.setVisibility(View.GONE);
+                fab.setAnimation(minimizeClose);
+                fab.clearAnimation();
+                fab.setEnabled(false);
+            }
+            moreOptions_fab.startAnimation(rotateClose);
+        }
+        //Return boolean to indicate new menu state
+        return !menuOpen;
     }
 
     public static boolean isInternetAvailable() {

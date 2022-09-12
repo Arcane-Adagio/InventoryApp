@@ -33,7 +33,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.Objects;
 
 
-public class OfflineItemFragment extends Fragment {
+public class OfflineItemFragment extends Fragment implements OfflineFragmentHandler.Callback {
 
     private static FloatingActionButton rv_fab;
     private String mCurrentInventory;
@@ -53,7 +53,6 @@ public class OfflineItemFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         cActivity = getActivity();
-        setHasOptionsMenu(true);
     }
 
     @Override
@@ -111,12 +110,6 @@ public class OfflineItemFragment extends Fragment {
         mNameChangeLayout = (LinearLayout) requireView().findViewById(R.id.namechange_view);
     }
 
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.inventory_appbar_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
     private boolean MenuOptionsSelected(@NonNull MenuItem item){
         /* Function to handle menu item behaviors specific to this activity */
         switch (item.getItemId()){
@@ -129,51 +122,22 @@ public class OfflineItemFragment extends Fragment {
     }
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        /* Handles behavior for when an appbar menu item is selected */
-        if(MenuOptionsSelected(item))
-            return true;
-        else if (GlobalActions.DefaultMenuOptionSelection(item,cActivity, this))
-            return true;
-        else
-            return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        MenuHost menuHost = requireActivity();
-        menuHost.addMenuProvider(new addMenuProvider(getActivity()),
+        requireActivity().addMenuProvider(new OfflineFragmentHandler(this, this),
                 getViewLifecycleOwner(),
                 Lifecycle.State.RESUMED);
         return inflater.inflate(R.layout.frag_offline_item, container, false);
     }
 
-    private class addMenuProvider implements MenuProvider{
-        private Activity cActivity;
-        public addMenuProvider(Activity activity){
-            cActivity = activity;
-        }
+    @Override
+    public int customMenuOptions() {
+        return R.menu.inventory_appbar_menu;
+    }
 
-        @Override
-        public void onPrepareMenu(@NonNull Menu menu) {
-            MenuProvider.super.onPrepareMenu(menu);
-        }
-
-        @Override
-        public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
-            menuInflater.inflate(R.menu.home_appbar_menu, menu);
-        }
-
-        @Override
-        public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
-            return GlobalActions.DefaultMenuOptionSelection(menuItem, cActivity, getParentFragment());
-        }
-
-        @Override
-        public void onMenuClosed(@NonNull Menu menu) {
-            MenuProvider.super.onMenuClosed(menu);
-        }
+    @Override
+    public boolean customOnItemSelected(MenuItem menuItem) {
+        return MenuOptionsSelected(menuItem);
     }
 }

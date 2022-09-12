@@ -18,7 +18,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
-    BottomNavigationView navView;
+    public BottomNavigationView navView;
     public static int fragmentContainerID = R.id.fragment_container;
 
 
@@ -36,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
         navView = (BottomNavigationView) findViewById(R.id.bottomnav_app);
         NavController navController = Navigation.findNavController(this, R.id.fragment_container);
         NavigationUI.setupWithNavController(navView, navController);
+
     }
+
 
 }

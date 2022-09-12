@@ -1,9 +1,12 @@
 package com.example.inventoryapp.offline;
 
+import static com.example.inventoryapp.GlobalConstants.ONLINE_KEY_GROUPNAME;
+
 import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MenuHost;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
@@ -23,8 +26,10 @@ import com.example.inventoryapp.GlobalActions;
 import com.example.inventoryapp.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.Objects;
 
-public class OfflineInventoryFragment extends Fragment implements MenuProvider {
+
+public class OfflineInventoryFragment extends Fragment {
     Activity cActivity;
     private final String TAG = "Local Inventory Fragment";
     FloatingActionButton fab;
@@ -43,7 +48,6 @@ public class OfflineInventoryFragment extends Fragment implements MenuProvider {
         cActivity = getActivity();
         mThis = this;
         OfflineInventoryManager.LoadUserInventory(getActivity());
-        setHasOptionsMenu(true);
     }
 
     public static Fragment GetFragmentReference(){
@@ -53,8 +57,7 @@ public class OfflineInventoryFragment extends Fragment implements MenuProvider {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        MenuHost menuHost = requireActivity();
-        menuHost.addMenuProvider(this, getViewLifecycleOwner(), Lifecycle.State.RESUMED);
+        requireActivity().addMenuProvider(new OfflineFragmentHandler(this), getViewLifecycleOwner(), Lifecycle.State.RESUMED);
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.frag_offline_inventory, container, false);
     }
@@ -88,6 +91,7 @@ public class OfflineInventoryFragment extends Fragment implements MenuProvider {
                     ResetInventoryRecyclerView();
             });
         }
+        Objects.requireNonNull(((AppCompatActivity)getActivity()).getSupportActionBar()).setTitle("Offline Inventories");
         super.onStart();
     }
 
@@ -103,15 +107,4 @@ public class OfflineInventoryFragment extends Fragment implements MenuProvider {
         super.onDestroy();
     }
 
-
-
-    @Override
-    public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
-        menuInflater.inflate(R.menu.home_appbar_menu, menu);
-    }
-
-    @Override
-    public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
-        return GlobalActions.DefaultMenuOptionSelection(menuItem, cActivity, mThis);
-    }
 }

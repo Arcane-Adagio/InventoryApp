@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Lifecycle;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -22,13 +23,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.InputFilter;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -38,6 +35,7 @@ import android.widget.Toast;
 import com.example.inventoryapp.GlobalActions;
 import com.example.inventoryapp.GlobalConstants;
 import com.example.inventoryapp.R;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -54,9 +52,10 @@ import java.util.List;
 import java.util.Objects;
 
 
-public class OnlineGroupFragment extends Fragment {
+public class OnlineGroupFragment extends Fragment{
 
     DatabaseReference mRootReference = FirebaseDatabase.getInstance().getReference();
+    public final String TAG = "Online Group Fragment";
     RecyclerView rv;
     GroupRVAdapter group_rva;
     FirebaseUser currentUser;
@@ -64,11 +63,7 @@ public class OnlineGroupFragment extends Fragment {
     FloatingActionButton addGroup_fab;
     FloatingActionButton moreOptions_fab;
     Activity cActivity;
-    Animation rotateOpen;
-    Animation rotateClose;
-    Animation expandOpen;
-    Animation minimizeClose;
-    Boolean fab_open = false;
+    Boolean fab_open;
 
 
     private static final String APPBAR_TITLE_FOR_FRAGMENT = "Groups";
@@ -82,78 +77,45 @@ public class OnlineGroupFragment extends Fragment {
         super.onCreate(savedInstanceState);
         cActivity = getActivity();
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        setHasOptionsMenu(true);
-    }
-
-
-    @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.online_menu, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        /* Handles behavior for when a menu option is selected */
-        if (GlobalActions.DefaultMenuOptionSelection(item,cActivity, this))
-            return true;
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        //Inflate Menu
+        requireActivity().addMenuProvider(new OnlineFragmentHandler(this), getViewLifecycleOwner(), Lifecycle.State.RESUMED);
         return inflater.inflate(R.layout.frag_online_group, container, false);
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        SetupFloatingActionButtons();
+        SetupGroupRecyclerView();
+        Objects.requireNonNull(((AppCompatActivity)getActivity()).getSupportActionBar()).setTitle(APPBAR_TITLE_FOR_FRAGMENT);
+        SetupBottomNav();
+    }
+
+    public void SetupBottomNav(){
+        BottomNavigationView nav = getActivity().findViewById(R.id.bottomnav_app);
+        MenuItem item = nav.getMenu().findItem(R.id.onlineLoginFragment);
+        item.setChecked(true);
+    }
+
+    public void SetupFloatingActionButtons(){
         createGroup_fab = (FloatingActionButton) requireView().findViewById(R.id.fab_createGroup);
         createGroup_fab.setOnClickListener(view -> CreateGroupDialog());
         addGroup_fab = (FloatingActionButton) requireView().findViewById(R.id.fab_joinGroup);
         addGroup_fab.setOnClickListener(view -> JoinGroupDialog());
-        rotateOpen = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_open_anim);
-        rotateClose = AnimationUtils.loadAnimation(getContext(), R.anim.rotate_close_anim);
-        expandOpen = AnimationUtils.loadAnimation(getContext(), R.anim.expand_anim);
-        minimizeClose = AnimationUtils.loadAnimation(getContext(), R.anim.minimize_anim);
         moreOptions_fab = (FloatingActionButton) requireView().findViewById(R.id.fab_moreOptions);
-        moreOptions_fab.setOnClickListener(view -> MoreOptionsButtonBehavior());
-
-        SetupGroupRecyclerView();
-        Objects.requireNonNull(((AppCompatActivity)getActivity()).getSupportActionBar()).setTitle(APPBAR_TITLE_FOR_FRAGMENT);
+        moreOptions_fab.setOnClickListener(view -> ToggleFABMenu());
+        fab_open = createGroup_fab.isShown();
     }
 
-    private void MoreOptionsButtonBehavior(){
-        if(!fab_open){
-            //make visible
-            createGroup_fab.setVisibility(View.VISIBLE);
-            addGroup_fab.setVisibility(View.VISIBLE);
-
-            //start animations
-            createGroup_fab.setAnimation(expandOpen);
-            addGroup_fab.setAnimation(expandOpen);
-            moreOptions_fab.startAnimation(rotateOpen);
-
-            //make clickable
-            createGroup_fab.setEnabled(true);
-            addGroup_fab.setEnabled(true);
-        }
-        else {
-            //make invisible
-            createGroup_fab.setVisibility(View.GONE);
-            addGroup_fab.setVisibility(View.GONE);
-
-            //start animations
-            createGroup_fab.setAnimation(minimizeClose);
-            addGroup_fab.setAnimation(minimizeClose);
-            moreOptions_fab.startAnimation(rotateClose);
-
-            //make unclickable
-            createGroup_fab.setEnabled(false);
-            addGroup_fab.setEnabled(false);
-        }
-        fab_open = !fab_open;
+    private void ToggleFABMenu(){
+        fab_open = GlobalActions.ExpandableFABDefaultBehavior(fab_open, moreOptions_fab,
+              new FloatingActionButton[] {createGroup_fab, addGroup_fab}, getContext());
     }
+
 
     public class GroupRVAdapter extends RecyclerView.Adapter<ViewHolder>{
         DatabaseReference mRootReference = FirebaseDatabase.getInstance().getReference();
