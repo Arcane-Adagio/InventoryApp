@@ -264,10 +264,9 @@ public class GroupFragmentOnline extends OnlineFragment{
 
 
     private void NavigateToInventoryFragment(String groupID, String groupName){
-        Bundle bundle = new Bundle();
         currentGroupID = groupID;
-        bundle.putString("groupName", groupName);
+        currentGroupName = groupName;
         NavController navController = NavHostFragment.findNavController(this);
-        navController.navigate(R.id.action_onlineGroupFragment_to_onlineInventoryFragment, bundle);
+        navController.navigate(R.id.action_onlineGroupFragment_to_onlineInventoryFragment);
     }
 }

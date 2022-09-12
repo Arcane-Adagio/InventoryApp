@@ -19,7 +19,7 @@
         app:layout_constraintVertical_bias="0.316"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
-        app:lottie_rawRes="@raw/lottie1"
+        app:lottie_rawRes="@raw/error_bear"
         tools:frameToShow="true">
 
     </com.airbnb.lottie.LottieAnimationView>

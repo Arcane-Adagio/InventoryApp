@@ -1,5 +1,6 @@
 package com.example.inventoryapp.offline;
 
+import static com.example.inventoryapp.GlobalConstants.FRAGMENT_ARG_INVENTORY_NAME;
 import static com.example.inventoryapp.GlobalConstants.ONLINE_KEY_GROUPNAME;
 
 import android.app.Activity;
@@ -11,6 +12,8 @@ import androidx.core.view.MenuHost;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,13 +32,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.Objects;
 
 
-public class OfflineInventoryFragment extends Fragment {
+public class OfflineInventoryFragment extends OfflineFragment {
     Activity cActivity;
     private final String TAG = "Local Inventory Fragment";
     FloatingActionButton fab;
     static RecyclerView recyclerView;
     private InventoryRVAdapter adapter;
-    private static Fragment mThis;
 
     public OfflineInventoryFragment() {
         // Required empty public constructor
@@ -46,12 +48,7 @@ public class OfflineInventoryFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         cActivity = getActivity();
-        mThis = this;
         OfflineInventoryManager.LoadUserInventory(getActivity());
-    }
-
-    public static Fragment GetFragmentReference(){
-        return mThis;
     }
 
     @Override
@@ -64,7 +61,8 @@ public class OfflineInventoryFragment extends Fragment {
 
     private void SetupInventoryRecyclerView(){
         recyclerView = requireView().findViewById(R.id.inventorylist_view);
-        adapter = InventoryRVAdapter.ConstructHomeRecyclerViewIfNotCreated( OfflineInventoryManager.GetInventoryNames(), cActivity);
+        adapter = InventoryRVAdapter.ConstructHomeRecyclerViewIfNotCreated
+                (OfflineInventoryManager.GetInventoryNames(), args -> NavigateToItemFragment(args[0]));
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(cActivity));
     }
@@ -91,7 +89,8 @@ public class OfflineInventoryFragment extends Fragment {
                     ResetInventoryRecyclerView();
             });
         }
-        Objects.requireNonNull(((AppCompatActivity)getActivity()).getSupportActionBar()).setTitle("Offline Inventories");
+        RenameAppBar("Offline Inventories");
+        SetupBottomNav();
         super.onStart();
     }
 
@@ -105,6 +104,13 @@ public class OfflineInventoryFragment extends Fragment {
     public void onDestroy() {
         Log.d(TAG, "onDestroy");
         super.onDestroy();
+    }
+
+    private void NavigateToItemFragment(String inventoryName){
+        Bundle bundle = new Bundle();
+        NavController navController = NavHostFragment.findNavController(this);
+        bundle.putString(FRAGMENT_ARG_INVENTORY_NAME, inventoryName);
+        navController.navigate(R.id.action_offlineInventoryFragment_to_offlineItemFragment, bundle);
     }
 
 }

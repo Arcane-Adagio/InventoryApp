@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.inventoryapp.GlobalActions;
 import com.example.inventoryapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.auth.AuthCredential;
@@ -27,7 +28,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 
-public class LoginFragmentOnline extends Fragment {
+public class LoginFragmentOnline extends OnlineFragment {
 
     private FirebaseAuth mAuth;
     private EditText email_tb;
@@ -72,19 +73,11 @@ public class LoginFragmentOnline extends Fragment {
         forgotPassword_tv.setOnClickListener(v -> {NavigateToPasswordResetFragment();});
         login_btn = (Button) requireView().findViewById(R.id.login_btn);
         login_btn.setOnClickListener(view -> Login(null));
-
-
-
-//        login_btn.setOnClickListener(view -> GlobalActions.ShowCustomAlertToast(
-//                getLayoutInflater(), getContext(), requireView(),
-//                R.layout.toast_groupdeleted, R.id.toast_groupDisconnect));
-
-
-
         createAccount_tbtn = (TextView) requireView().findViewById(R.id.textbtn_createAccount);
         createAccount_tbtn.setOnClickListener(view -> NavigateToAccountCreationFragment());
         if(mCurrentUser != null)
             AutoLogin();
+        RenameAppBar("");
     }
 
     public void AutoLogin(){

@@ -33,7 +33,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.Objects;
 
 
-public class OfflineItemFragment extends Fragment implements OfflineFragmentHandler.Callback {
+public class OfflineItemFragment extends OfflineFragment implements OfflineFragment.MenuCallback {
 
     private static FloatingActionButton rv_fab;
     private String mCurrentInventory;
@@ -66,6 +66,7 @@ public class OfflineItemFragment extends Fragment implements OfflineFragmentHand
         rv_fab = (FloatingActionButton) requireView().findViewById(R.id.inventoryitem_fab);
         rv_fab.setOnClickListener(view -> ItemRVAdapter.GetItemRecyclerViewINSTANCE().AddItemToInventory());
         SetupNameChangeDialog();
+        SetupBottomNav();
     }
 
     private void RenameInventory(String newName){

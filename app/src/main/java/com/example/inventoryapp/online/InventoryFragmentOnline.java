@@ -60,7 +60,7 @@ public class InventoryFragmentOnline extends OnlineFragment {
     public void onStart() {
         super.onStart();
         SetupFloatingActionButtons();
-        RenameAppBar(this.getArguments().getString(ONLINE_KEY_GROUPNAME));
+        RenameAppBar(currentGroupName);
         SetupRecyclerView();
         SetupBottomNav();
     }
@@ -81,11 +81,10 @@ public class InventoryFragmentOnline extends OnlineFragment {
     }
 
     private void NavigateToItemFragment(String inventoryID, String inventoryName){
-        Bundle bundle = new Bundle();
-        bundle.putString("inventoryName", inventoryName);
+        currentInventoryName = inventoryName;
         currentInventoryID = inventoryID;
         NavController navController = NavHostFragment.findNavController(this);
-        navController.navigate(R.id.action_onlineInventoryFragment_to_onlineItemFragment, bundle);
+        navController.navigate(R.id.action_onlineInventoryFragment_to_onlineItemFragment);
     }
 
 
@@ -101,14 +100,6 @@ public class InventoryFragmentOnline extends OnlineFragment {
 
     private void AddInventory(){
         new FirebaseHandler().AddInventoryToGroup(currentGroupID, new FirebaseHandler.Inventory(GlobalConstants.SAMPLE_INVENTORYNAME), this);
-    }
-
-    @Override
-    public void HandleFragmentInvalidation() {
-        GlobalActions.ShowCustomAlertToast(
-                getLayoutInflater(), getContext(), requireView(),
-                R.layout.toast_groupdeleted, R.id.toast_groupDisconnect);
-        super.HandleFragmentInvalidation();
     }
 
 

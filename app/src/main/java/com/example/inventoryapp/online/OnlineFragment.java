@@ -32,6 +32,8 @@ public class OnlineFragment extends Fragment implements FirebaseHandler.OnlineFr
     public static FirebaseUser currentUser;
     public static String currentGroupID;
     public static String currentInventoryID;
+    public static String currentGroupName;
+    public static String currentInventoryName;
     public static DatabaseReference mRootReference = FirebaseDatabase.getInstance().getReference();
     public static DatabaseReference groupsRef = mRootReference.child(FirebaseHandler.FIREBASE_KEY_GROUPS);
     public interface SimpleCallback{ void CallableFunction(String[] args);}
@@ -48,15 +50,21 @@ public class OnlineFragment extends Fragment implements FirebaseHandler.OnlineFr
 
     @Override
     public void HandleFragmentInvalidation() {
-        /* Override this class to provide alert, then call super */
+        GlobalActions.ShowCustomAlertToast(
+                getLayoutInflater(), getContext(), requireView(),
+                R.layout.toast_groupdeleted, R.id.toast_groupDisconnect);
         NavController navController = NavHostFragment.findNavController(this);
         navController.navigate(R.id.action_onlineFragment_to_onlineLoginFragment);
     }
 
     @Override
     public void HandleInventoryInvalidation() {
+        GlobalActions.ShowCustomAlertToast(
+                getLayoutInflater(), getContext(), requireView(),
+                R.layout.toast_inventorydeleted, R.id.toast_inventoryDisconnect);
         NavController navController = NavHostFragment.findNavController(this);
-        navController.navigate(R.id.action_onlineItemFragment_to_onlineInventoryFragment);
+        //navController.navigate(R.id.action_onlineItemFragment_to_onlineInventoryFragment);
+        navController.popBackStack();
     }
 
     public static class OnlineMenuProvider implements MenuProvider {

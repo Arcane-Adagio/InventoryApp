@@ -30,15 +30,18 @@ public class InventoryRVAdapter extends RecyclerView.Adapter<InventoryRVAdapter.
     private static InventoryRVAdapter INSTANCE = null;
     private static List<String> mInventoryNames = new ArrayList<>();
     private static RecyclerView mRecyclerView;
+    private static OfflineFragment.SimpleCallback navCallback;
 
     private InventoryRVAdapter(List<String> imageNames){
         mInventoryNames = imageNames;
     }
 
-    public static InventoryRVAdapter ConstructHomeRecyclerViewIfNotCreated(List<String> invNames, Activity context){
+    public static InventoryRVAdapter ConstructHomeRecyclerViewIfNotCreated(List<String> invNames
+            , OfflineFragment.SimpleCallback navigationCallback){
         if (INSTANCE == null){
             INSTANCE = new InventoryRVAdapter(invNames);
             mInventoryNames = invNames;
+            navCallback = navigationCallback;
         }
         return INSTANCE;
     }
@@ -109,7 +112,7 @@ public class InventoryRVAdapter extends RecyclerView.Adapter<InventoryRVAdapter.
             inventoryName = itemview.findViewById(R.id.inventory_title_edittext);
             parentLayout = itemview.findViewById(R.id.tile_inventory);
             editBtn = (ImageButton) itemview.findViewById(R.id.inv_edit_btn);
-            editBtn.setOnClickListener(view -> NavigateToItemFragment(inventoryName.getText().toString()));
+            editBtn.setOnClickListener(view -> navCallback.CallableFunction(new String[] {inventoryName.getText().toString()}));
             deleteBtn = (ImageButton) itemview.findViewById(R.id.inv_delete_btn);
             deleteBtn.setOnClickListener(view -> DeleteInventory( inventoryName.getText().toString(),getAdapterPosition()));
             reorderBtn = (ImageButton) itemview.findViewById(R.id.inv_reorder_btn);
@@ -127,13 +130,4 @@ public class InventoryRVAdapter extends RecyclerView.Adapter<InventoryRVAdapter.
         super.onAttachedToRecyclerView(recyclerView);
         mRecyclerView = recyclerView;
     }
-
-    private void NavigateToItemFragment(String inventoryName){
-        Fragment callingFragment = OfflineInventoryFragment.GetFragmentReference();
-        Bundle bundle = new Bundle();
-        NavController navController = NavHostFragment.findNavController(callingFragment);
-        bundle.putString(FRAGMENT_ARG_INVENTORY_NAME, inventoryName);
-        navController.navigate(R.id.action_offlineInventoryFragment_to_offlineItemFragment, bundle);
-    }
-
 }

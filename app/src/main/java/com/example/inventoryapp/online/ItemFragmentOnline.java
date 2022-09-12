@@ -60,7 +60,7 @@ public class ItemFragmentOnline extends OnlineFragment implements FirebaseHandle
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            RenameAppBar(this.getArguments().getString(ONLINE_KEY_INVENTORYNAME));
+            RenameAppBar(currentInventoryName);
         }
         cActivity = getActivity();
     }
@@ -112,13 +112,6 @@ public class ItemFragmentOnline extends OnlineFragment implements FirebaseHandle
                 currentGroupID, currentInventoryID, new FirebaseHandler.InventoryItem(""), this);
     }
 
-    @Override
-    public void HandleFragmentInvalidation() {
-        GlobalActions.ShowCustomAlertToast(
-                getLayoutInflater(), getContext(), requireView(),
-                R.layout.toast_groupdeleted, R.id.toast_groupDisconnect);
-        super.HandleFragmentInvalidation();
-    }
 
     public void ShowRenameInventoryDialog(){
         final Dialog dialog = new Dialog(cActivity);

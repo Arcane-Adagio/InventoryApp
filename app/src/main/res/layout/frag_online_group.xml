@@ -61,7 +61,7 @@
             android:layout_alignEnd="@+id/fab_moreOptions"
             android:layout_marginBottom="5dp"
             android:contentDescription="create group item"
-            android:src="@drawable/ic_create_group_freepik"
+            android:src="@drawable/ic_stickman_edtim"
             android:visibility="gone"
             app:rippleColor="?colorAccent" />
 

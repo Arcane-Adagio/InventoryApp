@@ -10,9 +10,5 @@
         android:title="Online"
         android:icon="@drawable/ic_onlinehome_default"
         />
-    <item
-        android:id="@+id/settingsFragment2"
-        android:title="Settings"
-        android:icon="@drawable/ic_settings_default"
-        />
+
 </menu>
