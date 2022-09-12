@@ -26,7 +26,7 @@
     </fragment>
     <fragment
         android:id="@+id/onlineLoginFragment"
-        android:name="com.example.inventoryapp.online.OnlineLoginFragment"
+        android:name="com.example.inventoryapp.online.LoginFragmentOnline"
         android:label="frag_online_login"
         tools:layout="@layout/frag_online_login" >
         <action
@@ -41,7 +41,7 @@
     </fragment>
     <fragment
         android:id="@+id/onlineGroupFragment"
-        android:name="com.example.inventoryapp.online.OnlineGroupFragment"
+        android:name="com.example.inventoryapp.online.GroupFragmentOnline"
         android:label="frag_online_group"
         tools:layout="@layout/frag_online_group" >
         <action
@@ -53,7 +53,7 @@
     </fragment>
     <fragment
         android:id="@+id/onlineInventoryFragment"
-        android:name="com.example.inventoryapp.online.OnlineInventoryFragment"
+        android:name="com.example.inventoryapp.online.InventoryFragmentOnline"
         android:label="frag_online_inventory"
         tools:layout="@layout/frag_online_inventory" >
         <action
@@ -68,7 +68,7 @@
     </fragment>
     <fragment
         android:id="@+id/onlineItemFragment"
-        android:name="com.example.inventoryapp.online.OnlineItemFragment"
+        android:name="com.example.inventoryapp.online.ItemFragmentOnline"
         android:label="frag_online_item"
         tools:layout="@layout/frag_online_item" >
         <action

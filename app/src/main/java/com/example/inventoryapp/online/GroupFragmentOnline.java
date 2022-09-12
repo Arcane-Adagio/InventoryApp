@@ -48,11 +48,11 @@ import java.util.List;
 import java.util.Objects;
 
 
-public class OnlineGroupFragment extends OnlineFragment{
+public class GroupFragmentOnline extends OnlineFragment{
 
     public final String TAG = "Online Group Fragment";
     RecyclerView rv;
-    GroupRVAdapter group_rva;
+    GroupRVAOnline group_rva;
     FloatingActionButton createGroup_fab;
     FloatingActionButton addGroup_fab;
     FloatingActionButton moreOptions_fab;
@@ -62,7 +62,7 @@ public class OnlineGroupFragment extends OnlineFragment{
 
     private static final String APPBAR_TITLE_FOR_FRAGMENT = "Groups";
 
-    public OnlineGroupFragment() {
+    public GroupFragmentOnline() {
         // Required empty public constructor
     }
 
@@ -105,164 +105,6 @@ public class OnlineGroupFragment extends OnlineFragment{
               new FloatingActionButton[] {createGroup_fab, addGroup_fab}, getContext());
     }
 
-
-    public class GroupRVAdapter extends RecyclerView.Adapter<ViewHolder>{
-        DatabaseReference mRootReference = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference mGroupsReference = mRootReference.child("Groups");
-        List<FirebaseHandler.Group> groupData = new ArrayList<FirebaseHandler.Group>();
-        Context mContext;
-        Drawable delete_draw;
-        Drawable exit_draw;
-        RecyclerView rv;
-
-        public GroupRVAdapter(Context context){
-            mContext = context;
-            rv = (RecyclerView) ((AppCompatActivity)context).findViewById(R.id.recyclerview_group);
-            delete_draw = AppCompatResources.getDrawable(context, R.drawable.ic_delete_default);
-            exit_draw = AppCompatResources.getDrawable(context, R.drawable.ic_exit_default);
-            Query query = FirebaseDatabase.getInstance().getReference("Groups")
-                    .orderByChild("groupCode")
-                    .equalTo("");
-
-            mGroupsReference.addChildEventListener(new ChildEventListener() {
-                @Override
-                public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                    if(isNotAGroupMemberOf(snapshot))
-                        return;
-                    groupData.add(datasnapshotToGroupConverter(snapshot));
-                    rv.scrollToPosition(groupData.size()-1); //todo: take out if annoying
-                    GroupRVAdapter.this.notifyItemInserted(groupData.size()-1);
-                }
-
-                @Override
-                public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                    String changedGroupID = snapshot.getKey().toString();
-                    int position = getPositionInRecyclerViewByID(changedGroupID);
-                    if(isNotAGroupMemberOf(snapshot)){
-                        if(position != OUT_OF_BOUNDS){
-                            //user is no longer apart of a group
-                            //so it should be removed from recycler view
-                            groupData.remove(position);
-                            GroupRVAdapter.this.notifyItemRemoved(position);
-                        }
-                    }
-                    else{
-                        if(position == OUT_OF_BOUNDS){
-                            //user has joined the group, so
-                            //the group needs to be displayed
-                            groupData.add(datasnapshotToGroupConverter(snapshot));
-                            GroupRVAdapter.this.notifyItemInserted(groupData.size()-1);
-                        }
-                        else {
-                            //user is apart of the group and the group is displayed
-                            //but the value needs to be updated
-                            groupData.remove(position);
-                            groupData.add(position, datasnapshotToGroupConverter(snapshot));
-                            GroupRVAdapter.this.notifyItemChanged(position);
-                        }
-                    }
-                }
-
-                @Override
-                public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-
-
-
-
-                    String changedGroupID = snapshot.getKey().toString();
-                    int position = getPositionInRecyclerViewByID(changedGroupID);
-                    if(position != OUT_OF_BOUNDS){
-                        groupData.remove(position);
-                        GroupRVAdapter.this.notifyItemRemoved(position);
-                    }
-                }
-
-                @Override
-                public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                    Toast.makeText(context, "onChildMove Not Implemented", Toast.LENGTH_SHORT).show();
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    Toast.makeText(context, "Database cancelled updating RecyclerView", Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-
-        private boolean isNotAGroupMemberOf(DataSnapshot snap){
-            if(!snap.hasChild("groupOwner"))
-                return true; // means its not a group object
-            if(Objects.equals((String) snap.child("groupOwner").getValue(), currentUser.getUid()))
-                return false;
-            if(snap.hasChild("Members"))
-                if(snap.child("Members").hasChild(currentUser.getUid())){
-                        return false;
-                }
-            return true;
-        }
-
-        @NonNull
-        @Override
-        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.tile_group, parent, false);
-            final ViewHolder viewHolder = new ViewHolder(v);
-            return viewHolder;
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            holder.groupName_et.setText(groupData.get(position).getGroupName());
-            holder.groupCode_tv.setText(groupData.get(position).getGroupCode());
-            holder.edit_btn.setOnClickListener(view -> NavigateToInventoryFragment(
-                    groupData.get(holder.getAdapterPosition()).getGroupID(),
-                    groupData.get(holder.getAdapterPosition()).getGroupName()));
-            holder.delete_btn.setOnClickListener(view ->
-                    new FirebaseHandler().RemoveGroup(groupData.get(holder.getAdapterPosition())));
-            holder.delete_btn.setImageDrawable(
-                    (Objects.equals(groupData.get(holder.getAdapterPosition()).getGroupOwner(), currentUser.getUid())) ? delete_draw : exit_draw
-            );
-        }
-
-        @Override
-        public int getItemCount() {
-            return groupData.size();
-        }
-
-        private FirebaseHandler.Group datasnapshotToGroupConverter(DataSnapshot snap){
-            String groupName = Objects.requireNonNull(snap.child("groupName").getValue()).toString();
-            String groupCode = Objects.requireNonNull(snap.child("groupCode").getValue()).toString();
-            String password = Objects.requireNonNull(snap.child("groupPasswordHashed").getValue()).toString();
-            String owner = Objects.requireNonNull(snap.child("groupOwner").getValue()).toString();
-            FirebaseHandler.Group groupObj = new FirebaseHandler.Group(groupName, groupCode, password, owner);
-            groupObj.setGroupID(snap.getKey());
-            return groupObj;
-        }
-
-        private int getPositionInRecyclerViewByID(String id){
-            int position = OUT_OF_BOUNDS;
-            for (int i = 0; i<groupData.size(); i++){
-                if(groupData.get(i).getGroupID().equals(id)){
-                    position = i;
-                    break;
-                }
-            }
-            return position;
-        }
-    }
-
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView groupName_et;
-        public TextView groupCode_tv;
-        public ImageButton edit_btn;
-        public ImageButton delete_btn;
-        public ViewHolder(View view){
-            super(view);
-            groupName_et = (TextView) view.findViewById(R.id.edittext_groupName);
-            groupCode_tv = (TextView) view.findViewById(R.id.textview_groupCode);
-            edit_btn = (ImageButton) view.findViewById(R.id.group_edit_btn);
-            delete_btn = (ImageButton) view.findViewById(R.id.group_delete_btn);
-        }
-    }
 
     public void CreateGroupDialog(){
         final Dialog dialog = new Dialog(cActivity);
@@ -416,14 +258,14 @@ public class OnlineGroupFragment extends OnlineFragment{
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         layoutManager.scrollToPosition(0);
         rv.setLayoutManager(layoutManager);
-        group_rva =new GroupRVAdapter(cActivity);
+        group_rva =new GroupRVAOnline(getContext(), args -> NavigateToInventoryFragment(args[0], args[1]));
         rv.setAdapter(group_rva);
     }
 
 
     private void NavigateToInventoryFragment(String groupID, String groupName){
         Bundle bundle = new Bundle();
-        bundle.putString("groupID", groupID);
+        currentGroupID = groupID;
         bundle.putString("groupName", groupName);
         NavController navController = NavHostFragment.findNavController(this);
         navController.navigate(R.id.action_onlineGroupFragment_to_onlineInventoryFragment, bundle);

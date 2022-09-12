@@ -2,9 +2,13 @@ package com.example.inventoryapp.online;
 
 /* This is the base class for online fragments */
 
+import static com.example.inventoryapp.GlobalConstants.ONLINE_KEY_GROUPID;
+
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,6 +16,7 @@ import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.inventoryapp.GlobalActions;
 import com.example.inventoryapp.R;
@@ -28,7 +33,8 @@ public class OnlineFragment extends Fragment implements FirebaseHandler.OnlineFr
     public static String currentGroupID;
     public static String currentInventoryID;
     public static DatabaseReference mRootReference = FirebaseDatabase.getInstance().getReference();
-
+    public static DatabaseReference groupsRef = mRootReference.child(FirebaseHandler.FIREBASE_KEY_GROUPS);
+    public interface SimpleCallback{ void CallableFunction(String[] args);}
 
     public void SetupBottomNav(){
         BottomNavigationView nav = getActivity().findViewById(R.id.bottomnav_app);
@@ -49,7 +55,8 @@ public class OnlineFragment extends Fragment implements FirebaseHandler.OnlineFr
 
     @Override
     public void HandleInventoryInvalidation() {
-        //do something
+        NavController navController = NavHostFragment.findNavController(this);
+        navController.navigate(R.id.action_onlineItemFragment_to_onlineInventoryFragment);
     }
 
     public static class OnlineMenuProvider implements MenuProvider {
@@ -69,4 +76,6 @@ public class OnlineFragment extends Fragment implements FirebaseHandler.OnlineFr
             return GlobalActions.DefaultMenuOptionSelection(menuItem, callingFragment.getContext(), callingFragment);
         }
     }
+
+
 }

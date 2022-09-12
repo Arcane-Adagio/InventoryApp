@@ -1,17 +1,13 @@
 package com.example.inventoryapp.online;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,11 +16,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.inventoryapp.GlobalActions;
-import com.example.inventoryapp.MainActivity;
 import com.example.inventoryapp.R;
-import com.example.inventoryapp.offline.OfflineInventoryFragment;
-import com.example.inventoryapp.online.OnlineGroupFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
@@ -35,7 +27,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 
-public class OnlineLoginFragment extends Fragment {
+public class LoginFragmentOnline extends Fragment {
 
     private FirebaseAuth mAuth;
     private EditText email_tb;
@@ -48,7 +40,7 @@ public class OnlineLoginFragment extends Fragment {
     private DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
     Activity cActivity;
 
-    public OnlineLoginFragment() {
+    public LoginFragmentOnline() {
         // Required empty public constructor
     }
 
@@ -93,12 +85,6 @@ public class OnlineLoginFragment extends Fragment {
         createAccount_tbtn.setOnClickListener(view -> NavigateToAccountCreationFragment());
         if(mCurrentUser != null)
             AutoLogin();
-    }
-
-    public void Register(View view){
-        String email = email_tb.getText().toString();
-        String pasword = password_tb.getText().toString();
-        createAccount(email, pasword);
     }
 
     public void AutoLogin(){
