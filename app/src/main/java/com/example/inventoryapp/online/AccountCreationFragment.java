@@ -8,6 +8,7 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -15,6 +16,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.inventoryapp.R;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -42,6 +44,7 @@ public class AccountCreationFragment extends Fragment {
     public void onStart() {
         super.onStart();
         SetupUI();
+        SetupBottomNav();
     }
 
     public void CreateAccountBehavior(View view){
@@ -107,5 +110,11 @@ public class AccountCreationFragment extends Fragment {
         NavController navController = NavHostFragment.findNavController(this);
         navController.navigate(R.id.action_accountCreationFragment_to_onlineLoginFragment);
         Toast.makeText(getContext(), getContext().getString(R.string.toast_accountcreated), Toast.LENGTH_SHORT).show();
+    }
+
+    public void SetupBottomNav(){
+        BottomNavigationView nav = getActivity().findViewById(R.id.bottomnav_app);
+        MenuItem item = nav.getMenu().findItem(R.id.onlineLoginFragment);
+        item.setChecked(true);
     }
 }

@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 import com.example.inventoryapp.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
 
@@ -38,6 +40,7 @@ public class AccountResetFragment extends Fragment {
         email_et = (EditText) requireView().findViewById(R.id.editText_email);
         reset_btn = (Button) requireView().findViewById(R.id.btn_resetPassword);
         reset_btn.setOnClickListener(view -> SendVerificationEmail());
+        SetupBottomNav();
     }
 
     @Override
@@ -61,5 +64,11 @@ public class AccountResetFragment extends Fragment {
         FirebaseAuth.getInstance().sendPasswordResetEmail(validEmail)
                 .addOnSuccessListener(unused -> Toast.makeText(getContext(), getContext().getString(R.string.toast_emailSent), Toast.LENGTH_SHORT).show())
                 .addOnFailureListener(e -> Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show());
+    }
+
+    public void SetupBottomNav(){
+        BottomNavigationView nav = getActivity().findViewById(R.id.bottomnav_app);
+        MenuItem item = nav.getMenu().findItem(R.id.onlineLoginFragment);
+        item.setChecked(true);
     }
 }

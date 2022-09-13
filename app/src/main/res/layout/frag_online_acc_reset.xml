@@ -4,7 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".online.AccountCreationFragment">
+    tools:context=".online.AccountCreationFragment"
+    android:background="@drawable/purp_gradient_back"
+    >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -14,9 +16,11 @@
 
         <TextView
             android:id="@+id/label_passwordReset"
+            style="@style/headerText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="72dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginHorizontal="30dp"
             android:text="Reset Password"
             android:textAlignment="center"
             android:textSize="32sp"
@@ -25,51 +29,65 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
-            android:id="@+id/linearLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="64dp"
-            android:orientation="horizontal"
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottieAnimationView"
+            android:layout_width="wrap_content"
+            android:layout_height="80dp"
+            android:scaleX="2"
+            android:scaleY="2"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="50dp"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/label_passwordReset"
-            tools:layout_editor_absoluteX="0dp">
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/panda"
+            tools:frameToShow="true" />
 
-            <TextView
-                android:id="@+id/label_email"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="30dp"
-                android:text="Enter Email"
-                android:textSize="18sp" />
+        <TextView
+            android:id="@+id/label_email"
+            style="@style/labelText"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="80dp"
+            android:text="Enter Email:"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lottieAnimationView" />
 
-            <EditText
-                android:id="@+id/editText_email"
-                android:layout_width="0dp"
-                android:inputType="textEmailAddress"
-                android:maxLines="1"
-                android:scrollHorizontally="true"
-                android:maxLength="40"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="30dp"
-                android:layout_weight="1"
-                android:gravity="bottom"
-                android:hint="Email" />
-        </LinearLayout>
-
+        <EditText
+            android:id="@+id/editText_email"
+            style="@style/basicEditText"
+            android:layout_width="0dp"
+            android:layout_marginStart="-3dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="30dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/white"
+            android:gravity="bottom"
+            android:hint="Email"
+            android:inputType="textEmailAddress"
+            android:maxLength="40"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/label_email"
+            app:layout_constraintTop_toBottomOf="@+id/label_email" />
 
         <Button
             android:id="@+id/btn_resetPassword"
-            android:layout_width="150dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="64dp"
             android:onClick="DBinsert"
             android:text="Send Reset Email"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+            app:layout_constraintTop_toBottomOf="@+id/editText_email" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
