@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="GreenText" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">#00FF00</item>
+    </style>
+
+    <style name="loginEditText" parent="TextAppearance.AppCompat">
+        <item name="android:background">@drawable/edittext_background</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingHorizontal">30dp</item>
+        <item name="android:paddingVertical">20dp</item>
+    </style>
+
+
+</resources>
