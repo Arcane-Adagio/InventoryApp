@@ -11,6 +11,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingHorizontal">30dp</item>
         <item name="android:paddingVertical">20dp</item>
+        <item name="fontFamily">@font/worksans</item>
     </style>
 
     <style name="headerText" parent="TextAppearance.AppCompat">
@@ -32,12 +33,19 @@
 
     <style name="basicEditText" parent="TextAppearance.AppCompat">
         <item name="maxLines">1</item>
+        <item name="fontFamily">@font/worksans</item>
         <item name="android:scrollHorizontally">true</item>
     </style>
 
-    <style name="btn" parent="TextAppearance.AppCompat.Button">
-
+    <style name="basicText" parent="TextAppearance.AppCompat">
+        <item name="fontFamily">@font/worksans_regular</item>
     </style>
 
+    <style name="basicWhiteText" parent="basicText">
+        <item name="android:textColor">@color/white</item>
+    </style>
 
+    <style name="btn" parent="Widget.MaterialComponents.Button">
+        <item name="fontFamily">@font/poppins_bold</item>
+    </style>
 </resources>

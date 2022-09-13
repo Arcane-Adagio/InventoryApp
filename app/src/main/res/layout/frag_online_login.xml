@@ -144,7 +144,7 @@
             android:id="@+id/prompt_createAccount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="30dp"
+            android:layout_marginBottom="15dp"
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -157,7 +157,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/label_noaccount"
-                android:textColor="@color/white"
+                style="@style/basicWhiteText"
                 android:textSize="11sp" />
 
             <TextView
@@ -165,6 +165,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
+                style="@style/basicText"
                 android:text="@string/label_createaccount"
                 android:textColor="@color/primaryLightColor"
                 android:textSize="11sp" />
@@ -178,21 +179,25 @@
             app:layout_constraintHorizontal_bias="0.2"
             android:text="@string/label_forgotpassword"
             android:textColor="@color/white"
+            style="@style/basicWhiteText"
             android:textSize="11sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/layout_passwordET"
             app:layout_constraintTop_toBottomOf="@+id/layout_passwordET" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/login_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Login"
+            style="@style/btn"
+            android:textAlignment="center"
+            android:backgroundTint="@color/secondaryLightColor"
             app:layout_constraintBottom_toTopOf="@+id/prompt_createAccount"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textbtn_forgotPassword"
-            app:layout_constraintVertical_bias="0.4"
+            app:layout_constraintVertical_bias="0.45"
             app:layout_constraintHorizontal_bias="0.5"
             />
 
