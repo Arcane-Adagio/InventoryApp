@@ -27,16 +27,12 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/textView"
+                style="@style/headerText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/lottieAnimationView"
                 android:layout_marginTop="3dp"
-                android:breakStrategy="balanced"
-                android:fontFamily="@font/poppins_bold"
                 android:text="@string/label_login_welcometxt"
-                android:textAlignment="center"
-                android:textColor="@color/white"
-                android:textSize="36sp"
                 app:layout_constraintHorizontal_bias="0.5" />
 
             <com.airbnb.lottie.LottieAnimationView
