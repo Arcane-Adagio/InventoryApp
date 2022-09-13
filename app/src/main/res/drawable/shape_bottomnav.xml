@@ -11,7 +11,7 @@
     <!-- Outlines the corners -->
     <stroke
         android:width="2dp"
-        android:color="@color/accent_grey"
+        android:color="@color/secondaryLightColor"
         >
     </stroke>
 

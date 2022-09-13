@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".online.GroupFragmentOnline"
-    android:background="@color/white">
+    android:background="@null">
 
     <LinearLayout
         android:layout_width="match_parent"

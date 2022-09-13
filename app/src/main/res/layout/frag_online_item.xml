@@ -14,8 +14,7 @@
         android:layout_marginVertical="10dp"
         android:layout_marginHorizontal="15dp"
         android:visibility="gone"
-        android:background="@drawable/style_inventory_tile"
-        android:backgroundTint="?colorAccent"
+        android:background="@null"
         >
 
         <EditText
