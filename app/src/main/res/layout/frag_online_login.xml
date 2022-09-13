@@ -30,65 +30,119 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/lottieAnimationView"
+                android:layout_marginTop="3dp"
                 android:breakStrategy="balanced"
+                android:fontFamily="@font/poppins_bold"
                 android:text="@string/label_login_welcometxt"
                 android:textAlignment="center"
                 android:textColor="@color/white"
-                android:textSize="48sp"
+                android:textSize="36sp"
                 app:layout_constraintHorizontal_bias="0.5" />
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/lottieAnimationView"
                 android:layout_width="match_parent"
                 android:layout_height="80dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="3dp"
+                android:foregroundTint="@color/primaryColor"
                 android:scaleX="3"
                 android:scaleY="3"
-                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintHorizontal_bias="0.5"
                 app:lottie_autoPlay="true"
                 app:lottie_loop="true"
                 app:lottie_rawRes="@raw/anim_notes"
                 tools:frameToShow="true" />
         </RelativeLayout>
 
+        <LinearLayout
+            android:id="@+id/layout_emailET"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView"
+            app:layout_constraintVertical_bias="0.05"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            >
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="10dp"
+                android:layout_weight=".1"
+                android:minWidth="10dp"
+                />
+
+            <EditText
+                android:id="@+id/edittext_loginEmail"
+                style="@style/loginEditText"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginVertical="10dp"
+                android:hint="Email"
+                android:text="me@localhost.com"
+                android:textColor="@color/primaryDarkColor"
+                />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="10dp"
+                android:layout_weight=".1"
+                android:minWidth="10dp"
+                />
+        </LinearLayout>
+
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="248dp"
-            android:layout_height="239dp"
+            android:layout_width="205dp"
+            android:layout_height="203dp"
             android:src="@drawable/book"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.495"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.00" />
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <EditText
-            android:id="@+id/edittext_loginEmail"
-            style="@style/loginEditText"
-            android:layout_marginHorizontal="10dp"
-            android:hint="Email"
-            android:text="me@localhost.com"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.8"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/welcome"
-            app:layout_constraintVertical_bias="0.1"
-            android:layout_marginVertical="30dp"/>
-
-        <EditText
-            android:id="@+id/edittext_TextPassword"
-            style="@style/loginEditText"
-            android:layout_marginHorizontal="10dp"
-            android:layout_marginTop="30dp"
-            android:hint="@string/label_password"
-            android:inputType="textPassword"
-            android:text="123456"
-            app:layout_constraintEnd_toEndOf="@+id/edittext_loginEmail"
+        <LinearLayout
+            android:id="@+id/layout_passwordET"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="@+id/layout_emailET"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/edittext_loginEmail"
-            app:layout_constraintTop_toBottomOf="@+id/edittext_loginEmail" />
+            app:layout_constraintStart_toStartOf="@+id/layout_emailET"
+            app:layout_constraintTop_toBottomOf="@+id/layout_emailET"
+            >
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="10dp"
+                android:layout_weight=".1"
+                android:minWidth="10dp"
+                />
+
+            <EditText
+                android:id="@+id/edittext_TextPassword"
+                style="@style/loginEditText"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginTop="30dp"
+                android:hint="@string/label_password"
+                android:inputType="textPassword"
+                android:text="123456"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_marginVertical="10dp"
+                android:textColor="@color/primaryDarkColor"
+                />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="10dp"
+                android:layout_weight=".1"
+                android:minWidth="10dp"
+                />
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/prompt_createAccount"
@@ -124,16 +178,18 @@
             android:id="@+id/textbtn_forgotPassword"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="0dp"
+            app:layout_constraintHorizontal_bias="0.2"
             android:text="@string/label_forgotpassword"
             android:textColor="@color/white"
             android:textSize="11sp"
-            app:layout_constraintStart_toStartOf="@+id/edittext_TextPassword"
-            app:layout_constraintTop_toBottomOf="@+id/edittext_TextPassword" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/layout_passwordET"
+            app:layout_constraintTop_toBottomOf="@+id/layout_passwordET" />
 
         <Button
             android:id="@+id/login_btn"
-            android:layout_width="100dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Login"
             app:layout_constraintBottom_toTopOf="@+id/prompt_createAccount"

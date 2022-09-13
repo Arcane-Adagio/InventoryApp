@@ -13,5 +13,9 @@
         <item name="android:paddingVertical">20dp</item>
     </style>
 
+    <style name="btn" parent="TextAppearance.AppCompat.Button">
+
+    </style>
+
 
 </resources>
