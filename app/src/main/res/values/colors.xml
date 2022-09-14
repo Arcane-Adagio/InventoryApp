@@ -45,6 +45,7 @@
     <color name="secondaryDarkColor">#140078</color>
     <color name="primaryTextColor">#ffffff</color>
     <color name="secondaryTextColor">#ffffff</color>
+    <color name="onSecondaryColor">@color/white</color>
 
 
 </resources>
