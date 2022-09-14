@@ -29,7 +29,7 @@
 
     <style name="BottomNavigationTheme" parent="Theme.AppCompat.Light">
         <item name="colorPrimary">@color/white</item>
-        <item name="colorOnSurface">@color/primaryDarkColor</item>
+        <item name="colorOnSurface">@color/secondaryLightColor</item>
     </style>
 
 

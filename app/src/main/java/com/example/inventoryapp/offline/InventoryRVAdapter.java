@@ -23,6 +23,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.inventoryapp.R;
+import com.example.inventoryapp.data.Dialogs;
 import com.example.inventoryapp.online.FirebaseHandler;
 
 import java.util.ArrayList;
@@ -124,7 +125,19 @@ public class InventoryRVAdapter extends RecyclerView.Adapter<InventoryRVAdapter.
             editBtn = (ImageButton) itemview.findViewById(R.id.inv_edit_btn);
             editBtn.setOnClickListener(view -> navCallback.CallableFunction(new String[] {inventoryName.getText().toString()}));
             deleteBtn = (ImageButton) itemview.findViewById(R.id.inv_delete_btn);
-            deleteBtn.setOnClickListener(view -> DeleteInventory( inventoryName.getText().toString(),getAdapterPosition()));
+            deleteBtn.setOnClickListener(view -> Dialogs.AreYouSureDialog(view.getContext(), new Dialogs.DialogListener() {
+                        @Override
+                        public boolean submissionCallabck(String[] args) {
+                            DeleteInventory( inventoryName.getText().toString(),getAdapterPosition());
+                            return true;
+                        }
+
+                        @Override
+                        public void cancelCallback() {
+
+                        }
+                    })
+            );
             reorderBtn = (ImageButton) itemview.findViewById(R.id.inv_reorder_btn);
         }
     }

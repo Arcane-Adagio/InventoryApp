@@ -33,6 +33,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
+import com.example.inventoryapp.data.Dialogs;
 import com.example.inventoryapp.offline.OfflineInventoryFragment;
 import com.example.inventoryapp.offline.OfflineInventoryManager;
 import com.example.inventoryapp.online.FirebaseHandler;
@@ -52,7 +53,18 @@ public class GlobalActions {
                 FirebaseHandler.LogoutBehavior(callingFragment);
                 return true;
             case R.id.online_deleteaccount:
-                Toast.makeText(context, "online account deletion not implemented", Toast.LENGTH_SHORT).show();
+                Dialogs.AreYouSureDialog(context, new Dialogs.DialogListener() {
+                    @Override
+                    public boolean submissionCallabck(String[] args) {
+                        Toast.makeText(context, "online account deletion not implemented", Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
+
+                    @Override
+                    public void cancelCallback() {
+
+                    }
+                });
                 return true;
             case R.id.menu_user_save:
                 OfflineInventoryManager.SaveUserInventory(context);

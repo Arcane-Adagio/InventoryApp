@@ -24,6 +24,7 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.inventoryapp.R;
+import com.example.inventoryapp.data.Dialogs;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -164,7 +165,18 @@ public class GroupRVAOnline extends RecyclerView.Adapter<GroupRVAOnline.ViewHold
                 groupData.get(holder.getAdapterPosition()).getGroupName()}));
         holder.delete_btn.setOnClickListener(view -> {
             try { //potential runtime exception if user presses button too fast
-                new FirebaseHandler().RemoveGroup(groupData.get(holder.getAdapterPosition()));
+                Dialogs.AreYouSureDialog(view.getContext(), new Dialogs.DialogListener() {
+                    @Override
+                    public boolean submissionCallabck(String[] args) {
+                        new FirebaseHandler().RemoveGroup(groupData.get(holder.getAdapterPosition()));
+                        return true;
+                    }
+
+                    @Override
+                    public void cancelCallback() {
+
+                    }
+                });
             }
             catch (Exception e){
                 Log.d(TAG, "onBindViewHolder: "+e.getMessage());
