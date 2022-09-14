@@ -26,8 +26,8 @@
      -->
 
     <style name="BottomNavigationTheme" parent="Theme.AppCompat.Light">
-        <item name="colorOnSurface">@color/accent_grey</item>
-        <item name="colorPrimary">@color/secondaryDarkColor</item>
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorOnSurface">@color/primaryDarkColor</item>
     </style>
 
 </resources>
