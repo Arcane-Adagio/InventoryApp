@@ -22,6 +22,18 @@
         <item name="android:breakStrategy">balanced</item>
     </style>
 
+    <style name="tileTV" parent="TextAppearance.AppCompat">
+        <item name="android:focusable">false</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:maxLength">40</item>
+        <item name="maxLines">1</item>
+        <item name="android:inputType">none</item>
+        <item name="android:textColor">@color/tile_color</item>
+        <item name="android:focusableInTouchMode">false</item>
+        <item name="android:layout_gravity">bottom</item>
+    </style>
+
     <style name="labelText" parent="TextAppearance.AppCompat">
 
         <item name="android:textColor">@color/white</item>
@@ -35,6 +47,12 @@
         <item name="maxLines">1</item>
         <item name="fontFamily">@font/worksans</item>
         <item name="android:scrollHorizontally">true</item>
+    </style>
+
+    <style name="tileEditText" parent="basicEditText">
+        <item name="android:textColor">@color/tile_color</item>
+        <item name="android:backgroundTint">@color/tile_color</item>
+        <item name="android:textColorHint">@color/tile_color</item>
     </style>
 
     <style name="basicText" parent="TextAppearance.AppCompat">

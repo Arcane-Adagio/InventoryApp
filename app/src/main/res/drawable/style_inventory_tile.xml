@@ -4,13 +4,13 @@
     android:shape="rectangle">
 
     <solid
-        android:color="@color/white">
+        android:color="@null">
     </solid>
 
     <!-- Outlines the corners -->
     <stroke
         android:width="2dp"
-        android:color="?attr/colorAccent" >
+        android:color="@color/primaryLightColor" >
     </stroke>
 
     <!-- keeps items from the edges of the image -->
@@ -22,7 +22,7 @@
     </padding>
 
     <corners
-        android:radius="10dp">
+        android:radius="25dp">
     </corners>
 
 

@@ -1,112 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/tile_group"
-    android:layout_marginVertical="3dp">
+    android:layout_height="wrap_content"
+    android:background="@drawable/style_inventory_tile"
+    android:orientation="horizontal"
+    android:layout_marginVertical="2dp"
+    >
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:id="@+id/group_img"
+        android:src="@mipmap/ic_launcher"
+        android:visibility="gone"/>
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
+        android:layout_weight="8"
+        android:paddingStart="10dp"
+        android:layout_marginHorizontal="10dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/style_inventory_tile"
-        android:orientation="horizontal"
-        >
+        android:layout_marginTop="0dp"
+        android:orientation="vertical">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:id="@+id/group_img"
-            android:src="@mipmap/ic_launcher"
-            android:visibility="gone"/>
+        <TextView
+            android:id="@+id/edittext_groupName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/tileTV"
+            android:text="Sample Group Title"
+            android:hint="Group Title"
+            android:focusedByDefault="false"
+            />
 
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_weight="8"
-            android:paddingStart="10dp"
-            android:layout_marginHorizontal="10dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="0dp"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/edittext_groupName"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:textSize="12sp"
-                android:inputType="none"
-                android:text="Sample Group Title"
-                android:maxLines="1"
-                android:textColor="@color/black"
-                android:maxLength="40"
-                android:hint="Group Title"
-                android:focusable="false"
-                android:focusableInTouchMode="false"
-
-                android:focusedByDefault="false"
+                android:text="Code: "
+                android:textSize="8dp"
+                android:textColor="@color/tile_color"
                 />
 
-            <LinearLayout
+
+            <TextView
+                android:id="@+id/textview_groupCode"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:textSize="8sp"
+                android:textColor="@color/tile_color"
+                />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Code: "
-                    android:textSize="8dp"
-                    />
-
-
-                <TextView
-                    android:id="@+id/textview_groupCode"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="8sp"
-                    />
-
-
-            </LinearLayout>
 
         </LinearLayout>
 
-
-        <ImageButton
-            android:id="@+id/group_edit_btn"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:src="@drawable/ic_edit_default"
-            android:layout_gravity="center"
-            android:background="@null"
-            android:scaleType="fitCenter"
-            />
-
-        <ImageButton
-            android:id="@+id/group_delete_btn"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:background="@null"
-            android:src="@drawable/ic_delete_default"
-            android:scaleType="fitCenter"
-            />
-
-        <ImageButton
-            android:id="@+id/group_reorder_btn"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:background="@null"
-            android:src="@drawable/ic_reorder_default"
-            android:scaleType="fitCenter"
-            android:layout_marginEnd="10dp"
-            android:visibility="gone"
-            />
-
     </LinearLayout>
 
-</androidx.cardview.widget.CardView>
+
+    <ImageButton
+        android:id="@+id/group_edit_btn"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:src="@drawable/ic_edit_default"
+        android:layout_gravity="center"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        app:tint="@color/tile_color"
+        />
+
+    <ImageButton
+        android:id="@+id/group_delete_btn"
+        style="iconTintTheme"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:background="@null"
+        android:src="@drawable/ic_delete_default"
+        android:scaleType="fitCenter"
+        app:tint="@color/tile_color"
+        />
+
+    <ImageButton
+        android:id="@+id/group_reorder_btn"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:background="@null"
+        android:src="@drawable/ic_reorder_default"
+        android:scaleType="fitCenter"
+        android:layout_marginEnd="10dp"
+        android:visibility="gone"
+        />
+
+</LinearLayout>
+

@@ -21,6 +21,7 @@
     <color name="royal_yellow3">#BAAD29</color>
 
     <color name="off_white">#bfbfbf</color>
+    <color name="tile_color">@color/white</color>
 
     <color name="riyah_dark_theme_grey">#ff5b5b5b</color>
     <color name="dark_theme_background_grey">#2b2b2b</color>

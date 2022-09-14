@@ -1,132 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/style_inventory_tile"
+    android:orientation="horizontal"
     android:layout_marginBottom="5dp"
-    android:id="@+id/item_tile"
-    >
+    android:id="@+id/item_tile">
+
+    <CheckBox
+        android:id="@+id/item_needful_checkbox"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="10dp"
+        android:buttonTint="@color/tile_color"
+        />
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/style_inventory_tile"
-        android:orientation="horizontal"
-        >
+        android:layout_width="0dp"
+        android:layout_weight="7"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginVertical="5dp"
+        android:layout_height="60dp"
+        android:orientation="vertical">
 
-        <CheckBox
-            android:id="@+id/item_needful_checkbox"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginStart="10dp"
+        <EditText
+            android:id="@+id/item_title"
+            android:layout_width="match_parent"
+            style="@style/tileEditText"
+            android:layout_height="0dp"
+            android:layout_gravity="bottom"
+            android:layout_marginTop="0dp"
+            android:layout_weight="1.5"
+            android:textSize="14sp"
+            android:inputType="none"
+            android:maxLength="40"
+            android:hint="Item Name"
             />
 
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_weight="7"
-            android:layout_marginHorizontal="10dp"
-            android:layout_marginVertical="5dp"
-            android:layout_height="60dp"
-            android:orientation="vertical">
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            >
 
             <EditText
-                android:id="@+id/item_title"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:id="@+id/item_date_text"
+                style="@style/tileEditText"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:layout_marginTop="0dp"
-                android:layout_weight="1.5"
-                android:textSize="12sp"
-                android:inputType="none"
-                android:maxLines="1"
-                android:maxLength="17"
-                android:hint="Item Name"
+                android:layout_marginTop="-8dp"
+                android:hint="@string/label_date"
+                android:text="@string/label_date"
+                android:textSize="10sp"
+
                 />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
+            <EditText
+                android:id="@+id/item_quantity"
+                style="@style/tileEditText"
+                android:layout_width="0dp"
                 android:layout_weight="1"
-                >
-
-                <EditText
-                    android:id="@+id/item_date_text"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:layout_marginTop="-8dp"
-                    android:hint="@string/label_date"
-                    android:text="@string/label_date"
-                    android:textColor="@color/black"
-                    android:textSize="8sp"
-
-                    />
-
-                <EditText
-                    android:id="@+id/item_quantity"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_gravity="bottom"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/label_quantity"
-                    android:text="@string/label_quantity"
-                    android:inputType="numberDecimal"
-                    android:layout_marginTop="-8dp"
-                    android:textSize="8sp"
-
-                    />
-
-            </LinearLayout>
+                android:layout_gravity="bottom"
+                android:layout_height="wrap_content"
+                android:hint="@string/label_quantity"
+                android:text="@string/label_quantity"
+                android:inputType="numberDecimal"
+                android:layout_marginTop="-8dp"
+                android:textSize="10sp"
+                />
 
         </LinearLayout>
 
-        <ProgressBar
-            android:id="@+id/item_progressbar"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:indeterminate="false"
-            android:layout_gravity="center"
-            android:visibility="gone"
-            />
-
-        <ImageButton
-            android:id="@+id/item_edit_btn"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:src="@drawable/ic_save_default"
-            android:layout_gravity="center"
-            android:background="@null"
-            android:scaleType="fitCenter"
-            />
-
-        <ImageButton
-            android:id="@+id/item_delete_btn"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:background="@null"
-            android:src="@drawable/ic_delete_default"
-            android:scaleType="fitCenter"
-            />
-
-        <ImageButton
-            android:id="@+id/item_reorder_btn"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:background="@null"
-            android:src="@drawable/ic_reorder_default"
-            android:scaleType="fitCenter"
-            android:layout_marginEnd="10dp"
-            android:visibility="gone"
-            />
-
     </LinearLayout>
 
-</androidx.cardview.widget.CardView>
+    <ProgressBar
+        android:id="@+id/item_progressbar"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:indeterminate="false"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        />
+
+    <ImageButton
+        android:id="@+id/item_edit_btn"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:src="@drawable/ic_save_default"
+        android:layout_gravity="center"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        app:tint="@color/tile_color"
+        />
+
+    <ImageButton
+        android:id="@+id/item_delete_btn"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:background="@null"
+        android:src="@drawable/ic_delete_default"
+        android:scaleType="fitCenter"
+        app:tint="@color/tile_color"
+        />
+
+    <ImageButton
+        android:id="@+id/item_reorder_btn"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:background="@null"
+        android:src="@drawable/ic_reorder_default"
+        android:scaleType="fitCenter"
+        android:layout_marginEnd="10dp"
+        app:tint="@color/tile_color"
+        android:visibility="gone"
+        />
+
+</LinearLayout>
+

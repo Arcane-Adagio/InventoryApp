@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/tile_inventory"
-    android:layout_marginVertical="3dp">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/style_inventory_tile"
-        android:orientation="horizontal"
-        >
+    android:orientation="horizontal"
+    android:background="@drawable/style_inventory_tile"
+    android:layout_marginVertical="2dp">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:layout_width="80dp"
@@ -22,21 +18,16 @@
 
         <EditText
             android:id="@+id/inventory_title_edittext"
-            android:layout_width="0dp"
+            style="@style/tileTV"
             android:layout_marginHorizontal="10dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
             android:layout_marginTop="0dp"
             android:layout_weight="8"
-            android:textSize="12sp"
-            android:inputType="none"
+            android:layout_marginStart="20dp"
             android:text="@string/label_sampleinventorytitle"
-            android:maxLines="1"
-            android:maxLength="40"
             android:hint="Title"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
             android:focusedByDefault="false"
+            android:backgroundTint="@color/tile_color"
             />
 
 
@@ -49,6 +40,7 @@
             android:layout_gravity="center"
             android:background="@null"
             android:scaleType="fitCenter"
+            app:tint="@color/tile_color"
             />
 
         <ImageButton
@@ -60,6 +52,8 @@
             android:background="@null"
             android:src="@drawable/ic_delete_default"
             android:scaleType="fitCenter"
+            app:tint="@color/tile_color"
+            android:layout_marginEnd="20dp"
             />
 
         <ImageButton
@@ -75,6 +69,6 @@
             android:visibility="gone"
             />
 
-    </LinearLayout>
 
-</androidx.cardview.widget.CardView>
+
+</LinearLayout>
