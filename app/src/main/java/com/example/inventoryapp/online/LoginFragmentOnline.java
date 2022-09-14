@@ -1,12 +1,16 @@
 package com.example.inventoryapp.online;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.inventoryapp.GlobalActions;
+import com.example.inventoryapp.GlobalConstants;
 import com.example.inventoryapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.auth.AuthCredential;
@@ -72,7 +77,8 @@ public class LoginFragmentOnline extends OnlineFragment {
         forgotPassword_tv = (TextView) requireView().findViewById(R.id.textbtn_forgotPassword);
         forgotPassword_tv.setOnClickListener(v -> {NavigateToPasswordResetFragment();});
         login_btn = (Button) requireView().findViewById(R.id.login_btn);
-        login_btn.setOnClickListener(view -> Login(null));
+        //login_btn.setOnClickListener(view -> Login(null));
+        login_btn.setOnClickListener(view -> showTestDialog());
         createAccount_tbtn = (TextView) requireView().findViewById(R.id.textbtn_createAccount);
         createAccount_tbtn.setOnClickListener(view -> NavigateToAccountCreationFragment());
         if(mCurrentUser != null)
@@ -107,6 +113,14 @@ public class LoginFragmentOnline extends OnlineFragment {
                 .addOnSuccessListener(cActivity, authResult -> {
                     NavigateToGroupsFragment();
                 }).addOnFailureListener(cActivity, e -> Toast.makeText(cActivity, "Failed to sign in", Toast.LENGTH_SHORT).show());
+    }
+
+    public void showTestDialog(){
+        final Dialog dialog = new Dialog(cActivity);
+        dialog.setContentView(R.layout.dlog_sure);
+        //very important line - removes background to allow corner
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
     }
 
     public void UpdateUserProfile(View view){
