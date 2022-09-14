@@ -6,6 +6,7 @@ import static com.example.inventoryapp.GlobalConstants.ONLINE_KEY_GROUPNAME;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.view.LayoutInflater;
@@ -106,6 +107,7 @@ public class InventoryFragmentOnline extends OnlineFragment {
     public void ShowRenameGroupDialog(){
         final Dialog dialog = new Dialog(getContext());
         dialog.setContentView(R.layout.dlog_renamegroup);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         Button submitBtn = (Button) dialog.findViewById(R.id.btn_renameGroup_submit);
         Button cancelBtn = (Button) dialog.findViewById(R.id.btn_renameGroup_cancel);
         EditText nameEditText = (EditText)dialog.findViewById(R.id.edittext_renameGroup);

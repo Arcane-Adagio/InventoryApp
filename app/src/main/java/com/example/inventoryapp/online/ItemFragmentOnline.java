@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -116,6 +117,7 @@ public class ItemFragmentOnline extends OnlineFragment implements FirebaseHandle
     public void ShowRenameInventoryDialog(){
         final Dialog dialog = new Dialog(cActivity);
         dialog.setContentView(R.layout.dlog_renameinventory);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         Button submitBtn = (Button) dialog.findViewById(R.id.btn_renameInventory_submit);
         Button cancelBtn = (Button) dialog.findViewById(R.id.btn_renameInventory_cancel);
         EditText nameEditText = (EditText)dialog.findViewById(R.id.edittext_renameInventory);
