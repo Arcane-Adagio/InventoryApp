@@ -25,7 +25,7 @@
             android:gravity="center"
             android:text="Join Group"
             android:textAlignment="center"
-            android:textSize="24sp"
+            android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -55,7 +55,7 @@
                 android:paddingHorizontal="5dp"
                 android:paddingTop="0dp"
                 android:paddingBottom="10dp"
-                android:textSize="14sp" />
+                android:textSize="12sp" />
 
             <EditText
                 android:id="@+id/edittext_groupPassword"
@@ -71,7 +71,7 @@
                 android:paddingTop="0dp"
                 android:paddingBottom="10dp"
                 android:scrollHorizontally="true"
-                android:textSize="14sp" />
+                android:textSize="12sp" />
 
         </LinearLayout>
 
@@ -91,7 +91,7 @@
             android:stateListAnimator="@null"
             android:text="@string/btn_cancel"
             android:textColor="@color/tile_color"
-            android:textSize="11sp"
+            android:textSize="9sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btn_joinGroup_submit"
             app:layout_constraintHorizontal_bias="1"
@@ -114,7 +114,7 @@
             android:minHeight="35dp"
             android:padding="5dp"
             android:text="Join"
-            android:textSize="11sp"
+            android:textSize="9sp"
             app:layout_constraintEnd_toEndOf="@+id/layout_ET"
             app:layout_constraintTop_toBottomOf="@+id/layout_ET" />
 

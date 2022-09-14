@@ -7,6 +7,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
@@ -109,6 +110,7 @@ public class GroupFragmentOnline extends OnlineFragment{
     public void CreateGroupDialog(){
         final Dialog dialog = new Dialog(cActivity);
         dialog.setContentView(R.layout.frag_creategroup);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         Button submitBtn = (Button) dialog.findViewById(R.id.creategroup_submit_Btn);
         Button cancelBtn = (Button) dialog.findViewById(R.id.creategroup_cancel_Btn);
         EditText nameEditText = (EditText)dialog.findViewById(R.id.edittext_groupName);
@@ -188,6 +190,8 @@ public class GroupFragmentOnline extends OnlineFragment{
     public void JoinGroupDialog(){
         final Dialog dialog = new Dialog(cActivity);
         dialog.setContentView(R.layout.dlog_addgroup);
+        //very important line - removes background to allow corner
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         Button submitBtn = (Button) dialog.findViewById(R.id.btn_joinGroup_submit);
         Button cancelBtn = (Button) dialog.findViewById(R.id.btn_joinGroup_cancel);
         EditText passwordEditText = (EditText) dialog.findViewById(R.id.edittext_groupPassword);
