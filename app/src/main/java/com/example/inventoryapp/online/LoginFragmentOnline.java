@@ -77,8 +77,7 @@ public class LoginFragmentOnline extends OnlineFragment {
         forgotPassword_tv = (TextView) requireView().findViewById(R.id.textbtn_forgotPassword);
         forgotPassword_tv.setOnClickListener(v -> {NavigateToPasswordResetFragment();});
         login_btn = (Button) requireView().findViewById(R.id.login_btn);
-        //login_btn.setOnClickListener(view -> Login(null));
-        login_btn.setOnClickListener(view -> showTestDialog());
+        login_btn.setOnClickListener(view -> Login(null));
         createAccount_tbtn = (TextView) requireView().findViewById(R.id.textbtn_createAccount);
         createAccount_tbtn.setOnClickListener(view -> NavigateToAccountCreationFragment());
         if(mCurrentUser != null)

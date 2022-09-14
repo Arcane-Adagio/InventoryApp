@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:popupBackground="@color/royal_yellow1"
+    app:popupTheme="@style/menuTheme"
+    android:tint="@color/teal_200"
+    android:itemBackground="@color/teal_200"
+    >
     <item
         android:id="@+id/menu_user_save"
         android:title="@string/btn_save"

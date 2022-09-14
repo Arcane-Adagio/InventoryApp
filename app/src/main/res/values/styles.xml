@@ -78,4 +78,9 @@
     <style name="btn" parent="Widget.MaterialComponents.Button">
         <item name="fontFamily">@font/poppins_bold</item>
     </style>
+
+    <style name="menuTheme" parent="TextAppearance.AppCompat.Widget.ActionBar.Menu">
+        <item name="android:popupBackground">@color/primaryDarkColor</item>
+    </style>
+
 </resources>
