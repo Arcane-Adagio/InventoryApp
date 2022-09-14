@@ -51,12 +51,20 @@ public class AccountCreationFragment extends Fragment {
         /* Reads input from textbox and creates user account in database */
         EditText email = (EditText) requireActivity().findViewById(R.id.email_editText);
         EditText password = (EditText) requireActivity().findViewById(R.id.password_edittext);
+        EditText passwordDup = (EditText) requireActivity().findViewById(R.id.retypePassword_edittext);
+
         if(!isEmailValid(email)){
             Toast.makeText(getContext(), R.string.error_invalidEmail, Toast.LENGTH_SHORT).show();
             return;
         }
         if(!isPasswordValid(password))
             return;
+        if(!isPasswordValid(passwordDup))
+            return;
+        if(!password.getText().toString().equals(passwordDup.getText().toString())){
+            Toast.makeText(getContext(), "Retyped password does not match", Toast.LENGTH_SHORT).show();
+            return;
+        }
         String validEmail = email.getText().toString();
         String pass = password.getText().toString();
         mAuth.createUserWithEmailAndPassword(validEmail, pass)

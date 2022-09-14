@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".online.AccountCreationFragment"
-    android:background="@null">
+    android:background="@drawable/purp_gradient_back">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -46,6 +46,7 @@
         <TextView
             android:id="@+id/label_username"
             style="@style/labelText"
+            android:textSize="12sp"
             android:layout_gravity="center_vertical"
             android:layout_marginVertical="30dp"
             android:layout_marginHorizontal="30dp"
@@ -76,17 +77,51 @@
         <TextView
             android:id="@+id/label_password"
             style="@style/labelText"
+            android:textSize="12sp"
             android:maxWidth="150dp"
             android:layout_gravity="center_vertical"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="30dp"
             android:gravity="center"
             android:text="@string/label_enterpassword"
             android:textAlignment="center"
             app:layout_constraintStart_toStartOf="@+id/label_username"
             app:layout_constraintTop_toBottomOf="@+id/label_username" />
 
+        <TextView
+            android:id="@+id/label_retypePassword"
+            style="@style/labelText"
+            android:textSize="12sp"
+            android:maxWidth="150dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="30dp"
+            android:gravity="center"
+            android:text="Retype Password:"
+            android:textAlignment="center"
+            app:layout_constraintStart_toStartOf="@+id/label_username"
+            app:layout_constraintTop_toBottomOf="@+id/label_password" />
+
         <EditText
             android:id="@+id/password_edittext"
+            style="@style/basicEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="30dp"
+            android:layout_marginBottom="5dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/white"
+            android:hint="@string/label_password"
+            android:inputType="textPassword"
+            android:maxLength="24"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
+            app:layout_constraintBottom_toBottomOf="@+id/label_password"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/retypePassword_edittext"
+            app:layout_constraintTop_toTopOf="@+id/label_password" />
+
+        <EditText
+            android:id="@+id/retypePassword_edittext"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -101,10 +136,10 @@
             style="@style/basicEditText"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
-            app:layout_constraintBottom_toBottomOf="@+id/label_password"
+            app:layout_constraintBottom_toBottomOf="@+id/label_retypePassword"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/label_password"
-            app:layout_constraintTop_toTopOf="@+id/label_password" />
+            app:layout_constraintStart_toEndOf="@+id/label_retypePassword"
+            app:layout_constraintTop_toTopOf="@+id/label_retypePassword" />
 
         <Button
             android:id="@+id/btn_createaccount"
