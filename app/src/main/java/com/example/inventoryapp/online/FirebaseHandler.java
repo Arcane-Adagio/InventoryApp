@@ -172,11 +172,22 @@ public class FirebaseHandler {
 
 
     public void AddGroup(Group group){
+        /* By using a runTransaction method on this function,
+        * a race condition is introduced. Dont do it. */
         DatabaseReference groupsRef = mRootRef.child(FIREBASE_KEY_GROUPS);
         DatabaseReference newGroupRef = groupsRef.push();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        group.setGroupID(groupsRef.getKey());
-        newGroupRef.runTransaction(PerformAddGroupTransaction(newGroupRef, group, user.getUid(), user.getDisplayName()));
+        group.setGroupID(newGroupRef.getKey());
+
+        String test = group.getGroupID();
+        Log.d(TAG, "AddGroup: "+test);
+
+        //new
+        newGroupRef.setValue(group);
+        DatabaseReference membersRef = newGroupRef.child(FIREBASE_KEY_MEMBERS);
+        membersRef.child(user.getUid()).setValue(user.getDisplayName());
+
+        //newGroupRef.runTransaction(PerformAddGroupTransaction(newGroupRef, group, user.getUid(), user.getDisplayName()));
     }
 
     public void RemoveGroup(Group group){

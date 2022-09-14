@@ -80,9 +80,9 @@ public class GroupRVAOnline extends RecyclerView.Adapter<GroupRVAOnline.ViewHold
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 executor.execute(() -> { //Background work here
                     String changedGroupID = snapshot.getKey().toString();
-                    int position = getPositionInRecyclerViewByID(changedGroupID);
                     boolean notForMe = isNotAGroupMemberOf(snapshot);
                     handler.post(() -> { //UI Thread work here
+                        int position = getPositionInRecyclerViewByID(changedGroupID);
                         if(notForMe){
                             if(position != OUT_OF_BOUNDS){
                                 //user is no longer apart of a group

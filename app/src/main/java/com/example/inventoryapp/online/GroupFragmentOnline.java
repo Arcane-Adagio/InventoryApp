@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.InputFilter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,7 +60,7 @@ public class GroupFragmentOnline extends OnlineFragment{
     FloatingActionButton moreOptions_fab;
     Activity cActivity;
     Boolean fab_open;
-
+    static int fuck = 0;
 
     private static final String APPBAR_TITLE_FOR_FRAGMENT = "Groups";
 
@@ -155,6 +156,8 @@ public class GroupFragmentOnline extends OnlineFragment{
             String codeText = codeEditText.getText().toString();
             if(nameText.equals("") || passwordText.equals("") || codeText.equals(""))
                 return;
+            CreateOnlineGroup(nameText, codeText, passwordText);
+            /*
             Query query = FirebaseDatabase.getInstance().getReference("Groups")
                     .orderByChild("groupCode")
                     .equalTo(codeEditText.getText().toString());
@@ -163,6 +166,7 @@ public class GroupFragmentOnline extends OnlineFragment{
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     long queryResultCount = snapshot.getChildrenCount();
                     if(queryResultCount == 0){
+                        Log.d(TAG, "onDataChange: called");
                         CreateOnlineGroup(nameText, codeText, passwordText);
                         dialog.dismiss();
                     }
@@ -178,6 +182,8 @@ public class GroupFragmentOnline extends OnlineFragment{
 
                 }
             });
+             */
+            dialog.dismiss();
         });
         cancelBtn.setOnClickListener(v -> {
             codeEditText.getBackground().clearColorFilter();
@@ -250,9 +256,9 @@ public class GroupFragmentOnline extends OnlineFragment{
         });
     }
 
-    public void CreateOnlineGroup(String name, String code, String passwordText){
-        new FirebaseHandler().AddGroup(
-                new FirebaseHandler.Group(name, code, passwordText, currentUser.getUid()));
+    public static void CreateOnlineGroup(String name, String code, String passwordText){
+        Log.d("fuckery", "CreateOnlineGroup: called"+String.valueOf(fuck++));
+        new FirebaseHandler().AddGroup(new FirebaseHandler.Group(name, code, passwordText, currentUser.getUid()));
     }
 
 

@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.example.inventoryapp.GlobalActions;
 import com.example.inventoryapp.R;
+import com.example.inventoryapp.data.Dialogs;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Objects;
@@ -115,7 +116,23 @@ public class OfflineItemFragment extends OfflineFragment implements OfflineFragm
         /* Function to handle menu item behaviors specific to this activity */
         switch (item.getItemId()){
             case R.id.menu_inv_edit_title:
-                mNameChangeLayout.setVisibility(View.VISIBLE);
+                Dialogs.ShowRenameInventoryDialog(getContext(), new Dialogs.DialogListener() {
+                    @Override
+                    public boolean submissionCallabck(String[] args) {
+                        String userInput = args[0];
+                        if(userInput.isEmpty())
+                            return false;
+                        else
+                            RenameInventory(args[0]);
+                        return true;
+                    }
+
+                    @Override
+                    public void cancelCallback() {
+
+                    }
+                });
+                //mNameChangeLayout.setVisibility(View.VISIBLE);
                 return true;
             default:
                 return false;
