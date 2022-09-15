@@ -1,5 +1,7 @@
 package com.example.inventoryapp.online;
 
+import static com.example.inventoryapp.GlobalConstants.FRAGMENT_ARG_INVENTORY_NAME;
+
 import android.app.Activity;
 import android.os.Bundle;
 
@@ -9,6 +11,7 @@ import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -117,9 +120,14 @@ public class GroupFragmentOnline extends OnlineFragment{
     }
 
     private void NavigateToInventoryFragment(String groupID, String groupName){
-        currentGroupID = groupID;
-        currentGroupName = groupName;
-        NavController navController = NavHostFragment.findNavController(this);
-        navController.navigate(R.id.action_onlineGroupFragment_to_onlineInventoryFragment);
+        try{ // potential: java.lang.IllegalStateException: Fragment OfflineInventoryFragment{52a50fc} (d1f88a5a-919c-4574-9e0d-7f8606eb1559) not associated with a fragment manager.
+            currentGroupID = groupID;
+            currentGroupName = groupName;
+            NavController navController = NavHostFragment.findNavController(this);
+            navController.navigate(R.id.action_onlineGroupFragment_to_onlineInventoryFragment);
+        }
+        catch (Exception e){
+            Log.d(TAG, "NavigateToInventoryFragment: "+e.getMessage());
+        }
     }
 }

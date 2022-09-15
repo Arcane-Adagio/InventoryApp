@@ -32,6 +32,7 @@ import com.example.inventoryapp.online.InventoryFragmentOnline;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 
 /* this file contains the logic for the fragment which displays the inventory recycler view */
 
@@ -125,10 +126,15 @@ public class OfflineInventoryFragment extends OfflineFragment {
     }
 
     private void NavigateToItemFragment(String inventoryName){
-        Bundle bundle = new Bundle();
-        NavController navController = NavHostFragment.findNavController(this);
-        bundle.putString(FRAGMENT_ARG_INVENTORY_NAME, inventoryName);
-        navController.navigate(R.id.action_offlineInventoryFragment_to_offlineItemFragment, bundle);
+        try{ // potential: java.lang.IllegalStateException: Fragment OfflineInventoryFragment{52a50fc} (d1f88a5a-919c-4574-9e0d-7f8606eb1559) not associated with a fragment manager.
+            Bundle bundle = new Bundle();
+            NavController navController = NavHostFragment.findNavController(this);
+            bundle.putString(FRAGMENT_ARG_INVENTORY_NAME, inventoryName);
+            navController.navigate(R.id.action_offlineInventoryFragment_to_offlineItemFragment, bundle);
+        }
+        catch (Exception e){
+            Log.d(TAG, "NavigateToItemFragment: "+e.getMessage());
+        }
     }
 
 }
