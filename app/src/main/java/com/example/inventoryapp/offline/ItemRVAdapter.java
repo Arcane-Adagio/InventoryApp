@@ -1,5 +1,6 @@
 package com.example.inventoryapp.offline;
 
+import static com.example.inventoryapp.data.InventoryFragment.GetDrawableFromInt;
 import static com.example.inventoryapp.online.OnlineFragment.currentGroupID;
 import static com.example.inventoryapp.online.OnlineFragment.currentInventoryID;
 
@@ -19,10 +20,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.inventoryapp.GlobalActions;
 import com.example.inventoryapp.data.InventoryItem;
 import com.example.inventoryapp.R;
-import com.example.inventoryapp.online.FirebaseHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -153,7 +152,7 @@ public class ItemRVAdapter extends RecyclerView.Adapter<ItemRVAdapter.ViewHolder
                 itemDateTV.setFocusable(false);
                 itemQuantityTV.setFocusable(false);
                 //and Update Icon
-                editBtn.setImageDrawable(GlobalActions.GetDrawableFromInt(editBtn.getContext(), R.drawable.ic_edit_default));
+                editBtn.setImageDrawable(GetDrawableFromInt(editBtn.getContext(), R.drawable.ic_edit_default));
             }
             else {
                 //User Clicked Edit and wants to give input
@@ -164,7 +163,7 @@ public class ItemRVAdapter extends RecyclerView.Adapter<ItemRVAdapter.ViewHolder
                 itemDateTV.setFocusableInTouchMode(true);
                 itemQuantityTV.setFocusableInTouchMode(true);
                 //update Icon
-                editBtn.setImageDrawable(GlobalActions.GetDrawableFromInt(editBtn.getContext(), R.drawable.ic_save_default));
+                editBtn.setImageDrawable(GetDrawableFromInt(editBtn.getContext(), R.drawable.ic_save_default));
             }
         }
     }

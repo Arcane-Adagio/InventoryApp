@@ -34,7 +34,7 @@
                 android:layout_marginTop="50dp"
                 android:layout_marginEnd="6dp"
                 android:layout_marginBottom="6dp"
-                android:contentDescription="add inventory item"
+                android:contentDescription="@string/add_inventory_item"
                 android:src="@drawable/ic_add_default"
                 app:rippleColor="?colorAccent" />
 

@@ -23,8 +23,7 @@ public class StorageHandler {
     private final String mFolderName = "InventoryAppFolder";
     private final String mFileName = "ExportedInventory.txt";
 
-
-    StorageHandler(Activity activity){
+    public StorageHandler(Activity activity){
         mCallingActivity = activity;
     }
 

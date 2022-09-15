@@ -18,11 +18,11 @@ import android.widget.EditText;
 
 import androidx.lifecycle.Lifecycle;
 import androidx.navigation.NavController;
+import androidx.navigation.PopUpToBuilder;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.inventoryapp.GlobalActions;
 import com.example.inventoryapp.GlobalConstants;
 import com.example.inventoryapp.R;
 import com.example.inventoryapp.data.Dialogs;
@@ -72,14 +72,14 @@ public class InventoryFragmentOnline extends OnlineFragment {
         addition_fab = (FloatingActionButton) getView().findViewById(R.id.fab_inventory);
         addition_fab.setOnClickListener(view -> AddInventory());
         edit_fab = (FloatingActionButton) getView().findViewById(R.id.fab_renameGroup);
-        edit_fab.setOnClickListener(view -> ShowRenameGroupDialog());
+        edit_fab.setOnClickListener(view -> RenameGroup());
         moreOptions_fab = (FloatingActionButton) getView().findViewById(R.id.fab_moreOptions);
         moreOptions_fab.setOnClickListener(view -> ToggleFABMenu());
         isOpen_FABMenu = addition_fab.isShown();
     }
 
     private void ToggleFABMenu(){
-        isOpen_FABMenu = GlobalActions.ExpandableFABDefaultBehavior(isOpen_FABMenu, moreOptions_fab,
+        isOpen_FABMenu = ExpandableFABDefaultBehavior(isOpen_FABMenu, moreOptions_fab,
                 new FloatingActionButton[] {addition_fab, edit_fab}, getContext());
     }
 
@@ -104,7 +104,7 @@ public class InventoryFragmentOnline extends OnlineFragment {
     private void AddInventory(){
         Dialogs.CreateInventoryDialog(getContext(), new Dialogs.DialogListener() {
             @Override
-            public boolean submissionCallabck(String[] args) {
+            public boolean submissionCallback(String[] args) {
                 String proposedName = args[0];
                 try{
                     if(proposedName != null && !proposedName.isEmpty())
@@ -119,45 +119,22 @@ public class InventoryFragmentOnline extends OnlineFragment {
             }
 
             @Override
+            public void cancelCallback() {return;}});
+    }
+
+    private void RenameGroup(){
+        Dialogs.RenameGroupDialog(getContext(), new Dialogs.DialogListener() {
+            @Override
+            public boolean submissionCallback(String[] args) {
+                String newName = args[0];
+                new FirebaseHandler().RenameGroup(currentGroupID, newName, FirebaseAuth.getInstance().getCurrentUser(), InventoryFragmentOnline.this);
+                return true;
+            }
+
+            @Override
             public void cancelCallback() {
 
             }
         });
-    }
-
-
-    public void ShowRenameGroupDialog(){
-        final Dialog dialog = new Dialog(getContext());
-        dialog.setContentView(R.layout.dlog_renamegroup);
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        Button submitBtn = (Button) dialog.findViewById(R.id.btn_renameGroup_submit);
-        Button cancelBtn = (Button) dialog.findViewById(R.id.btn_renameGroup_cancel);
-        EditText nameEditText = (EditText)dialog.findViewById(R.id.edittext_renameGroup);
-        //Set Max length of each edit text to make sure it matches the length allotted by the database
-        nameEditText.setFilters(new InputFilter[] { new InputFilter.LengthFilter(GlobalConstants.db_max_code_length) });
-        //when focus has been lost, check if code is valid
-        submitBtn.setOnClickListener(v -> {
-            RenameGroupBehavior(nameEditText, dialog);
-        });
-        cancelBtn.setOnClickListener(v -> {
-            nameEditText.getBackground().clearColorFilter();
-            dialog.dismiss();
-        });
-
-        dialog.show();
-    }
-
-    public void RenameGroupBehavior(EditText nameEditText, Dialog dialog){
-        if(nameEditText.getText() == null)
-            return;
-        if(nameEditText.getText().toString().isEmpty()){
-            nameEditText.setHint("Please Enter A Valid Name");
-            nameEditText.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
-            return;
-        }
-        String newName = nameEditText.getText().toString();
-        new FirebaseHandler().RenameGroup(currentGroupID, newName, FirebaseAuth.getInstance().getCurrentUser(), this);
-        RenameAppBar(newName);
-        dialog.dismiss();
     }
 }

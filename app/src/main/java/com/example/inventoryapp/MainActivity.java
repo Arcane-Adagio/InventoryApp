@@ -21,7 +21,6 @@ public class MainActivity extends AppCompatActivity {
     public BottomNavigationView navView;
     public static int fragmentContainerID = R.id.fragment_container;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,7 +32,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        //GlobalActions.LoadUserInventory(this);
         navView = (BottomNavigationView) findViewById(R.id.bottomnav_app);
         NavController navController = Navigation.findNavController(this, R.id.fragment_container);
         NavigationUI.setupWithNavController(navView, navController);

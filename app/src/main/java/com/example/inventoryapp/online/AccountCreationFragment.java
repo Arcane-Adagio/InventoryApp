@@ -21,23 +21,23 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
+/*
+ * This is the file used to handle the information used on the fragment that handles account creation
+ */
 
 public class AccountCreationFragment extends OnlineFragment {
 
     private static final String TAG = "Account Creation Activity";
     Button createBtn;
-    Fragment _this;
     UserProfileChangeRequest.Builder request;
 
     public AccountCreationFragment() {
         // Required empty public constructor
     }
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        _this = this;
         mAuth = FirebaseAuth.getInstance();
     }
 
@@ -49,9 +49,11 @@ public class AccountCreationFragment extends OnlineFragment {
         RenameAppBar("");
     }
 
-    private void SetupUI(){
-        createBtn = (Button) requireActivity().findViewById(R.id.btn_createaccount);
-        createBtn.setOnClickListener(view -> CreateAccountBehavior(view));
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.frag_online_acc_creation, container, false);
     }
 
     public void CreateAccountBehavior(View view){
@@ -71,17 +73,14 @@ public class AccountCreationFragment extends OnlineFragment {
         String name = displayName.getText().toString();
         request = new UserProfileChangeRequest.Builder().setDisplayName(name);
         mAuth.createUserWithEmailAndPassword(validEmail, pass)
-                .addOnSuccessListener(this::onCreationSuccess)
-                .addOnFailureListener(this::onCreationFailure);
+                .addOnSuccessListener(this::onAccountCreationSuccess)
+                .addOnFailureListener(this::onAccountCreationFailure);
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.frag_online_acc_creation, container, false);
+    private void SetupUI(){
+        createBtn = (Button) requireActivity().findViewById(R.id.btn_createaccount);
+        createBtn.setOnClickListener(view -> CreateAccountBehavior(view));
     }
-
 
     boolean isEmailValid(EditText email_et) {
         CharSequence emailInput = email_et.getText().toString();
@@ -105,7 +104,6 @@ public class AccountCreationFragment extends OnlineFragment {
             Toast.makeText(getContext(), "The passwords do not match", Toast.LENGTH_SHORT).show();
             return false;
         }
-
         return true;
     }
 
@@ -135,23 +133,16 @@ public class AccountCreationFragment extends OnlineFragment {
         }
     }
 
-
-    private void onCreationFailure(Exception e) {
+    private void onAccountCreationFailure(Exception e) {
         Log.d(TAG, "createAccount: failure");
         Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
     }
 
-    private void onCreationSuccess(AuthResult authResult) {
+    private void onAccountCreationSuccess(AuthResult authResult) {
         Log.d(TAG, "createAccount: success");
         mAuth.getCurrentUser().updateProfile(request.build());
         NavController navController = NavHostFragment.findNavController(this);
         navController.navigate(R.id.action_accountCreationFragment_to_onlineLoginFragment);
         Toast.makeText(getContext(), getContext().getString(R.string.toast_accountcreated), Toast.LENGTH_SHORT).show();
-    }
-
-    public void SetupBottomNav(){
-        BottomNavigationView nav = getActivity().findViewById(R.id.bottomnav_app);
-        MenuItem item = nav.getMenu().findItem(R.id.onlineLoginFragment);
-        item.setChecked(true);
     }
 }

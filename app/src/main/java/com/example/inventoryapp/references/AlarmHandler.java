@@ -1,4 +1,4 @@
-package com.example.inventoryapp.extrareferences;
+package com.example.inventoryapp.references;
 
 import android.app.AlarmManager;
 import android.app.AlertDialog;

@@ -9,13 +9,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 
-import com.example.inventoryapp.GlobalActions;
 import com.example.inventoryapp.R;
+import com.example.inventoryapp.data.InventoryFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.Objects;
 
-public class OfflineFragment extends Fragment {
+public class OfflineFragment extends InventoryFragment {
     public interface SimpleCallback{ void CallableFunction(String[] args);}
     public interface MenuCallback {
         int customMenuOptions();
@@ -57,11 +57,11 @@ public class OfflineFragment extends Fragment {
         public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
             //if class was started without custom behavior, perform default action
             if(menuCallback == null)
-                return GlobalActions.DefaultMenuOptionSelection(menuItem, callingFragment.getContext(), callingFragment);
+                return DefaultMenuOptionSelection(menuItem, callingFragment.getContext(), callingFragment);
             //otherwise, handle custom callback
             if(menuCallback.customOnItemSelected(menuItem))
                 return true;
-            return GlobalActions.DefaultMenuOptionSelection(menuItem, callingFragment.getContext(), callingFragment);
+            return DefaultMenuOptionSelection(menuItem, callingFragment.getContext(), callingFragment);
         }
     }
 }

@@ -26,7 +26,6 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.example.inventoryapp.GlobalActions;
 import com.example.inventoryapp.R;
 import com.example.inventoryapp.data.Dialogs;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -38,12 +37,7 @@ public class OfflineItemFragment extends OfflineFragment implements OfflineFragm
 
     private static FloatingActionButton rv_fab;
     private String mCurrentInventory;
-    EditText mNameChangeEditText;
-    ImageButton mConfirmNameButton;
-    ImageButton mCancelNameButton;
-    LinearLayout mNameChangeLayout;
     private static final int rvID = R.id.inventoryitemlist_view;
-    Activity cActivity;
 
     public OfflineItemFragment() {
         // Required empty public constructor
@@ -53,7 +47,6 @@ public class OfflineItemFragment extends OfflineFragment implements OfflineFragm
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        cActivity = getActivity();
     }
 
     @Override
@@ -66,7 +59,6 @@ public class OfflineItemFragment extends OfflineFragment implements OfflineFragm
         SetupItemRecyclerView();
         rv_fab = (FloatingActionButton) requireView().findViewById(R.id.inventoryitem_fab);
         rv_fab.setOnClickListener(view -> ItemRVAdapter.GetItemRecyclerViewINSTANCE().AddItemToInventory());
-        SetupNameChangeDialog();
         SetupBottomNav();
     }
 
@@ -83,42 +75,18 @@ public class OfflineItemFragment extends OfflineFragment implements OfflineFragm
     private void SetupItemRecyclerView(){
         RecyclerView recyclerView = requireView().findViewById(rvID);
         ItemRVAdapter adapter =  ItemRVAdapter.ConstructItemRecyclerView(
-                mCurrentInventory, OfflineInventoryManager.GetInventoryItems(mCurrentInventory), cActivity, rvID);
+                mCurrentInventory, OfflineInventoryManager.GetInventoryItems(mCurrentInventory), getContext(), rvID);
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(cActivity));
-    }
-
-    private void SetupNameChangeDialog(){
-        mCancelNameButton = (ImageButton) requireView().findViewById(R.id.inv_btn_namechange_cancel);
-        mCancelNameButton.setOnClickListener(view -> {
-            mNameChangeEditText.setText("");
-            mNameChangeLayout.setVisibility(View.GONE);
-        });
-        mConfirmNameButton = (ImageButton) requireView().findViewById(R.id.inv_btn_namechange_confirm);
-        mConfirmNameButton.setOnClickListener(view -> {
-            RenameInventory(mNameChangeEditText.getText().toString());
-            mNameChangeLayout.setVisibility(View.GONE);
-        });
-        mNameChangeEditText = (EditText) requireView().findViewById(R.id.newInventoryNameEditText);
-        mNameChangeEditText.setOnKeyListener((v, keyCode, event) -> {
-            if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
-                    (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                RenameInventory(mNameChangeEditText.getText().toString());
-                mNameChangeLayout.setVisibility(View.GONE);
-                return true;
-            }
-            return false;
-        });
-        mNameChangeLayout = (LinearLayout) requireView().findViewById(R.id.namechange_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
     private boolean MenuOptionsSelected(@NonNull MenuItem item){
         /* Function to handle menu item behaviors specific to this activity */
         switch (item.getItemId()){
             case R.id.menu_inv_edit_title:
-                Dialogs.ShowRenameInventoryDialog(getContext(), new Dialogs.DialogListener() {
+                Dialogs.RenameInventoryDialog(getContext(), new Dialogs.DialogListener() {
                     @Override
-                    public boolean submissionCallabck(String[] args) {
+                    public boolean submissionCallback(String[] args) {
                         String userInput = args[0];
                         if(userInput.isEmpty())
                             return false;
@@ -132,7 +100,6 @@ public class OfflineItemFragment extends OfflineFragment implements OfflineFragm
 
                     }
                 });
-                //mNameChangeLayout.setVisibility(View.VISIBLE);
                 return true;
             default:
                 return false;

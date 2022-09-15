@@ -167,7 +167,7 @@ public class GroupRVAOnline extends RecyclerView.Adapter<GroupRVAOnline.ViewHold
             try { //potential runtime exception if user presses button too fast
                 Dialogs.AreYouSureDialog(view.getContext(), new Dialogs.DialogListener() {
                     @Override
-                    public boolean submissionCallabck(String[] args) {
+                    public boolean submissionCallback(String[] args) {
                         new FirebaseHandler().RemoveGroup(groupData.get(holder.getAdapterPosition()));
                         return true;
                     }

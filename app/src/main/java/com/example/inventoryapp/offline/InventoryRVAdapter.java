@@ -127,7 +127,7 @@ public class InventoryRVAdapter extends RecyclerView.Adapter<InventoryRVAdapter.
             deleteBtn = (ImageButton) itemview.findViewById(R.id.inv_delete_btn);
             deleteBtn.setOnClickListener(view -> Dialogs.AreYouSureDialog(view.getContext(), new Dialogs.DialogListener() {
                         @Override
-                        public boolean submissionCallabck(String[] args) {
+                        public boolean submissionCallback(String[] args) {
                             DeleteInventory( inventoryName.getText().toString(),getAdapterPosition());
                             return true;
                         }
@@ -140,12 +140,6 @@ public class InventoryRVAdapter extends RecyclerView.Adapter<InventoryRVAdapter.
             );
             reorderBtn = (ImageButton) itemview.findViewById(R.id.inv_reorder_btn);
         }
-    }
-
-    public static void ResetRecyclerView(){
-        INSTANCE = null;
-        mInventoryNames = new ArrayList<>();
-        mRecyclerView = null;
     }
 
     @Override

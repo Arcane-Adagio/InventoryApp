@@ -2,13 +2,9 @@ package com.example.inventoryapp.online;
 
 /* This is the base class for online fragments */
 
-import static com.example.inventoryapp.GlobalConstants.ONLINE_KEY_GROUPID;
-
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,10 +12,10 @@ import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.inventoryapp.GlobalActions;
+import com.example.inventoryapp.GlobalConstants;
 import com.example.inventoryapp.R;
+import com.example.inventoryapp.data.InventoryFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -28,7 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Objects;
 
-public class OnlineFragment extends Fragment implements FirebaseHandler.OnlineFragmentBehavior{
+public class OnlineFragment extends InventoryFragment implements FirebaseHandler.OnlineFragmentBehavior{
     private final String TAG = "Base Online Fragment Class";
     public static FirebaseUser currentUser;
     public static FirebaseAuth mAuth;
@@ -37,7 +33,7 @@ public class OnlineFragment extends Fragment implements FirebaseHandler.OnlineFr
     public static String currentGroupName;
     public static String currentInventoryName;
     public static DatabaseReference mRootReference = FirebaseDatabase.getInstance().getReference();
-    public static DatabaseReference groupsRef = mRootReference.child(FirebaseHandler.FIREBASE_KEY_GROUPS);
+    public static DatabaseReference groupsRef = mRootReference.child(GlobalConstants.FIREBASE_KEY_GROUPS);
     public interface SimpleCallback{ void CallableFunction(String[] args);}
 
     public void SetupBottomNav(){
@@ -52,7 +48,7 @@ public class OnlineFragment extends Fragment implements FirebaseHandler.OnlineFr
 
     @Override
     public void HandleFragmentInvalidation() {
-        GlobalActions.ShowCustomAlertToast(
+        ShowCustomAlertToast(
                 getLayoutInflater(), getContext(), requireView(),
                 R.layout.toast_groupdeleted, R.id.toast_groupDisconnect);
         NavController navController = NavHostFragment.findNavController(this);
@@ -61,7 +57,7 @@ public class OnlineFragment extends Fragment implements FirebaseHandler.OnlineFr
 
     @Override
     public void HandleInventoryInvalidation() {
-        GlobalActions.ShowCustomAlertToast(
+        ShowCustomAlertToast(
                 getLayoutInflater(), getContext(), requireView(),
                 R.layout.toast_inventorydeleted, R.id.toast_inventoryDisconnect);
         NavController navController = NavHostFragment.findNavController(this);
@@ -82,7 +78,7 @@ public class OnlineFragment extends Fragment implements FirebaseHandler.OnlineFr
 
         @Override
         public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
-            return GlobalActions.DefaultMenuOptionSelection(menuItem, callingFragment.getContext(), callingFragment);
+            return DefaultMenuOptionSelection(menuItem, callingFragment.getContext(), callingFragment);
         }
     }
 

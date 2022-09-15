@@ -20,5 +20,16 @@ public class GlobalConstants {
     public static final String ONLINE_KEY_GROUPNAME = "groupName";
     public static final String ONLINE_KEY_INVENTORYNAME = "inventoryName";
     public static final String ONLINE_KEY_INVENTORYID = "inventoryID";
+    public static final String KEY_SHAREDINVENTORY = "SharedInventory";
+    public static final String FIREBASE_KEY_GROUPS = "Groups";
+    public static final String FIREBASE_KEY_INVENTORIES = "Inventories";
+    public static final String FIREBASE_KEY_INVENTORYITEMS = "Items";
+    public static final String FIREBASE_KEY_MEMBERS = "Members";
+    public static final String FIREBASE_SUBKEY_GROUPOWNER = "groupOwner";
+    public static final String FIREBASE_SUBKEY_INVENTORYNAME = "inventoryName";
+    public static final String FIREBASE_SUBKEY_ITEMDATE = "itemDate";
+    public static final String FIREBASE_SUBKEY_ITEMNEEDFUL = "itemNeedful";
+    public static final String FIREBASE_SUBKEY_ITEMQUANTITY = "itemQuantity";
+    public static final String FIREBASE_SUBKEY_ITEMNAME = "itemName";
 
 }

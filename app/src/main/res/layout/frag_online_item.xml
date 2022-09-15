@@ -80,7 +80,7 @@
             android:layout_alignStart="@+id/fab_renameInventory"
             android:layout_marginTop="50dp"
             android:layout_marginBottom="5dp"
-            android:contentDescription="add item"
+            android:contentDescription="@string/cd_add_item"
             android:src="@drawable/ic_add_iconhubs"
             android:visibility="gone"
             app:rippleColor="?colorAccent" />
@@ -93,7 +93,7 @@
             android:layout_alignStart="@+id/fab_moreOptions"
             android:layout_alignEnd="@+id/fab_moreOptions"
             android:layout_marginBottom="5dp"
-            android:contentDescription="rename inventory"
+            android:contentDescription="@string/cd_rename_inventory"
             android:src="@drawable/ic_edit_default"
             android:visibility="gone"
             app:rippleColor="?colorAccent" />
@@ -108,7 +108,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginEnd="6dp"
             android:layout_marginBottom="6dp"
-            android:contentDescription="see more options"
+            android:contentDescription="@string/cd_more_item"
             android:src="@drawable/ic_more_kozlov"
             app:rippleColor="?colorAccent" />
 

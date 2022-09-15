@@ -1,6 +1,7 @@
 package com.example.inventoryapp.online;
 
 import static com.example.inventoryapp.GlobalConstants.OUT_OF_BOUNDS;
+import static com.example.inventoryapp.data.InventoryFragment.GetDrawableFromInt;
 import static com.example.inventoryapp.online.OnlineFragment.currentGroupID;
 import static com.example.inventoryapp.online.OnlineFragment.currentInventoryID;
 import static com.example.inventoryapp.online.OnlineFragment.groupsRef;
@@ -24,7 +25,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.inventoryapp.GlobalActions;
+import com.example.inventoryapp.GlobalConstants;
 import com.example.inventoryapp.R;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -40,9 +41,9 @@ import java.util.concurrent.Executors;
 public class ItemRVAOnline extends  RecyclerView.Adapter<ItemRVAOnline.ViewHolder>{
 
     DatabaseReference groupRef = groupsRef.child(currentGroupID);
-    DatabaseReference mInventoriesReference = groupRef.child(FirebaseHandler.FIREBASE_KEY_INVENTORIES);
+    DatabaseReference mInventoriesReference = groupRef.child(GlobalConstants.FIREBASE_KEY_INVENTORIES);
     DatabaseReference mInventoryReference = mInventoriesReference.child(currentInventoryID);
-    DatabaseReference mItemsReference = mInventoryReference.child(FirebaseHandler.FIREBASE_KEY_INVENTORYITEMS);
+    DatabaseReference mItemsReference = mInventoryReference.child(GlobalConstants.FIREBASE_KEY_INVENTORYITEMS);
     List<FirebaseHandler.InventoryItem> itemData = new ArrayList<>();
     Context mContext;
     RecyclerView rv;
@@ -195,7 +196,7 @@ public class ItemRVAOnline extends  RecyclerView.Adapter<ItemRVAOnline.ViewHolde
                 itemDateTV.setFocusable(false);
                 itemQuantityTV.setFocusable(false);
                 //and Update Icon
-                editBtn.setImageDrawable(GlobalActions.GetDrawableFromInt(editBtn.getContext(), R.drawable.ic_edit_default));
+                editBtn.setImageDrawable(GetDrawableFromInt(editBtn.getContext(), R.drawable.ic_edit_default));
                 //save to database
                 new FirebaseHandler().UpdateInventoryItem(currentGroupID, currentInventoryID, item, (FirebaseHandler.OnlineFragmentBehavior) cFragment);
             }
@@ -208,7 +209,7 @@ public class ItemRVAOnline extends  RecyclerView.Adapter<ItemRVAOnline.ViewHolde
                 itemDateTV.setFocusableInTouchMode(true);
                 itemQuantityTV.setFocusableInTouchMode(true);
                 //update Icon
-                editBtn.setImageDrawable(GlobalActions.GetDrawableFromInt(editBtn.getContext(), R.drawable.ic_save_default));
+                editBtn.setImageDrawable(GetDrawableFromInt(editBtn.getContext(), R.drawable.ic_save_default));
             }
         }
     }

@@ -22,26 +22,13 @@
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Inventories"/>
+                android:text="@string/tab_inventories"/>
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Members"/>
+                android:text="@string/tab_members"/>
 
         </com.google.android.material.tabs.TabLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:visibility="gone">
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Create Inventory"
-                />
-        </LinearLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -69,7 +56,7 @@
                 android:layout_alignStart="@+id/fab_renameGroup"
                 android:layout_marginTop="50dp"
                 android:layout_marginBottom="5dp"
-                android:contentDescription="add group item"
+                android:contentDescription="@string/cd_add_group_item"
                 android:src="@drawable/ic_add_iconhubs"
                 android:visibility="gone"
                 app:rippleColor="?colorAccent" />
@@ -82,7 +69,7 @@
                 android:layout_alignStart="@+id/fab_moreOptions"
                 android:layout_alignEnd="@+id/fab_moreOptions"
                 android:layout_marginBottom="5dp"
-                android:contentDescription="create group item"
+                android:contentDescription="@string/cd_create_group_item"
                 android:src="@drawable/ic_edit_default"
                 android:visibility="gone"
                 app:rippleColor="?colorAccent" />
@@ -97,7 +84,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="6dp"
                 android:layout_marginBottom="6dp"
-                android:contentDescription="add group item"
+                android:contentDescription="@string/cd_more_item"
                 android:src="@drawable/ic_more_kozlov"
                 app:rippleColor="?colorAccent" />
 

@@ -1,6 +1,6 @@
-package com.example.inventoryapp.extrareferences;
+package com.example.inventoryapp.references;
 
-import static com.example.inventoryapp.GlobalActions.Alert;
+import static com.example.inventoryapp.data.InventoryFragment.Alert;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -8,7 +8,8 @@ import android.content.Intent;
 import android.os.BatteryManager;
 import android.widget.Toast;
 
-import com.example.inventoryapp.GlobalActions;
+
+import com.example.inventoryapp.GlobalConstants;
 import com.example.inventoryapp.R;
 
 import java.util.Objects;
@@ -51,7 +52,7 @@ public class BroadcastHandler {
             /* This receiver, in production, would be used to listen for
             * inventory lists to add to the UI. */
             String emptyString = "";
-            String inventory = intent.getExtras().getString(GlobalActions.KEY_SHAREDINVENTORY, emptyString);
+            String inventory = intent.getExtras().getString(GlobalConstants.KEY_SHAREDINVENTORY, emptyString);
             if (Objects.equals(inventory, emptyString))
                 return;
             //Do something

@@ -1,16 +1,7 @@
 package com.example.inventoryapp.online;
 
 import android.app.Activity;
-import android.app.Dialog;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.fragment.NavHostFragment;
-
-import android.text.InputFilter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,15 +11,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.inventoryapp.GlobalActions;
-import com.example.inventoryapp.GlobalConstants;
+import androidx.navigation.NavController;
+import androidx.navigation.fragment.NavHostFragment;
+
 import com.example.inventoryapp.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -112,105 +100,6 @@ public class LoginFragmentOnline extends OnlineFragment {
                 .addOnSuccessListener(cActivity, authResult -> {
                     NavigateToGroupsFragment();
                 }).addOnFailureListener(cActivity, e -> Toast.makeText(cActivity, "Failed to sign in", Toast.LENGTH_SHORT).show());
-    }
-
-    public void showTestDialog(){
-        final Dialog dialog = new Dialog(cActivity);
-        dialog.setContentView(R.layout.dlog_sure);
-        //very important line - removes background to allow corner
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dialog.show();
-    }
-
-    public void UpdateUserProfile(View view){
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if(user==null)
-            return;
-        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                .setDisplayName("DisplayName")
-                .build();
-        user.updateProfile(profileUpdates)
-                .addOnCompleteListener((task -> {
-                    if(task.isSuccessful()){
-                        Toast.makeText(cActivity, "Update User es Success", Toast.LENGTH_SHORT).show();
-                    }
-                }));
-    }
-
-    public void SendVerificationEmail(){
-        mCurrentUser.sendEmailVerification()
-                .addOnCompleteListener(task -> {
-                    if(task.isSuccessful()){
-                        Toast.makeText(cActivity, "Verification Email Sent", Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
-    public void UpdateUserPassword(String password){
-        mCurrentUser.updatePassword(password)
-                .addOnCompleteListener(task -> {
-                    if(task.isSuccessful()){
-                        Toast.makeText(cActivity, "Password has been updated", Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
-    public void ReauthenticateUser(String email, String password){
-        AuthCredential credential = EmailAuthProvider.getCredential(email, password);
-        mCurrentUser.reauthenticate(credential)
-                .addOnCompleteListener(task -> {
-                    Log.d(TAG, "User re-authenticated");
-                    Toast.makeText(cActivity, "user re-authenticated", Toast.LENGTH_SHORT).show();
-                });
-    }
-
-    public OnCompleteListener getDefaultOnCompleteListener(String successString, String failureString){
-        return task -> {
-            if(task.isSuccessful())
-                Toast.makeText(cActivity, successString, Toast.LENGTH_SHORT).show();
-            else
-                Toast.makeText(cActivity, failureString, Toast.LENGTH_SHORT).show();
-        };
-    }
-
-    public DatabaseReference.CompletionListener getDefaultOnCompletionListener(String successString, String failureString) {
-        return (error, ref) -> {
-            if (error != null)
-                Toast.makeText(cActivity, successString, Toast.LENGTH_SHORT).show();
-            else
-                Toast.makeText(cActivity, failureString, Toast.LENGTH_SHORT).show();
-        };
-    }
-
-    public void UpdateUserEmail(View view){
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if(user==null || !textboxValidation())
-            return;
-        user.updateEmail(email_tb.getText().toString())
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()){
-                        Toast.makeText(cActivity, "Update was a success", Toast.LENGTH_SHORT).show();
-                    }
-                }).addOnFailureListener(e -> Toast.makeText(cActivity, "Operation was a failure", Toast.LENGTH_SHORT).show());
-    }
-
-    public boolean isUserEmailVerified(){
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user==null)
-            return false;
-        return user.isEmailVerified();
-    }
-
-    public FirebaseAuth.AuthStateListener getAuthVerifiedListener(){
-        //register the listener to make sure user cant login without being verified
-        //example: user.addAuthStateListener(getAuthVerifiedListener);
-
-        return firebaseAuth -> {
-            if(isUserEmailVerified())
-                Toast.makeText(cActivity, "Email is verified", Toast.LENGTH_SHORT).show();
-            else
-                Toast.makeText(cActivity, "Email is NOT verified", Toast.LENGTH_SHORT).show();
-        };
     }
 
     private boolean textboxValidation(){

@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.example.inventoryapp.R;
 import com.example.inventoryapp.data.InventoryItem;
 
 import org.json.JSONArray;
@@ -29,7 +30,6 @@ public class OfflineInventoryManager {
     public static List<String> InventoryNames = new ArrayList<>();
     private static final String TAG = "Offline Inventory Manager";
     public static List<List<InventoryItem>> InventoryItems = new ArrayList<>();
-    private static final String defaultInventoryNamePrefix = "Inventory #";
     private static final String ITEM_ATTRIBUTE_NAME = "name";
     private static final String ITEM_ATTRIBUTE_DATE = "date";
     private static final String ITEM_ATTRIBUTE_QUANTITY = "quantity";
@@ -172,13 +172,13 @@ public class OfflineInventoryManager {
     public static void SaveUserInventory(Context context){
         SharedPreferences pref = ((Activity)context).getSharedPreferences(SHARED_PREF_FILENAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
-        editor.putString("InventoryJSON", getInventoryJSON());
+        editor.putString(context.getString(R.string.pref_inventory_key), getInventoryJSON());
         editor.commit();
     }
 
     public static void LoadUserInventory(Context context){
         SharedPreferences pref = ((Activity)context).getSharedPreferences(SHARED_PREF_FILENAME, MODE_PRIVATE);
-        String savedString = pref.getString("InventoryJSON","");
+        String savedString = pref.getString(context.getString(R.string.pref_inventory_key),"");
         ImportJSONStringToInventory(savedString);
     }
 

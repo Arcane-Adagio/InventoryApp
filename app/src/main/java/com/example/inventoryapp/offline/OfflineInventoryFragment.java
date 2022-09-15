@@ -25,7 +25,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.inventoryapp.GlobalActions;
 import com.example.inventoryapp.R;
 import com.example.inventoryapp.data.Dialogs;
 import com.example.inventoryapp.online.FirebaseHandler;
@@ -36,7 +35,6 @@ import java.util.Objects;
 
 
 public class OfflineInventoryFragment extends OfflineFragment {
-    Activity cActivity;
     private final String TAG = "Local Inventory Fragment";
     FloatingActionButton fab;
     static RecyclerView recyclerView;
@@ -46,11 +44,9 @@ public class OfflineInventoryFragment extends OfflineFragment {
         // Required empty public constructor
     }
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        cActivity = getActivity();
         OfflineInventoryManager.LoadUserInventory(getActivity());
     }
 
@@ -67,14 +63,14 @@ public class OfflineInventoryFragment extends OfflineFragment {
         adapter = InventoryRVAdapter.ConstructHomeRecyclerViewIfNotCreated
                 (OfflineInventoryManager.GetInventoryNames(), args -> NavigateToItemFragment(args[0]));
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(cActivity));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
     private void ResetInventoryRecyclerView(){
         recyclerView = requireView().findViewById(R.id.inventorylist_view);
         adapter = InventoryRVAdapter.ReconstructRecyclerView( OfflineInventoryManager.GetInventoryNames());
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(cActivity));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
     @Override
@@ -85,10 +81,8 @@ public class OfflineInventoryFragment extends OfflineFragment {
         if(adapter == null)
             Log.d(TAG, "onStart: unable to get adapter reference");
         else
-        {
             fab.setOnClickListener(view ->{ AddInventory(); });
-        }
-        RenameAppBar("Offline Inventories");
+        RenameAppBar(getString(R.string.title_offlineinventory));
         SetupBottomNav();
         super.onStart();
     }
@@ -102,7 +96,7 @@ public class OfflineInventoryFragment extends OfflineFragment {
     private void AddInventory(){
         Dialogs.CreateInventoryDialog(getContext(), new Dialogs.DialogListener() {
             @Override
-            public boolean submissionCallabck(String[] args) {
+            public boolean submissionCallback(String[] args) {
                 String proposedName = args[0];
                 try{
                     OfflineInventoryManager.AddInventoryAndNotifyAdapter(adapter, proposedName);

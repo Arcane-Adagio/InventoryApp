@@ -1,7 +1,19 @@
 package com.example.inventoryapp.online;
 
+import static com.example.inventoryapp.GlobalConstants.FIREBASE_KEY_GROUPS;
+import static com.example.inventoryapp.GlobalConstants.FIREBASE_KEY_INVENTORIES;
+import static com.example.inventoryapp.GlobalConstants.FIREBASE_KEY_INVENTORYITEMS;
+import static com.example.inventoryapp.GlobalConstants.FIREBASE_KEY_MEMBERS;
+import static com.example.inventoryapp.GlobalConstants.FIREBASE_SUBKEY_GROUPOWNER;
+import static com.example.inventoryapp.GlobalConstants.FIREBASE_SUBKEY_INVENTORYNAME;
+import static com.example.inventoryapp.GlobalConstants.FIREBASE_SUBKEY_ITEMDATE;
+import static com.example.inventoryapp.GlobalConstants.FIREBASE_SUBKEY_ITEMNAME;
+import static com.example.inventoryapp.GlobalConstants.FIREBASE_SUBKEY_ITEMNEEDFUL;
+import static com.example.inventoryapp.GlobalConstants.FIREBASE_SUBKEY_ITEMQUANTITY;
+
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -12,8 +24,13 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.inventoryapp.R;
 import com.example.inventoryapp.data.Dialogs;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,11 +47,6 @@ import java.util.concurrent.Callable;
 public class FirebaseHandler {
     private static final String TAG = "Firebase Handler";
     private DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
-    public static final String FIREBASE_KEY_GROUPS = "Groups";
-    public static final String FIREBASE_KEY_INVENTORIES = "Inventories";
-    public static final String FIREBASE_KEY_INVENTORYITEMS = "Items";
-    public static final String FIREBASE_KEY_MEMBERS = "Members";
-    public static FirebaseAuth mCurrentUser;
 
     public static interface OnlineFragmentBehavior{
         void HandleFragmentInvalidation();
@@ -240,11 +252,11 @@ public class FirebaseHandler {
                     DataSnapshot groupObj = snapshot.child(groupID);
                     DatabaseReference groupRef = groupsRef.child(groupID);
                     /* Only the owner is in charge of inventory names */
-                    if(currentUser.getUid().equals(groupObj.child("groupOwner").getValue())){
+                    if(currentUser.getUid().equals(groupObj.child(FIREBASE_SUBKEY_GROUPOWNER).getValue())){
                         if(groupObj.child(FIREBASE_KEY_INVENTORIES).hasChild(inventoryID)){
                             DataSnapshot inventoryObj = groupObj.child(FIREBASE_KEY_INVENTORIES).child(inventoryID);
                             DatabaseReference inventoryRef = groupRef.child(FIREBASE_KEY_INVENTORIES).child(inventoryID);
-                            DatabaseReference inventoryNameRef = inventoryRef.child("inventoryName");
+                            DatabaseReference inventoryNameRef = inventoryRef.child(FIREBASE_SUBKEY_INVENTORYNAME);
                             inventoryNameRef.runTransaction(PerformSetValueTransaction(inventoryNameRef, newName));
                         }
                     }
@@ -352,10 +364,10 @@ public class FirebaseHandler {
                         DatabaseReference inventoryRef = inventoriesRef.child(inventoryID);
                         DatabaseReference itemsRef = inventoryRef.child(FIREBASE_KEY_INVENTORYITEMS);
                         DatabaseReference inventoryItemRef = itemsRef.child(item.getItemID());
-                        inventoryItemRef.runTransaction(PerformSetValueTransaction(inventoryItemRef.child("itemDate"), item.getItemDate()));
-                        inventoryItemRef.runTransaction(PerformSetValueTransaction(inventoryItemRef.child("itemNeedful"), item.getItemNeedful()));
-                        inventoryItemRef.runTransaction(PerformSetValueTransaction(inventoryItemRef.child("itemQuantity"), item.getItemQuantity()));
-                        inventoryItemRef.runTransaction(PerformSetValueTransaction(inventoryItemRef.child("itemName"), item.getItemName()));
+                        inventoryItemRef.runTransaction(PerformSetValueTransaction(inventoryItemRef.child(FIREBASE_SUBKEY_ITEMDATE), item.getItemDate()));
+                        inventoryItemRef.runTransaction(PerformSetValueTransaction(inventoryItemRef.child(FIREBASE_SUBKEY_ITEMNEEDFUL), item.getItemNeedful()));
+                        inventoryItemRef.runTransaction(PerformSetValueTransaction(inventoryItemRef.child(FIREBASE_SUBKEY_ITEMQUANTITY), item.getItemQuantity()));
+                        inventoryItemRef.runTransaction(PerformSetValueTransaction(inventoryItemRef.child(FIREBASE_SUBKEY_ITEMNAME), item.getItemName()));
                     }
                 }
                 else{
@@ -455,10 +467,10 @@ public class FirebaseHandler {
     public static void DeleteAccountBehavior(Context context, Fragment callingFragment){
         Dialogs.AreYouSureDialog(context, new Dialogs.DialogListener() {
             @Override
-            public boolean submissionCallabck(String[] args) {
+            public boolean submissionCallback(String[] args) {
                 FirebaseAuth.getInstance().getCurrentUser().delete(); //to remove from firebase
                 FirebaseAuth.getInstance().signOut(); //to remove local account info
-                Toast.makeText(context, "Account Deleted", Toast.LENGTH_SHORT).show();
+                makeToast(context, R.string.toast_accountdeleted);
                 try {
                     NavController navController = NavHostFragment.findNavController(callingFragment);
                     navController.navigate(R.id.action_onlineFragment_to_onlineLoginFragment);
@@ -472,6 +484,106 @@ public class FirebaseHandler {
 
             }
         });
+    }
+
+    public static void UpdateUserPassword(Context context, String password){
+        FirebaseAuth.getInstance().getCurrentUser().updatePassword(password)
+                .addOnCompleteListener(task -> {
+                    if(task.isSuccessful()){
+                        makeToast(context, R.string.toast_passwordupdate);
+                    }
+                });
+    }
+
+    public void ReauthenticateUser(Context context, String email, String password){
+        AuthCredential credential = EmailAuthProvider.getCredential(email, password);
+        FirebaseAuth.getInstance().getCurrentUser().reauthenticate(credential)
+                .addOnCompleteListener(task -> {
+                    Log.d(TAG, "User re-authenticated");
+                    makeToast(context, R.string.toast_reauthenticated);
+                });
+    }
+
+    public OnCompleteListener getDefaultOnCompleteListener(Context context, String successString, String failureString){
+        return task -> {
+            if(task.isSuccessful())
+                Toast.makeText(context, successString, Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(context, failureString, Toast.LENGTH_SHORT).show();
+        };
+    }
+
+    public DatabaseReference.CompletionListener getDefaultOnCompletionListener(Context context, String successString, String failureString) {
+        return (error, ref) -> {
+            if (error != null)
+                Toast.makeText(context, successString, Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(context, failureString, Toast.LENGTH_SHORT).show();
+        };
+    }
+
+    public void UpdateUserEmail(Context context, String propsedEmail){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user==null)
+            return;
+        Task<Void> voidTask = user.updateEmail(propsedEmail)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        makeToast(context, R.string.toast_updateemailsuccess);
+                    }
+                })
+                .addOnFailureListener(e ->
+                        makeToast(context, R.string.updateemailfailed));
+    }
+
+    public void UpdateUserProfile(Context context, String newDisplayName){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if(user==null)
+            return;
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setDisplayName(newDisplayName)
+                .build();
+        user.updateProfile(profileUpdates)
+                .addOnCompleteListener((task -> {
+                    if(task.isSuccessful()){
+                        Toast.makeText(context, context.getString(R.string.toast_accountupdated), Toast.LENGTH_SHORT).show();
+                    }
+                }));
+    }
+
+    public void SendVerificationEmail(Context context){
+        FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification()
+                .addOnCompleteListener(task -> {
+                    if(task.isSuccessful()){
+                        Toast.makeText(context, context.getString(R.string.toast_emailsent), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+
+
+    public boolean isUserEmailVerified(){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user==null)
+            return false;
+        return user.isEmailVerified();
+    }
+
+    public FirebaseAuth.AuthStateListener getAuthVerifiedListener(Context context){
+        //register the listener to make sure user cant login without being verified
+        //example: user.addAuthStateListener(getAuthVerifiedListener);
+
+        return firebaseAuth -> {
+            if(isUserEmailVerified())
+                Log.d(TAG, "getAuthVerifiedListener: Email is verified");
+            else
+                Log.d(TAG, "getAuthVerifiedListener: Email is NOT verified");
+        };
+    }
+
+
+    private static void makeToast(Context context, int stringIDValue){
+        Toast.makeText(context, context.getString(stringIDValue), Toast.LENGTH_SHORT).show();
     }
 
 }

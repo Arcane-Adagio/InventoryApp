@@ -19,6 +19,9 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
+/*
+* This is the file used to handle the information used on the fragment that handles account resets
+*/
 
 public class AccountResetFragment extends OnlineFragment {
 
@@ -40,6 +43,7 @@ public class AccountResetFragment extends OnlineFragment {
         email_et = (EditText) requireView().findViewById(R.id.editText_email);
         reset_btn = (Button) requireView().findViewById(R.id.btn_resetPassword);
         reset_btn.setOnClickListener(view -> SendVerificationEmail());
+        //Handle app look when fragment is selected
         SetupBottomNav();
         RenameAppBar("");
     }

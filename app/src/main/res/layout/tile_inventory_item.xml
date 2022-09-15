@@ -37,7 +37,7 @@
             android:textSize="14sp"
             android:inputType="none"
             android:maxLength="40"
-            android:hint="Item Name"
+            android:hint="@string/hint_itemname"
             />
 
         <LinearLayout
