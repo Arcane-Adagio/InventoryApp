@@ -1,6 +1,7 @@
 package com.example.inventoryapp;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -28,7 +29,9 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.splash);
         new Handler().postDelayed(() -> {
             startActivity(new Intent(SplashActivity.this, MainActivity.class));
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left); //add animation
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left); //add animation
+            }
             finish(); //removes splash from backstack
         }, splayDelayInMillis);
     }
