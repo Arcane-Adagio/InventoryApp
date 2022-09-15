@@ -3,6 +3,10 @@ package com.example.inventoryapp;
 import java.util.ArrayList;
 import java.util.List;
 
+/* This file is the main file for persistent variables that need to be accessed app-wide
+* this is to maintain consistency and minimize potential for typo errors.
+ */
+
 public class GlobalConstants {
     public static final List<String> db_emptyValues =
             new ArrayList<String>(){{add("None"); add("null"); add(""); add("[]");}};
@@ -27,9 +31,12 @@ public class GlobalConstants {
     public static final String FIREBASE_KEY_MEMBERS = "Members";
     public static final String FIREBASE_SUBKEY_GROUPOWNER = "groupOwner";
     public static final String FIREBASE_SUBKEY_INVENTORYNAME = "inventoryName";
+    public static final String FIREBASE_SUBKEY_GROUPCODE = "groupCode";
+    public static final String FIREBASE_SUBKEY_GROUPNAME = "groupName";
     public static final String FIREBASE_SUBKEY_ITEMDATE = "itemDate";
     public static final String FIREBASE_SUBKEY_ITEMNEEDFUL = "itemNeedful";
     public static final String FIREBASE_SUBKEY_ITEMQUANTITY = "itemQuantity";
     public static final String FIREBASE_SUBKEY_ITEMNAME = "itemName";
-
+    public static final String FIREBASE_SUBKEY_HASHEDPASSWORD = "groupPasswordHashed";
+    public static final String DEFAULT_ITEM_NAME = "";
 }

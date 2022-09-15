@@ -1,5 +1,6 @@
 package com.example.inventoryapp.online;
 
+import static com.example.inventoryapp.GlobalConstants.DEFAULT_ITEM_NAME;
 import static com.example.inventoryapp.GlobalConstants.ONLINE_KEY_GROUPID;
 import static com.example.inventoryapp.GlobalConstants.ONLINE_KEY_INVENTORYNAME;
 import static com.example.inventoryapp.GlobalConstants.db_max_code_length;
@@ -32,6 +33,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Objects;
 
+// This file handles the logic of the fragment containing the item recycler view
 
 public class ItemFragmentOnline extends OnlineFragment implements FirebaseHandler.OnlineFragmentBehavior{
 
@@ -41,7 +43,6 @@ public class ItemFragmentOnline extends OnlineFragment implements FirebaseHandle
     ItemRVAOnline invItem_rva;
     int rv_id = R.id.inventoryitemlist_view;
     RecyclerView rv;
-    Activity cActivity;
     FloatingActionButton moreOptions_fab;
     Boolean isOpen_FABMenu;
 
@@ -55,7 +56,6 @@ public class ItemFragmentOnline extends OnlineFragment implements FirebaseHandle
         if (getArguments() != null) {
             RenameAppBar(currentInventoryName);
         }
-        cActivity = getActivity();
     }
 
     @Override
@@ -77,6 +77,7 @@ public class ItemFragmentOnline extends OnlineFragment implements FirebaseHandle
     }
 
     private void ToggleFABMenu(){
+        /* Minimizes or Expands sub-menu of FABs */
         isOpen_FABMenu = ExpandableFABDefaultBehavior(isOpen_FABMenu, moreOptions_fab,
                 new FloatingActionButton[] {addition_fab, rename_fab}, getContext());
     }
@@ -93,20 +94,21 @@ public class ItemFragmentOnline extends OnlineFragment implements FirebaseHandle
 
     private void SetupRecyclerView(){
         rv=(RecyclerView) getView().findViewById(rv_id);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(cActivity);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         layoutManager.scrollToPosition(0);
         rv.setLayoutManager(layoutManager);
-        invItem_rva =new ItemRVAOnline(cActivity, rv, this);
+        invItem_rva =new ItemRVAOnline(getActivity(), rv, this);
         rv.setAdapter(invItem_rva);
     }
 
     private void AddInventoryItem(){
         new FirebaseHandler().AddInventoryItemToInventory(
-                currentGroupID, currentInventoryID, new FirebaseHandler.InventoryItem(""), this);
+                currentGroupID, currentInventoryID, new FirebaseHandler.InventoryItem(DEFAULT_ITEM_NAME), this);
     }
 
     private void RenameInventory(){
+        /* Prompts dialog and then calls firebase method if user proceeds */
         Dialogs.RenameInventoryDialog(getContext(), new Dialogs.DialogListener() {
             @Override
             public boolean submissionCallback(String[] args) {

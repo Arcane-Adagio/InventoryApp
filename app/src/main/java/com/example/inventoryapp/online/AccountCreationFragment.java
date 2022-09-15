@@ -2,13 +2,11 @@ package com.example.inventoryapp.online;
 
 import android.os.Bundle;
 
-import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -16,7 +14,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.inventoryapp.R;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -88,7 +85,7 @@ public class AccountCreationFragment extends OnlineFragment {
     }
 
     boolean arePasswordsValid(EditText password_et, EditText retypedPassword_ET) {
-        if(isTextboxNullorEmpty(password_et)){
+        if(!isTextboxValid(password_et)){
             Toast.makeText(getContext(), getString(R.string.error_emptytextbox), Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -96,34 +93,29 @@ public class AccountCreationFragment extends OnlineFragment {
             Toast.makeText(getContext(), getString(R.string.error_shortpassword), Toast.LENGTH_SHORT).show();
             return false;
         }
-        if(isTextboxNullorEmpty(retypedPassword_ET)){
-            Toast.makeText(getContext(), "Please re-enter your password", Toast.LENGTH_SHORT).show();
+        if(!isTextboxValid(retypedPassword_ET)){
+            ToastIt(R.string.toast_reenterpassword);
             return false;
         }
         if(!password_et.getText().toString().equals(retypedPassword_ET.getText().toString())){
-            Toast.makeText(getContext(), "The passwords do not match", Toast.LENGTH_SHORT).show();
+            ToastIt(R.string.toast_passwordsnomatch);
             return false;
         }
         return true;
     }
 
     boolean isDisplayNameValid(EditText displayName_ET){
-        if(isTextboxNullorEmpty(displayName_ET)){
-            Toast.makeText(getContext(), "Please enter a display name", Toast.LENGTH_SHORT).show();
+        if(!isTextboxValid(displayName_ET)){
+            ToastIt(R.string.toast_displaytooshort);
             return false;
         }
         if(isTextboxTextTooShort(displayName_ET, 3)){
-            Toast.makeText(getContext(), "Display name is too short", Toast.LENGTH_SHORT).show();
+            ToastIt(R.string.toast_displaytooshort);
             return false;
         }
         return true;
     }
 
-    boolean isTextboxNullorEmpty(EditText textbox){
-        if (textbox.getText() == null)
-            return true;
-        return textbox.getText().toString().isEmpty();
-    }
 
     boolean isTextboxTextTooShort(EditText textbox, int maxLength){
         try{ // an exception can be thrown if the textbox is null

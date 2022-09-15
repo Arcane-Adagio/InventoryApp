@@ -29,6 +29,7 @@ import com.example.inventoryapp.data.Dialogs;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 
+// This file handles the logic of the fragment containing the inventory recycler view
 
 public class InventoryFragmentOnline extends OnlineFragment {
 
@@ -79,6 +80,7 @@ public class InventoryFragmentOnline extends OnlineFragment {
     }
 
     private void ToggleFABMenu(){
+        /* Minimizes or Expands sub-menu of FABs */
         isOpen_FABMenu = ExpandableFABDefaultBehavior(isOpen_FABMenu, moreOptions_fab,
                 new FloatingActionButton[] {addition_fab, edit_fab}, getContext());
     }
@@ -102,6 +104,7 @@ public class InventoryFragmentOnline extends OnlineFragment {
     }
 
     private void AddInventory(){
+        /* Prompts dialog and then calls firebase method if user proceeds */
         Dialogs.CreateInventoryDialog(getContext(), new Dialogs.DialogListener() {
             @Override
             public boolean submissionCallback(String[] args) {
@@ -119,10 +122,11 @@ public class InventoryFragmentOnline extends OnlineFragment {
             }
 
             @Override
-            public void cancelCallback() {return;}});
+            public void cancelCallback() {}});
     }
 
     private void RenameGroup(){
+        /* Prompts dialog and then calls firebase method if user proceeds */
         Dialogs.RenameGroupDialog(getContext(), new Dialogs.DialogListener() {
             @Override
             public boolean submissionCallback(String[] args) {
@@ -132,9 +136,6 @@ public class InventoryFragmentOnline extends OnlineFragment {
             }
 
             @Override
-            public void cancelCallback() {
-
-            }
-        });
+            public void cancelCallback() {}});
     }
 }

@@ -32,6 +32,10 @@ import com.example.inventoryapp.online.FirebaseHandler;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.net.InetAddress;
+import java.util.Objects;
+
+/* This is the ancestor abstract class that all fragments within the app inherit
+* so that common functions don't have to be retyped as to be compliant with the DRY principle */
 
 public class InventoryFragment extends Fragment {
 
@@ -55,6 +59,11 @@ public class InventoryFragment extends Fragment {
                 return false;
         }
     }
+
+    public void RenameAppBar(String newName){
+        Objects.requireNonNull(((AppCompatActivity)getActivity()).getSupportActionBar()).setTitle(newName);
+    }
+
     public static void SetupToolbar(AppCompatActivity activity, int toolbarID){
         /*
          * This function is called When the activity is created
@@ -81,6 +90,7 @@ public class InventoryFragment extends Fragment {
     }
 
     public static Drawable GetDrawableFromInt(Context c, int id){
+        //Re-drafted function because I cant remember "AppCompatResources"
         return AppCompatResources.getDrawable(c, id);
     }
 

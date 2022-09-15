@@ -1,5 +1,6 @@
 package com.example.inventoryapp.online;
 
+import static com.example.inventoryapp.GlobalConstants.FIREBASE_SUBKEY_INVENTORYNAME;
 import static com.example.inventoryapp.GlobalConstants.OUT_OF_BOUNDS;
 import static com.example.inventoryapp.online.OnlineFragment.currentGroupID;
 
@@ -35,6 +36,10 @@ import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/* Adapter class that handles the data between the recycler view displaying inventory information and
+ * the firebase input
+ * */
+
 public class InventoryRVAOnline extends RecyclerView.Adapter<InventoryRVAOnline.ViewHolder>{
     DatabaseReference mRootReference = FirebaseDatabase.getInstance().getReference();
     public final String TAG = "Inventory Recyclerview Adaptor - Online";
@@ -55,6 +60,7 @@ public class InventoryRVAOnline extends RecyclerView.Adapter<InventoryRVAOnline.
         mInventoriesReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                //onChildAdded: an object was added to the firebase tree
                 inventoryData.add(datasnapshotToInventoryConverter(snapshot));
                 rv.scrollToPosition(inventoryData.size()-1); //todo: take out if annoying
                 InventoryRVAOnline.this.notifyItemInserted(inventoryData.size()-1);
@@ -62,11 +68,16 @@ public class InventoryRVAOnline extends RecyclerView.Adapter<InventoryRVAOnline.
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                //onChildChanged: an object or its sub-objects was changed in the firebase tree
                 executor.execute(() -> { // done on background thread
                     String changedInventoryID = snapshot.getKey().toString();
+                    /* Position function is here because a race condition happens if it isn't */
                     int position = getPositionInRecyclerViewByID(changedInventoryID);
                     handler.post(() -> { // done on ui thread
                         if(position != OUT_OF_BOUNDS){
+                            //if a displayed object in firebase has been changed,
+                            //remove the displayed object from the recycler view
+                            //and display the new object that is in firebase
                             inventoryData.remove(position);
                             inventoryData.add(position, datasnapshotToInventoryConverter(snapshot));
                             InventoryRVAOnline.this.notifyItemChanged(position);
@@ -77,11 +88,14 @@ public class InventoryRVAOnline extends RecyclerView.Adapter<InventoryRVAOnline.
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+                //onChildRemoved: an object was removed from the firebase tree
                 executor.execute(() -> {
                     String changedInventoryID = snapshot.getKey().toString();
                     handler.post(() -> {
                         int position = getPositionInRecyclerViewByID(changedInventoryID);
                         if(position != OUT_OF_BOUNDS){
+                            //if the object in the recycler view is no longer in firebase
+                            //from the object from the recycler view
                             inventoryData.remove(position);
                             InventoryRVAOnline.this.notifyItemRemoved(position);
                         }
@@ -91,12 +105,12 @@ public class InventoryRVAOnline extends RecyclerView.Adapter<InventoryRVAOnline.
 
             @Override
             public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                Toast.makeText(context, "onChildMove Not Implemented", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context, "onChildMove Not Implemented", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(context, "Database cancelled updating RecyclerView", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context, "Database cancelled updating RecyclerView", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -104,6 +118,7 @@ public class InventoryRVAOnline extends RecyclerView.Adapter<InventoryRVAOnline.
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        //links the xml file
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.tile_inventory, parent, false);
         final ViewHolder viewHolder = new ViewHolder(v);
         return viewHolder;
@@ -111,14 +126,14 @@ public class InventoryRVAOnline extends RecyclerView.Adapter<InventoryRVAOnline.
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        /* Connects the data to the view based on position every time a tile is reconstructed */
         holder.inventoryName.setText(inventoryData.get(position).getInventoryName());
         holder.editBtn.setOnClickListener(view -> mCallback.CallableFunction(new String[]{
                 inventoryData.get(holder.getAdapterPosition()).getInventoryID(),
                 inventoryData.get(holder.getAdapterPosition()).getInventoryName()}
         ));
         holder.deleteBtn.setOnClickListener(view -> {
-            //potential runtime exception if user presses button too fast
-            try{
+            try{ //potential runtime exception if user presses button too fast
                 String inventoryID = inventoryData.get(holder.getAdapterPosition()).getInventoryID();
                 new FirebaseHandler().RemoveInventoryFromGroup(currentGroupID, inventoryID);
             }
@@ -134,11 +149,11 @@ public class InventoryRVAOnline extends RecyclerView.Adapter<InventoryRVAOnline.
     }
 
     private FirebaseHandler.Inventory datasnapshotToInventoryConverter(DataSnapshot snap){
-        if(!snap.hasChild("inventoryName")){
+        /* takes a firebase dataSnapshot and converts it to a data object for the recycler view */
+        if(!snap.hasChild(FIREBASE_SUBKEY_INVENTORYNAME)){
             Log.d(TAG, "datasnapshotToInventoryConverter: no child");
             return null;
         }
-
         String inventoryName = Objects.requireNonNull(snap.child("inventoryName").getValue()).toString();
         FirebaseHandler.Inventory inventoryObj = new FirebaseHandler.Inventory(inventoryName);
         inventoryObj.setInventoryID(snap.getKey());
@@ -146,6 +161,7 @@ public class InventoryRVAOnline extends RecyclerView.Adapter<InventoryRVAOnline.
     }
 
     private int getPositionInRecyclerViewByID(String id){
+        /* returns the position of the tile in the recyclerview based on the id given */
         int position = GlobalConstants.OUT_OF_BOUNDS;
         for (int i = 0; i< inventoryData.size(); i++){
             if(inventoryData.get(i).getInventoryID().equals(id)){
@@ -157,6 +173,7 @@ public class InventoryRVAOnline extends RecyclerView.Adapter<InventoryRVAOnline.
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
+        /* Data container for the recyclerview */
         TextView inventoryName;
         LinearLayout parentLayout;
         ImageButton editBtn;

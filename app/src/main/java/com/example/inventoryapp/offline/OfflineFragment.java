@@ -15,6 +15,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.Objects;
 
+/* This file, an abstract class inherits from the abstract class inventoryFragment to
+* provide specific reusable functions to fragments that do not use internet capabilities
+*  */
+
 public class OfflineFragment extends InventoryFragment {
     public interface SimpleCallback{ void CallableFunction(String[] args);}
     public interface MenuCallback {
@@ -27,11 +31,6 @@ public class OfflineFragment extends InventoryFragment {
         MenuItem item = nav.getMenu().findItem(R.id.offlineInventoryFragment);
         item.setChecked(true);
     }
-
-    public void RenameAppBar(String newName){
-        Objects.requireNonNull(((AppCompatActivity)getActivity()).getSupportActionBar()).setTitle(newName);
-    }
-
 
     public static class OfflineFragmentHandler implements MenuProvider {
         private Fragment callingFragment;

@@ -27,7 +27,7 @@
             android:exported="true"
             android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait"
-            >
+            tools:ignore="LockedOrientationActivity">
 
         </activity>
         <activity android:name=".SplashActivity"

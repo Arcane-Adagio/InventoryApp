@@ -1,5 +1,9 @@
 package com.example.inventoryapp.data;
 
+import static com.example.inventoryapp.GlobalConstants.FIREBASE_KEY_GROUPS;
+import static com.example.inventoryapp.GlobalConstants.FIREBASE_SUBKEY_GROUPCODE;
+import static com.example.inventoryapp.GlobalConstants.FIREBASE_SUBKEY_HASHEDPASSWORD;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
@@ -35,7 +39,6 @@ public class Dialogs {
     }
 
     static InputFilter[] textboxLength = new InputFilter[] { new InputFilter.LengthFilter(GlobalConstants.db_max_code_length) };
-    //TO DO make edit text a singlar line in xml for rename
 
     public static void AreYouSureDialog(Context context, DialogListener callbackObj){
         final Dialog dialog = new Dialog(context);
@@ -121,8 +124,8 @@ public class Dialogs {
         //when focus has been lost, check if code is valid
         codeEditText.setOnFocusChangeListener((view, hasFocus) -> {
             if(!hasFocus){
-                Query query = FirebaseDatabase.getInstance().getReference("Groups")
-                        .orderByChild("groupCode")
+                Query query = FirebaseDatabase.getInstance().getReference(FIREBASE_KEY_GROUPS)
+                        .orderByChild(FIREBASE_SUBKEY_GROUPCODE)
                         .equalTo(codeEditText.getText().toString());
                 query.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -133,7 +136,7 @@ public class Dialogs {
                         else {
                             codeEditText.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
                             codeEditText.setText("");
-                            codeEditText.setHint("Group Code Already Taken");
+                            codeEditText.setHint(context.getString(R.string.hint_codetaken));
                         }
                     }
 
@@ -151,8 +154,8 @@ public class Dialogs {
             String codeText = codeEditText.getText().toString();
             if(nameText.equals("") || passwordText.equals("") || codeText.equals(""))
                 return;
-            Query query = FirebaseDatabase.getInstance().getReference("Groups")
-                    .orderByChild("groupCode")
+            Query query = FirebaseDatabase.getInstance().getReference(FIREBASE_KEY_GROUPS)
+                    .orderByChild(FIREBASE_SUBKEY_GROUPCODE)
                     .equalTo(codeEditText.getText().toString());
             query.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -166,7 +169,7 @@ public class Dialogs {
                     else {
                         codeEditText.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
                         codeEditText.setText("");
-                        codeEditText.setHint("Group Code Already Taken");
+                        codeEditText.setHint(context.getString(R.string.hint_codetaken));
                     }
                 }
                 @Override
@@ -199,8 +202,8 @@ public class Dialogs {
             if(!(isTextboxValid(passwordEditText) || isTextboxValid(codeEditText)))
                 return;
             int givenPasswordHashed = passwordEditText.getText().toString().hashCode();
-            Query query = FirebaseDatabase.getInstance().getReference("Groups")
-                    .orderByChild("groupCode")
+            Query query = FirebaseDatabase.getInstance().getReference(FIREBASE_KEY_GROUPS)
+                    .orderByChild(FIREBASE_SUBKEY_GROUPCODE)
                     .equalTo(codeEditText.getText().toString());
             query.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -208,14 +211,14 @@ public class Dialogs {
                     if(snapshot.getChildrenCount() == 0){
                         codeEditText.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
                         codeEditText.setText("");
-                        codeEditText.setHint("Group Does Not Exist");
+                        codeEditText.setHint(context.getString(R.string.hint_groupnotfound));
                         return;
                     }
                     for(DataSnapshot snap : snapshot.getChildren())
-                        if(snap.hasChild("groupPasswordHashed")){
-                            if(snap.child("groupPasswordHashed").getValue().equals(String.valueOf(givenPasswordHashed))){
+                        if(snap.hasChild(FIREBASE_SUBKEY_HASHEDPASSWORD)){
+                            if(snap.child(FIREBASE_SUBKEY_HASHEDPASSWORD).getValue().equals(String.valueOf(givenPasswordHashed))){
                                 if(callbackObj.submissionCallback(new String[] {snap.getKey()})){
-                                    Toast.makeText(context, "joining group", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(context, context.getString(R.string.toast_joininggroup), Toast.LENGTH_SHORT).show();
                                     dialog.dismiss();
                                     break;
                                 }

@@ -16,27 +16,24 @@ import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+/* this file contains the logic for the sole activity (aside from the splash screen) of the app */
+
 public class MainActivity extends AppCompatActivity {
 
     public BottomNavigationView navView;
-    public static int fragmentContainerID = R.id.fragment_container;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.splash);
         setContentView(R.layout.activity_main);
     }
 
 
     @Override
-    protected void onStart() {
+    protected void onStart() { //prep app navigation controls
         super.onStart();
         navView = (BottomNavigationView) findViewById(R.id.bottomnav_app);
         NavController navController = Navigation.findNavController(this, R.id.fragment_container);
         NavigationUI.setupWithNavController(navView, navController);
-
     }
-
-
 }

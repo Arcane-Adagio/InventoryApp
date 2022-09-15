@@ -43,9 +43,7 @@ public class AccountResetFragment extends OnlineFragment {
         email_et = (EditText) requireView().findViewById(R.id.editText_email);
         reset_btn = (Button) requireView().findViewById(R.id.btn_resetPassword);
         reset_btn.setOnClickListener(view -> SendVerificationEmail());
-        //Handle app look when fragment is selected
-        SetupBottomNav();
-        RenameAppBar("");
+        HandleAppAesthetics();
     }
 
     @Override
@@ -71,9 +69,8 @@ public class AccountResetFragment extends OnlineFragment {
                 .addOnFailureListener(e -> Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
-    public void SetupBottomNav(){
-        BottomNavigationView nav = getActivity().findViewById(R.id.bottomnav_app);
-        MenuItem item = nav.getMenu().findItem(R.id.onlineLoginFragment);
-        item.setChecked(true);
+    private void HandleAppAesthetics(){
+        SetupBottomNav();
+        RenameAppBar("");
     }
 }

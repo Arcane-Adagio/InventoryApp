@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/online_logout"
-        android:title="Logout"
+        android:title="@string/menu_online_logout"
         app:showAsAction="never"
         />
     <item
         android:id="@+id/online_deleteaccount"
-        android:title="Delete Account"
+        android:title="@string/menu_online_deleteaccount"
         app:showAsAction="never"
         />
 </menu>

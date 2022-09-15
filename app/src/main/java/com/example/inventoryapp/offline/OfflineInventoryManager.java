@@ -173,6 +173,7 @@ public class OfflineInventoryManager {
     }
 
     public static void SaveUserInventory(Context context){
+        /* Saves the user's inventory as a JSON string to the phone */
         SharedPreferences pref = ((Activity)context).getSharedPreferences(SHARED_PREF_FILENAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
         editor.putString(context.getString(R.string.pref_inventory_key), getInventoryJSON());
@@ -180,6 +181,8 @@ public class OfflineInventoryManager {
     }
 
     public static void LoadUserInventory(Context context){
+        /* Reads the json string of the user's inventory, converts it into data objects,
+        * and stores it */
         SharedPreferences pref = ((Activity)context).getSharedPreferences(SHARED_PREF_FILENAME, MODE_PRIVATE);
         String savedString = pref.getString(context.getString(R.string.pref_inventory_key),"");
         ImportJSONStringToInventory(savedString);

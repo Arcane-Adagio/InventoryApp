@@ -4,6 +4,7 @@ import static com.example.inventoryapp.GlobalConstants.FIREBASE_KEY_GROUPS;
 import static com.example.inventoryapp.GlobalConstants.FIREBASE_KEY_INVENTORIES;
 import static com.example.inventoryapp.GlobalConstants.FIREBASE_KEY_INVENTORYITEMS;
 import static com.example.inventoryapp.GlobalConstants.FIREBASE_KEY_MEMBERS;
+import static com.example.inventoryapp.GlobalConstants.FIREBASE_SUBKEY_GROUPNAME;
 import static com.example.inventoryapp.GlobalConstants.FIREBASE_SUBKEY_GROUPOWNER;
 import static com.example.inventoryapp.GlobalConstants.FIREBASE_SUBKEY_INVENTORYNAME;
 import static com.example.inventoryapp.GlobalConstants.FIREBASE_SUBKEY_ITEMDATE;
@@ -48,12 +49,14 @@ public class FirebaseHandler {
     private static final String TAG = "Firebase Handler";
     private DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
 
-    public static interface OnlineFragmentBehavior{
+    /* Interface to handle disconnnect that occurs when
+    * a user is interacting with a recently deleted object */
+    public interface OnlineFragmentBehavior{
         void HandleFragmentInvalidation();
         void HandleInventoryInvalidation();
     }
 
-    public static class Group {
+    public static class Group { // Data class container
         private String groupID;
         private String groupName;
         private String groupCode;
@@ -98,7 +101,7 @@ public class FirebaseHandler {
         public void setMembers(List<String> newMemberList){members = newMemberList;}
     }
 
-    public static class Inventory {
+    public static class Inventory {  // Data class container
         public String inventoryID;
         public String inventoryName;
         public List<InventoryItem> items;
@@ -120,7 +123,7 @@ public class FirebaseHandler {
         }
     }
 
-    public static class InventoryItem {
+    public static class InventoryItem {  // Data class container
         public String itemName;
         public String itemID;
         public String itemDate;
@@ -184,7 +187,6 @@ public class FirebaseHandler {
     }
 
 
-
     public void AddGroup(Group group){
         /* By using a runTransaction method on this function,
         * a race condition is introduced. Dont do it. */
@@ -212,22 +214,25 @@ public class FirebaseHandler {
     }
 
     public void AddMemberToGroup(String groupID, FirebaseUser currentUser){
+        /* Behavior for when a user presses join group */
         DatabaseReference groupsRef = mRootRef.child(FIREBASE_KEY_GROUPS);
         DatabaseReference groupRef = groupsRef.child(groupID);
         DatabaseReference membersRef = groupRef.child(FIREBASE_KEY_MEMBERS);
+        // If a display name is not assigned, firebase will ignore the request
         String displayName = (currentUser.getDisplayName() != null) ? "" : currentUser.getDisplayName();
         membersRef.runTransaction(PerformSetKeyValueTransaction(membersRef, currentUser.getUid(),displayName));
     }
 
     public void RenameGroup(String groupID, String newName, FirebaseUser currentUser, OnlineFragmentBehavior callback){
+        /* Uses unique group ID to change sub-key group name */
         DatabaseReference groupsRef = mRootRef.child(FIREBASE_KEY_GROUPS);
         groupsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.hasChild(groupID)){
-                    if(currentUser.getUid().equals(snapshot.child(groupID).child("groupOwner").getValue())){
+                    if(currentUser.getUid().equals(snapshot.child(groupID).child(FIREBASE_SUBKEY_GROUPOWNER).getValue())){
                         DatabaseReference groupRef = groupsRef.child(groupID);
-                        DatabaseReference groupNameRef = groupRef.child("groupName");
+                        DatabaseReference groupNameRef = groupRef.child(FIREBASE_SUBKEY_GROUPNAME);
                         groupNameRef.runTransaction(PerformSetValueTransaction(groupNameRef, newName));
                     }
                 }
@@ -244,6 +249,7 @@ public class FirebaseHandler {
     }
 
     public void RenameInventory(String groupID, String inventoryID, String newName, FirebaseUser currentUser, OnlineFragmentBehavior callback){
+        /* Uses unique inventory ID to change sub-key inventory name */
         DatabaseReference groupsRef = mRootRef.child(FIREBASE_KEY_GROUPS);
         groupsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -262,6 +268,7 @@ public class FirebaseHandler {
                     }
                     else {
                         //Notify user that only the owner can rename the inventory
+                        callback.HandleInventoryInvalidation();
                     }
                 }
                 else{
@@ -277,6 +284,7 @@ public class FirebaseHandler {
     }
 
     public <T> void AddInventoryToGroup(String groupID, Inventory inventory, OnlineFragmentBehavior callback){
+        /* uses unique firebase group ID / key to add inventory object to sub tree */
         DatabaseReference groupsRef = mRootRef.child(FIREBASE_KEY_GROUPS);
         groupsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -301,6 +309,7 @@ public class FirebaseHandler {
     }
 
     public void RemoveInventoryFromGroup(String groupID, String inventoryID){
+        /* Deletes inventory sub-tree in firebase via unique group ID */
         DatabaseReference groupsRef = mRootRef.child(FIREBASE_KEY_GROUPS);
         DatabaseReference groupRef = groupsRef.child(groupID);
         DatabaseReference inventoriesRef = groupRef.child(FIREBASE_KEY_INVENTORIES);
@@ -309,6 +318,7 @@ public class FirebaseHandler {
     }
 
     public void AddInventoryItemToInventory(String groupID, String inventoryID, InventoryItem item, OnlineFragmentBehavior callback){
+        /* adds item to firebase tree via unique group ID and inventory ID */
         DatabaseReference groupsRef = mRootRef.child(FIREBASE_KEY_GROUPS);
         groupsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -342,6 +352,7 @@ public class FirebaseHandler {
     }
 
     public void RemoveInventoryItemFromInventory(String groupID, String inventoryID, String inventoryItemID){
+        /* deletes reference to firebase tree leaf with the corresponding unique ID*/
         DatabaseReference groupsRef = mRootRef.child(FIREBASE_KEY_GROUPS);
         DatabaseReference groupRef = groupsRef.child(groupID);
         DatabaseReference inventoriesRef = groupRef.child(FIREBASE_KEY_INVENTORIES);
@@ -352,6 +363,8 @@ public class FirebaseHandler {
     }
 
     public void UpdateInventoryItem(String groupID, String inventoryID, InventoryItem item, OnlineFragmentBehavior callback){
+        /* Note, each change to a part of the tree is a transaction because there is a possibility for multiple users
+        * to edit the same component at the same time, so concurrency must be accounted for */
         DatabaseReference groupsRef = mRootRef.child(FIREBASE_KEY_GROUPS);
         groupsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -384,6 +397,7 @@ public class FirebaseHandler {
 
     private <T> Transaction.Handler PerformSetValueTransaction(DatabaseReference ref, T value){
         //Firebase Built-in method to prevent corruption from simultaneous accesses
+        //Note: transactions have a potential to run more than once
         return new Transaction.Handler(){
             @NonNull
             @Override
@@ -401,6 +415,7 @@ public class FirebaseHandler {
 
     private <T> Transaction.Handler PerformSetKeyValueTransaction(DatabaseReference ref, String key, T value){
         //Firebase Built-in method to prevent corruption from simultaneous accesses
+        //Note: transactions have a potential to run more than once
         return new Transaction.Handler(){
             @NonNull
             @Override
@@ -418,6 +433,7 @@ public class FirebaseHandler {
 
     private Transaction.Handler PerformDeletionTransaction(DatabaseReference ref){
         //Firebase Built-in method to prevent corruption from simultaneous accesses
+        //Note: transactions have a potential to run more than once
         return new Transaction.Handler(){
             @NonNull
             @Override
@@ -435,6 +451,7 @@ public class FirebaseHandler {
 
     private <T> Transaction.Handler PerformAddGroupTransaction(DatabaseReference groupRef, T groupObj, String uID, String displayName){
         //Firebase Built-in method to prevent corruption from simultaneous accesses
+        //Note: transactions have a potential to run more than once
         return new Transaction.Handler(){
             @NonNull
             @Override
@@ -559,8 +576,6 @@ public class FirebaseHandler {
                     }
                 });
     }
-
-
 
     public boolean isUserEmailVerified(){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();

@@ -9,6 +9,12 @@ import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+/* This file handles app startup.
+*       -displays splash animation in fullscreen mode
+*       -provides animation to transition to main activity
+*       -removes itself from the backstack
+* */
+
 public class SplashActivity extends AppCompatActivity {
     int splayDelayInMillis = 2000;
 

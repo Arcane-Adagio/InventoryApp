@@ -2,12 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/offlineInventoryFragment"
-        android:title="Offline"
+        android:title="@string/nav_offlinebtn_text"
         android:icon="@drawable/ic_offlinehome_default1"
         />
     <item
         android:id="@+id/onlineLoginFragment"
-        android:title="Online"
+        android:title="@string/nav_onlinebtn_text"
         android:icon="@drawable/ic_onlinehome_default"
         />
 

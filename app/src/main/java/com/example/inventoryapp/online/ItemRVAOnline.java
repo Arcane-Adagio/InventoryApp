@@ -1,5 +1,9 @@
 package com.example.inventoryapp.online;
 
+import static com.example.inventoryapp.GlobalConstants.FIREBASE_SUBKEY_ITEMDATE;
+import static com.example.inventoryapp.GlobalConstants.FIREBASE_SUBKEY_ITEMNAME;
+import static com.example.inventoryapp.GlobalConstants.FIREBASE_SUBKEY_ITEMNEEDFUL;
+import static com.example.inventoryapp.GlobalConstants.FIREBASE_SUBKEY_ITEMQUANTITY;
 import static com.example.inventoryapp.GlobalConstants.OUT_OF_BOUNDS;
 import static com.example.inventoryapp.data.InventoryFragment.GetDrawableFromInt;
 import static com.example.inventoryapp.online.OnlineFragment.currentGroupID;
@@ -38,6 +42,10 @@ import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/* Adapter class that handles the data between the recycler view displaying items information and
+ * the firebase input
+ * */
+
 public class ItemRVAOnline extends  RecyclerView.Adapter<ItemRVAOnline.ViewHolder>{
 
     DatabaseReference groupRef = groupsRef.child(currentGroupID);
@@ -59,6 +67,7 @@ public class ItemRVAOnline extends  RecyclerView.Adapter<ItemRVAOnline.ViewHolde
         mItemsReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                //onChildAdded: an object was added to the firebase tree
                 itemData.add(datasnapshotToItemConverter(snapshot));
                 rv.scrollToPosition(itemData.size()-1); //todo: take out if annoying
                 ItemRVAOnline.this.notifyItemInserted(itemData.size()-1);
@@ -66,10 +75,13 @@ public class ItemRVAOnline extends  RecyclerView.Adapter<ItemRVAOnline.ViewHolde
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                executor.execute(() -> {
+                //onChildChanged: an object or its sub-objects was changed in the firebase tree
+                executor.execute(() -> { //runs on the background thread
                     String changedItemID = snapshot.getKey().toString();
                     int position = getPositionInRecyclerViewByID(changedItemID);
-                    handler.post(() -> {
+                    handler.post(() -> { //runs on ui thread
+                        //if item in recycler view has been changed, remove old item
+                        //and add new item that is representative of firebase's new data
                         if(position != OUT_OF_BOUNDS){
                             itemData.remove(position);
                             itemData.add(position, datasnapshotToItemConverter(snapshot));
@@ -81,10 +93,13 @@ public class ItemRVAOnline extends  RecyclerView.Adapter<ItemRVAOnline.ViewHolde
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                executor.execute(() -> {
+                //onChildRemoved: an object was removed from the firebase tree
+                executor.execute(() -> { //background thread execution
                     String changedItemID = snapshot.getKey().toString();
-                    handler.post(() -> {
+                    handler.post(() -> { // ui thread execution
+                        /* Position function is here because a race condition happens if it isn't */
                         int position = getPositionInRecyclerViewByID(changedItemID);
+                        //remove item from recyclerview if it has been removed from the database
                         if(position != OUT_OF_BOUNDS){
                             itemData.remove(position);
                             ItemRVAOnline.this.notifyItemRemoved(position);
@@ -95,12 +110,12 @@ public class ItemRVAOnline extends  RecyclerView.Adapter<ItemRVAOnline.ViewHolde
 
             @Override
             public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                Toast.makeText(context, "onChildMove Not Implemented", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context, "onChildMove Not Implemented", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(context, "Database cancelled updating RecyclerView", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context, "Database cancelled updating RecyclerView", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -115,6 +130,7 @@ public class ItemRVAOnline extends  RecyclerView.Adapter<ItemRVAOnline.ViewHolde
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        /* Connects the data to the view based on position every time a tile is reconstructed */
         FirebaseHandler.InventoryItem item = itemData.get(position);
         holder.itemNameTV.setText(item.getItemName());
         holder.itemDateTV.setText(item.getItemDate());
@@ -122,8 +138,7 @@ public class ItemRVAOnline extends  RecyclerView.Adapter<ItemRVAOnline.ViewHolde
         holder.itemNeedfulCB.setChecked(item.getItemNeedful());
         holder.editBtn.setOnClickListener(view -> holder.ToggleEditMode_VH(item));
         holder.deleteBtn.setOnClickListener(view -> {
-            //potential runtime exception if user presses button too fast
-            try{
+            try{ //potential runtime exception if user presses button too fast
                 String inventoryItemID = itemData.get(holder.getAdapterPosition()).getItemID();
                 new FirebaseHandler().RemoveInventoryItemFromInventory(currentGroupID, currentInventoryID, inventoryItemID);
             }
@@ -139,16 +154,18 @@ public class ItemRVAOnline extends  RecyclerView.Adapter<ItemRVAOnline.ViewHolde
     }
 
     private FirebaseHandler.InventoryItem datasnapshotToItemConverter(DataSnapshot snap){
-        String itemName = Objects.requireNonNull(snap.child("itemName").getValue()).toString();
-        String itemDate = Objects.requireNonNull(snap.child("itemDate").getValue()).toString();
-        String itemQuantity = Objects.requireNonNull(snap.child("itemQuantity").getValue()).toString();
-        boolean itemNeedful = (boolean) Objects.requireNonNull(snap.child("itemNeedful").getValue());
+        /* takes a firebase dataSnapshot and converts it to a data object for the recycler view */
+        String itemName = Objects.requireNonNull(snap.child(FIREBASE_SUBKEY_ITEMNAME).getValue()).toString();
+        String itemDate = Objects.requireNonNull(snap.child(FIREBASE_SUBKEY_ITEMDATE).getValue()).toString();
+        String itemQuantity = Objects.requireNonNull(snap.child(FIREBASE_SUBKEY_ITEMQUANTITY).getValue()).toString();
+        boolean itemNeedful = (boolean) Objects.requireNonNull(snap.child(FIREBASE_SUBKEY_ITEMNEEDFUL).getValue());
         FirebaseHandler.InventoryItem itemObj = new FirebaseHandler.InventoryItem(itemName, itemDate, itemQuantity, itemNeedful);
         itemObj.setItemID(snap.getKey());
         return itemObj;
     }
 
     private int getPositionInRecyclerViewByID(String id){
+        /* returns the position of the tile in the recyclerview based on the id given */
         int position = OUT_OF_BOUNDS;
         for (int i = 0; i< itemData.size(); i++){
             if(itemData.get(i).getItemID().equals(id)){
@@ -161,6 +178,7 @@ public class ItemRVAOnline extends  RecyclerView.Adapter<ItemRVAOnline.ViewHolde
 
 
     public class ViewHolder extends RecyclerView.ViewHolder{
+        /* Data container for the recyclerview */
         public final CheckBox itemNeedfulCB;
         public final TextView itemNameTV;
         public final TextView itemDateTV;

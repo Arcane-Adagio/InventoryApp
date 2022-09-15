@@ -5,6 +5,8 @@ package com.example.inventoryapp.online;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -40,10 +42,6 @@ public class OnlineFragment extends InventoryFragment implements FirebaseHandler
         BottomNavigationView nav = getActivity().findViewById(R.id.bottomnav_app);
         MenuItem item = nav.getMenu().findItem(R.id.onlineLoginFragment);
         item.setChecked(true);
-    }
-
-    public void RenameAppBar(String newName){
-        Objects.requireNonNull(((AppCompatActivity)getActivity()).getSupportActionBar()).setTitle(newName);
     }
 
     @Override
@@ -82,5 +80,24 @@ public class OnlineFragment extends InventoryFragment implements FirebaseHandler
         }
     }
 
+    public boolean NoInternet(){
+        //Function to stop a button's interaction and notify the user if there is
+        //an internet connection
+        if(isNetworkConnected(getContext()))
+            return false;
+        Toast.makeText(getContext(), getString(R.string.toast_nointernet), Toast.LENGTH_SHORT).show();
+        return true;
+    }
 
+    public static boolean isTextboxValid(EditText textbox){
+        if(textbox.getText() == null)
+            return false;
+        if (textbox.getText().toString().isEmpty())
+            return false;
+        return true;
+    }
+
+    public void ToastIt(int stringID){
+        Toast.makeText(getContext(), getString(stringID), Toast.LENGTH_SHORT).show();
+    }
 }

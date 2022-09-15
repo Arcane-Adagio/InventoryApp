@@ -29,6 +29,8 @@ import com.example.inventoryapp.online.FirebaseHandler;
 import java.util.ArrayList;
 import java.util.List;
 
+/* This file handles the data binding between the inventory recycler view and the mutable saved objects */
+
 public class InventoryRVAdapter extends RecyclerView.Adapter<InventoryRVAdapter.ViewHolder> {
 
     private static final String TAG = "InventoryListRecyclerViewAdapter";
@@ -65,17 +67,15 @@ public class InventoryRVAdapter extends RecyclerView.Adapter<InventoryRVAdapter.
     }
 
     public void NotifyElementAdded(){
-        //if(mInventoryNames.size() == 0)
-            //on first boot, make sure adapter gets first
-            //mInventoryNames = OfflineInventoryManager.InventoryNames;
         notifyItemInserted(getItemCount());
         mRecyclerView.scrollToPosition(getItemCount()-1);
         Log.d(TAG, "AddInventory: "+String.valueOf(mInventoryNames));
     }
 
     public void DeleteInventory(String inventoryName, int position){
-        //potential runtime exception if user presses button too fast
-        try{
+        try{ //potential runtime exception if user presses button too fast
+            //technically, this won't throw an exception if there is a dialog
+            //prompt between each deletion, slowing the user
             OfflineInventoryManager.RemoveInventory(inventoryName);
             notifyItemRemoved(position);
         }

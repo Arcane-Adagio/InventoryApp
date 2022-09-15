@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+/* This file handles all things storage for the app */
 
 public class StorageHandler {
     private Activity mCallingActivity;

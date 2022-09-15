@@ -8,6 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+/* This file is not used in this version
+* This will contain settings...
+* */
 
 public class SettingsFragment extends Fragment {
 

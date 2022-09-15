@@ -18,6 +18,7 @@ import com.example.inventoryapp.data.Dialogs;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 
+// This file handles the logic of the fragment containing the group recycler view
 
 public class GroupFragmentOnline extends OnlineFragment{
 
@@ -59,7 +60,6 @@ public class GroupFragmentOnline extends OnlineFragment{
         SetupBottomNav();
     }
 
-
     public void SetupFloatingActionButtons(){
         createGroup_fab = (FloatingActionButton) requireView().findViewById(R.id.fab_createGroup);
         createGroup_fab.setOnClickListener(view -> CreateGroup());
@@ -77,6 +77,7 @@ public class GroupFragmentOnline extends OnlineFragment{
 
 
     public void CreateGroup(){
+        /* Prompts dialog and then calls firebase method if user proceeds */
         Dialogs.CreateGroupDialog(getContext(), new Dialogs.DialogListener() {
             @Override
             public boolean submissionCallback(String[] args) {
@@ -92,6 +93,7 @@ public class GroupFragmentOnline extends OnlineFragment{
     }
 
     public void JoinGroup(){
+        /* Prompts dialog and then calls firebase method if user proceeds */
         Dialogs.JoinGroupDialog(getContext(), new Dialogs.DialogListener() {
             @Override
             public boolean submissionCallback(String[] args) {
@@ -104,7 +106,6 @@ public class GroupFragmentOnline extends OnlineFragment{
         });
     }
 
-
     private void SetupGroupRecyclerView(){
         rv=(RecyclerView) getView().findViewById(R.id.recyclerview_group);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
@@ -114,7 +115,6 @@ public class GroupFragmentOnline extends OnlineFragment{
         group_rva =new GroupRVAOnline(getContext(), args -> NavigateToInventoryFragment(args[0], args[1]));
         rv.setAdapter(group_rva);
     }
-
 
     private void NavigateToInventoryFragment(String groupID, String groupName){
         currentGroupID = groupID;

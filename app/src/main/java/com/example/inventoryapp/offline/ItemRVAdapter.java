@@ -26,6 +26,8 @@ import com.example.inventoryapp.R;
 import java.util.ArrayList;
 import java.util.List;
 
+/* This file handles the data binding between the item recycler view and the current mutable data objects */
+
 public class ItemRVAdapter extends RecyclerView.Adapter<ItemRVAdapter.ViewHolder> {
 
     private static final String TAG = "InventoryListRecyclerViewAdapter";

@@ -33,6 +33,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Objects;
 
+/* this file contains the logic for the fragment which displays the inventory recycler view */
 
 public class OfflineInventoryFragment extends OfflineFragment {
     private final String TAG = "Local Inventory Fragment";

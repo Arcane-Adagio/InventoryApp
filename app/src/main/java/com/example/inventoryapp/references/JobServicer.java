@@ -18,8 +18,6 @@ public class JobServicer {
             return true;
         }
 
-
-
         @Override
         public boolean onStopJob(JobParameters jobParameters) {
             Toast.makeText(this, "Job Interrupted", Toast.LENGTH_SHORT).show();

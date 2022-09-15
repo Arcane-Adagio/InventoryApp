@@ -32,6 +32,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Objects;
 
+/* This file handles the logic of the fragment which displays an inventory's item(s) */
 
 public class OfflineItemFragment extends OfflineFragment implements OfflineFragment.MenuCallback {
 
@@ -81,7 +82,7 @@ public class OfflineItemFragment extends OfflineFragment implements OfflineFragm
     }
 
     private boolean MenuOptionsSelected(@NonNull MenuItem item){
-        /* Function to handle menu item behaviors specific to this activity */
+        /* Function to handle menu item behaviors specific to this fragment */
         switch (item.getItemId()){
             case R.id.menu_inv_edit_title:
                 Dialogs.RenameInventoryDialog(getContext(), new Dialogs.DialogListener() {

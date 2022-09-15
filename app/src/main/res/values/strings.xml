@@ -101,4 +101,18 @@
     <string name="toast_groupinvalid">Group no longer exists</string>
     <string name="toast_inventoryinvalid">Inventory no longer exists</string>
     <string name="toast_duplicateinventory">Please provide a unique inventory name</string>
+    <string name="toast_invalidlogintextbox">Enter both Email and Password</string>
+    <string name="toast_loginfailed">Failed to sign in</string>
+    <string name="toast_nointernet">Internet connection not found!</string>
+    <string name="toast_displaytooshort">Display name is too short</string>
+    <string name="toast_emptydisplayname">Please enter a display name</string>
+    <string name="toast_reenterpassword">Please re-enter your password</string>
+    <string name="toast_passwordsnomatch">The passwords do not match</string>
+    <string name="hint_groupnotfound">Group Does Not Exist</string>
+    <string name="hint_codetaken">Group Code Already Taken</string>
+    <string name="toast_joininggroup">joining group</string>
+    <string name="nav_offlinebtn_text">Offline</string>
+    <string name="nav_onlinebtn_text">Online</string>
+    <string name="menu_online_logout">Logout</string>
+    <string name="menu_online_deleteaccount">Delete Account</string>
 </resources>

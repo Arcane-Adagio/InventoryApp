@@ -20,6 +20,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+/* This file handles the logic of the login fragment */
 
 public class LoginFragmentOnline extends OnlineFragment {
 
@@ -65,7 +66,7 @@ public class LoginFragmentOnline extends OnlineFragment {
         forgotPassword_tv = (TextView) requireView().findViewById(R.id.textbtn_forgotPassword);
         forgotPassword_tv.setOnClickListener(v -> {NavigateToPasswordResetFragment();});
         login_btn = (Button) requireView().findViewById(R.id.login_btn);
-        login_btn.setOnClickListener(view -> Login(null));
+        login_btn.setOnClickListener(view -> Login());
         createAccount_tbtn = (TextView) requireView().findViewById(R.id.textbtn_createAccount);
         createAccount_tbtn.setOnClickListener(view -> NavigateToAccountCreationFragment());
         if(mCurrentUser != null)
@@ -79,38 +80,38 @@ public class LoginFragmentOnline extends OnlineFragment {
     }
 
     private void NavigateToGroupsFragment(){
+        if(NoInternet())
+            return;
         NavController navController = NavHostFragment.findNavController(this);
         navController.navigate(R.id.action_onlineLoginFragment_to_onlineGroupFragment);
     }
 
     private void NavigateToAccountCreationFragment(){
+        if(NoInternet())
+            return;
         NavController navController = NavHostFragment.findNavController(this);
         navController.navigate(R.id.action_onlineLoginFragment_to_accountCreationFragment);
     }
 
     private void NavigateToPasswordResetFragment(){
+        if(NoInternet())
+            return;
         NavController navController = NavHostFragment.findNavController(this);
         navController.navigate(R.id.action_onlineLoginFragment_to_accountResetFragment);
     }
 
-    public void Login (View view){
-        if(!textboxValidation())
+    public void Login (){
+        /* Checks for internet connection and valid user input
+        * before proceeding with firebase login */
+        if(NoInternet())
             return;
+        if(!isTextboxValid(email_tb) || !isTextboxValid(password_tb)){
+            Toast.makeText(cActivity, getString(R.string.toast_invalidlogintextbox), Toast.LENGTH_SHORT).show();
+            return;
+        }
         mAuth.signInWithEmailAndPassword(email_tb.getText().toString().trim(), password_tb.getText().toString())
                 .addOnSuccessListener(cActivity, authResult -> {
                     NavigateToGroupsFragment();
-                }).addOnFailureListener(cActivity, e -> Toast.makeText(cActivity, "Failed to sign in", Toast.LENGTH_SHORT).show());
-    }
-
-    private boolean textboxValidation(){
-        String emailInput = email_tb.getText().toString();
-        String passwordInput = password_tb.getText().toString();
-        if(emailInput.equals("") || passwordInput.equals("")){
-            Toast.makeText(cActivity, "Enter both Email and Password", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        else {
-            return true;
-        }
+                }).addOnFailureListener(cActivity, e -> Toast.makeText(cActivity, getString(R.string.toast_loginfailed), Toast.LENGTH_SHORT).show());
     }
 }
