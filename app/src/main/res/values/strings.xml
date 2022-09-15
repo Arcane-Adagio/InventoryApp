@@ -100,4 +100,5 @@
     <string name="hint_itemname">Item Name</string>
     <string name="toast_groupinvalid">Group no longer exists</string>
     <string name="toast_inventoryinvalid">Inventory no longer exists</string>
+    <string name="toast_duplicateinventory">Please provide a unique inventory name</string>
 </resources>

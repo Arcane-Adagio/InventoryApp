@@ -21,8 +21,9 @@ public class SplashActivity extends AppCompatActivity {
         decorView.setSystemUiVisibility(uiOptions);
         setContentView(R.layout.splash);
         new Handler().postDelayed(() -> {
-            startActivity(new Intent(SplashActivity.this, MainActivity.class)); //production
-            finish();
+            startActivity(new Intent(SplashActivity.this, MainActivity.class));
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left); //add animation
+            finish(); //removes splash from backstack
         }, splayDelayInMillis);
     }
 }

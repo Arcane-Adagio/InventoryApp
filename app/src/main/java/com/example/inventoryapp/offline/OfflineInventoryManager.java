@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.inventoryapp.R;
 import com.example.inventoryapp.data.InventoryItem;
@@ -133,13 +134,15 @@ public class OfflineInventoryManager {
         InventoryItems.remove(position);
     }
 
-    public static boolean AddInventoryAndNotifyAdapter(InventoryRVAdapter adapter, String proposedInventoryName){
+    public static boolean AddInventoryAndNotifyAdapter(InventoryRVAdapter adapter, String proposedInventoryName, Context context){
         /* New inventory name should not be a duplicate of an existing name */
         String defaultInventoryName;
         int counter = InventoryNames.size();
 
-        if (InventoryNames.contains(proposedInventoryName))
+        if (InventoryNames.contains(proposedInventoryName)){
+            Toast.makeText(context, context.getString(R.string.toast_duplicateinventory), Toast.LENGTH_SHORT).show();
             return false;
+        }
         InventoryNames.add(proposedInventoryName);
         InventoryItems.add(new ArrayList<>());
         if(adapter!=null){

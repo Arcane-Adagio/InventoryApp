@@ -91,6 +91,8 @@ public class Dialogs {
         nameEditText.setFilters(textboxLength);
         //when focus has been lost, check if code is valid
         submitBtn.setOnClickListener(v -> {
+            if(!isTextboxValid(nameEditText))
+                return;
             if (callbackObj.submissionCallback(new String[] {nameEditText.getText().toString()} ))
                 dialog.dismiss();
         });

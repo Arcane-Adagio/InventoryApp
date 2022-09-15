@@ -99,7 +99,7 @@ public class OfflineInventoryFragment extends OfflineFragment {
             public boolean submissionCallback(String[] args) {
                 String proposedName = args[0];
                 try{
-                    OfflineInventoryManager.AddInventoryAndNotifyAdapter(adapter, proposedName);
+                    OfflineInventoryManager.AddInventoryAndNotifyAdapter(adapter, proposedName, getContext());
                     if(adapter.getItemCount() == 0)
                         ResetInventoryRecyclerView();
                     return true;

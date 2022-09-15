@@ -96,7 +96,7 @@ public class LoginFragmentOnline extends OnlineFragment {
     public void Login (View view){
         if(!textboxValidation())
             return;
-        mAuth.signInWithEmailAndPassword(email_tb.getText().toString(), password_tb.getText().toString())
+        mAuth.signInWithEmailAndPassword(email_tb.getText().toString().trim(), password_tb.getText().toString())
                 .addOnSuccessListener(cActivity, authResult -> {
                     NavigateToGroupsFragment();
                 }).addOnFailureListener(cActivity, e -> Toast.makeText(cActivity, "Failed to sign in", Toast.LENGTH_SHORT).show());
