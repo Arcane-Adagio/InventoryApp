@@ -19,6 +19,7 @@
     <color name="royal_yellow1">#FFF052</color>
     <color name="royal_yellow2">#6E650D</color>
     <color name="royal_yellow3">#BAAD29</color>
+    <color name="red">#de181f</color>
 
     <color name="off_white">#bfbfbf</color>
     <color name="tile_color">@color/white</color>
