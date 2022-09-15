@@ -14,6 +14,8 @@
         <!-- Customize your theme here. -->
         <item name="android:textColor">@color/white</item>
         <item name="actionOverflowMenuStyle">@style/menuTheme</item>
+        <!-- Force dark mode to use primary color for action bar -->
+        <item name="actionBarStyle">@style/Widget.MaterialComponents.ActionBar.Primary</item>
     </style>
 
     <style name="NoActionBar">
@@ -31,8 +33,6 @@
         <item name="colorPrimary">@color/white</item>
         <item name="colorOnSurface">@color/secondaryLightColor</item>
     </style>
-
-
 
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">

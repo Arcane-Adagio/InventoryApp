@@ -46,6 +46,7 @@ public class AccountCreationFragment extends OnlineFragment {
         super.onStart();
         SetupUI();
         SetupBottomNav();
+        RenameAppBar("");
     }
 
     private void SetupUI(){

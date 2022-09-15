@@ -20,7 +20,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
 
-public class AccountResetFragment extends Fragment {
+public class AccountResetFragment extends OnlineFragment {
 
     EditText email_et;
     Button reset_btn;
@@ -41,6 +41,7 @@ public class AccountResetFragment extends Fragment {
         reset_btn = (Button) requireView().findViewById(R.id.btn_resetPassword);
         reset_btn.setOnClickListener(view -> SendVerificationEmail());
         SetupBottomNav();
+        RenameAppBar("");
     }
 
     @Override

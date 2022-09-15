@@ -133,20 +133,22 @@ public class OfflineInventoryManager {
         InventoryItems.remove(position);
     }
 
-    public static void AddInventoryAndNotifyAdapter(InventoryRVAdapter adapter){
+    public static boolean AddInventoryAndNotifyAdapter(InventoryRVAdapter adapter, String proposedInventoryName){
         /* New inventory name should not be a duplicate of an existing name */
         String defaultInventoryName;
         int counter = InventoryNames.size();
-        do {
-            defaultInventoryName = defaultInventoryNamePrefix+counter++;
-        }
-        while (InventoryNames.contains(defaultInventoryName));
-        InventoryNames.add(defaultInventoryName);
+
+        if (InventoryNames.contains(proposedInventoryName))
+            return false;
+        InventoryNames.add(proposedInventoryName);
         InventoryItems.add(new ArrayList<>());
-        if(adapter!=null)
+        if(adapter!=null){
             adapter.NotifyElementAdded();
+            return true;
+        }
         else
             Log.d(TAG, "AddInventoryAndNotifyAdapter: adapter was null");
+        return false;
     }
 
     public static void AddInventoryItem(String inventoryName, InventoryItem newItem){

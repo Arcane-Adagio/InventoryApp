@@ -81,6 +81,7 @@ public class ItemFragmentOnline extends OnlineFragment implements FirebaseHandle
         SetupFloatingActionButtons();
         SetupRecyclerView();
         SetupBottomNav();
+        RenameAppBar(currentGroupName+"#"+currentInventoryName);
     }
 
     private void ToggleFABMenu(){

@@ -59,6 +59,7 @@
     <style name="basicEditText" parent="TextAppearance.AppCompat">
         <item name="maxLines">1</item>
         <item name="fontFamily">@font/worksans</item>
+        <item name="android:inputType">text</item>
         <item name="android:scrollHorizontally">true</item>
     </style>
 

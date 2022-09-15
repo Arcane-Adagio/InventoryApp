@@ -9,6 +9,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.InputFilter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.inventoryapp.GlobalActions;
 import com.example.inventoryapp.GlobalConstants;
 import com.example.inventoryapp.R;
+import com.example.inventoryapp.data.Dialogs;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -100,7 +102,27 @@ public class InventoryFragmentOnline extends OnlineFragment {
     }
 
     private void AddInventory(){
-        new FirebaseHandler().AddInventoryToGroup(currentGroupID, new FirebaseHandler.Inventory(GlobalConstants.SAMPLE_INVENTORYNAME), this);
+        Dialogs.CreateInventoryDialog(getContext(), new Dialogs.DialogListener() {
+            @Override
+            public boolean submissionCallabck(String[] args) {
+                String proposedName = args[0];
+                try{
+                    if(proposedName != null && !proposedName.isEmpty())
+                        new FirebaseHandler().AddInventoryToGroup(currentGroupID,
+                                new FirebaseHandler.Inventory(proposedName), InventoryFragmentOnline.this);
+                    return true;
+                }
+                catch (Exception e){
+                    Log.d(TAG, "submissionCallabck: "+e.getMessage());
+                    return false;
+                }
+            }
+
+            @Override
+            public void cancelCallback() {
+
+            }
+        });
     }
 
 

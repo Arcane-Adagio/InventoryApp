@@ -62,4 +62,25 @@ public class Dialogs {
         });
         dialog.show();
     }
+
+    public static void CreateInventoryDialog(Context context, DialogListener callbackObj){
+        final Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.dlog_createinventory);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        Button submitBtn = (Button) dialog.findViewById(R.id.btn_submit);
+        Button cancelBtn = (Button) dialog.findViewById(R.id.btn_cancel);
+        EditText nameEditText = (EditText)dialog.findViewById(R.id.edittext_nameInventory);
+        //Set Max length of each edit text to make sure it matches the length allotted by the database
+        nameEditText.setFilters(textboxLength);
+        //when focus has been lost, check if code is valid
+        submitBtn.setOnClickListener(v -> {
+            if (callbackObj.submissionCallabck(new String[] {nameEditText.getText().toString()} ))
+                dialog.dismiss();
+        });
+        cancelBtn.setOnClickListener(v -> {
+            callbackObj.cancelCallback();
+            dialog.dismiss();
+        });
+        dialog.show();
+    }
 }

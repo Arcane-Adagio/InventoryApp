@@ -27,6 +27,9 @@ import android.view.ViewGroup;
 
 import com.example.inventoryapp.GlobalActions;
 import com.example.inventoryapp.R;
+import com.example.inventoryapp.data.Dialogs;
+import com.example.inventoryapp.online.FirebaseHandler;
+import com.example.inventoryapp.online.InventoryFragmentOnline;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Objects;
@@ -83,11 +86,7 @@ public class OfflineInventoryFragment extends OfflineFragment {
             Log.d(TAG, "onStart: unable to get adapter reference");
         else
         {
-            fab.setOnClickListener(view ->{
-                OfflineInventoryManager.AddInventoryAndNotifyAdapter(adapter);
-                if(adapter.getItemCount() == 0)
-                    ResetInventoryRecyclerView();
-            });
+            fab.setOnClickListener(view ->{ AddInventory(); });
         }
         RenameAppBar("Offline Inventories");
         SetupBottomNav();
@@ -98,6 +97,30 @@ public class OfflineInventoryFragment extends OfflineFragment {
     public void onStop() {
         Log.d(TAG, "onStop: ");
         super.onStop();
+    }
+
+    private void AddInventory(){
+        Dialogs.CreateInventoryDialog(getContext(), new Dialogs.DialogListener() {
+            @Override
+            public boolean submissionCallabck(String[] args) {
+                String proposedName = args[0];
+                try{
+                    OfflineInventoryManager.AddInventoryAndNotifyAdapter(adapter, proposedName);
+                    if(adapter.getItemCount() == 0)
+                        ResetInventoryRecyclerView();
+                    return true;
+                }
+                catch (Exception e){
+                    Log.d(TAG, "submissionCallabck: "+e.getMessage());
+                    return false;
+                }
+            }
+
+            @Override
+            public void cancelCallback() {
+
+            }
+        });
     }
 
     @Override
