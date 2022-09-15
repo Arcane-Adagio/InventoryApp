@@ -23,6 +23,12 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="AppTheme.Fullscreen">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+
     <!-- Bottom Nav examplantion
      colorOnSurface = inactive color
      colorPrimary = selected item color

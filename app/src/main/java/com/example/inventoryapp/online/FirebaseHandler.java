@@ -203,7 +203,8 @@ public class FirebaseHandler {
         DatabaseReference groupsRef = mRootRef.child(FIREBASE_KEY_GROUPS);
         DatabaseReference groupRef = groupsRef.child(groupID);
         DatabaseReference membersRef = groupRef.child(FIREBASE_KEY_MEMBERS);
-        membersRef.runTransaction(PerformSetKeyValueTransaction(membersRef, currentUser.getUid(),currentUser.getDisplayName()));
+        String displayName = (currentUser.getDisplayName() != null) ? "" : currentUser.getDisplayName();
+        membersRef.runTransaction(PerformSetKeyValueTransaction(membersRef, currentUser.getUid(),displayName));
     }
 
     public void RenameGroup(String groupID, String newName, FirebaseUser currentUser, OnlineFragmentBehavior callback){
