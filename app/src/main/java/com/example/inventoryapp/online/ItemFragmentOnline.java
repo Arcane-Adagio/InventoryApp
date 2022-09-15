@@ -103,7 +103,7 @@ public class ItemFragmentOnline extends OnlineFragment implements FirebaseHandle
     }
 
     private void AddInventoryItem(){
-        new FirebaseHandler().AddInventoryItemToInventory(
+        FirebaseHandler.AddInventoryItemToInventory(
                 currentGroupID, currentInventoryID, new FirebaseHandler.InventoryItem(DEFAULT_ITEM_NAME), this);
     }
 
@@ -113,7 +113,7 @@ public class ItemFragmentOnline extends OnlineFragment implements FirebaseHandle
             @Override
             public boolean submissionCallback(String[] args) {
                 String newName = args[0];
-                new FirebaseHandler().RenameInventory(currentGroupID, currentInventoryID, newName, FirebaseAuth.getInstance().getCurrentUser(), ItemFragmentOnline.this);
+                FirebaseHandler.RenameInventory(currentGroupID, currentInventoryID, newName, FirebaseAuth.getInstance().getCurrentUser(), ItemFragmentOnline.this);
                 RenameAppBar(newName);
                 return true;
             }

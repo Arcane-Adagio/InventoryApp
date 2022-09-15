@@ -135,7 +135,7 @@ public class InventoryRVAOnline extends RecyclerView.Adapter<InventoryRVAOnline.
         holder.deleteBtn.setOnClickListener(view -> {
             try{ //potential runtime exception if user presses button too fast
                 String inventoryID = inventoryData.get(holder.getAdapterPosition()).getInventoryID();
-                new FirebaseHandler().RemoveInventoryFromGroup(currentGroupID, inventoryID);
+                FirebaseHandler.RemoveInventoryFromGroup(currentGroupID, inventoryID);
             }
             catch (Exception e){
                 Log.d(TAG, "onBindViewHolder: "+e.getMessage());

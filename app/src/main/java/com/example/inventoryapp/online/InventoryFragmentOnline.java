@@ -111,7 +111,7 @@ public class InventoryFragmentOnline extends OnlineFragment {
                 String proposedName = args[0];
                 try{
                     if(proposedName != null && !proposedName.isEmpty())
-                        new FirebaseHandler().AddInventoryToGroup(currentGroupID,
+                        FirebaseHandler.AddInventoryToGroup(currentGroupID,
                                 new FirebaseHandler.Inventory(proposedName), InventoryFragmentOnline.this);
                     return true;
                 }
@@ -131,7 +131,7 @@ public class InventoryFragmentOnline extends OnlineFragment {
             @Override
             public boolean submissionCallback(String[] args) {
                 String newName = args[0];
-                new FirebaseHandler().RenameGroup(currentGroupID, newName, FirebaseAuth.getInstance().getCurrentUser(), InventoryFragmentOnline.this);
+                FirebaseHandler.RenameGroup(currentGroupID, newName, FirebaseAuth.getInstance().getCurrentUser(), InventoryFragmentOnline.this);
                 return true;
             }
 

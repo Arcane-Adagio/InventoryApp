@@ -140,7 +140,7 @@ public class ItemRVAOnline extends  RecyclerView.Adapter<ItemRVAOnline.ViewHolde
         holder.deleteBtn.setOnClickListener(view -> {
             try{ //potential runtime exception if user presses button too fast
                 String inventoryItemID = itemData.get(holder.getAdapterPosition()).getItemID();
-                new FirebaseHandler().RemoveInventoryItemFromInventory(currentGroupID, currentInventoryID, inventoryItemID);
+                FirebaseHandler.RemoveInventoryItemFromInventory(currentGroupID, currentInventoryID, inventoryItemID);
             }
             catch (Exception e){
                 Log.d(TAG, "onBindViewHolder: "+e.getMessage());
@@ -216,7 +216,7 @@ public class ItemRVAOnline extends  RecyclerView.Adapter<ItemRVAOnline.ViewHolde
                 //and Update Icon
                 editBtn.setImageDrawable(GetDrawableFromInt(editBtn.getContext(), R.drawable.ic_edit_default));
                 //save to database
-                new FirebaseHandler().UpdateInventoryItem(currentGroupID, currentInventoryID, item, (FirebaseHandler.OnlineFragmentBehavior) cFragment);
+                FirebaseHandler.UpdateInventoryItem(currentGroupID, currentInventoryID, item, (FirebaseHandler.OnlineFragmentBehavior) cFragment);
             }
             else {
                 //User Clicked Edit and wants to give input

@@ -82,7 +82,7 @@ public class GroupFragmentOnline extends OnlineFragment{
             @Override
             public boolean submissionCallback(String[] args) {
                 String name = args[0], code = args[1], passwordText = args[2];
-                new FirebaseHandler().AddGroup(new FirebaseHandler.Group(name, code, passwordText, currentUser.getUid()));
+                FirebaseHandler.AddGroup(new FirebaseHandler.Group(name, code, passwordText, currentUser.getUid()));
                 return true;
             }
             @Override
@@ -98,7 +98,7 @@ public class GroupFragmentOnline extends OnlineFragment{
             @Override
             public boolean submissionCallback(String[] args) {
                 String groupID = args[0];
-                new FirebaseHandler().AddMemberToGroup(groupID, currentUser);
+                FirebaseHandler.AddMemberToGroup(groupID, currentUser);
                 return true;
             }
             @Override

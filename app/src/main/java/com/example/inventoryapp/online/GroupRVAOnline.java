@@ -187,7 +187,7 @@ public class GroupRVAOnline extends RecyclerView.Adapter<GroupRVAOnline.ViewHold
                 Dialogs.AreYouSureDialog(view.getContext(), new Dialogs.DialogListener() {
                     @Override
                     public boolean submissionCallback(String[] args) {
-                        new FirebaseHandler().RemoveGroup(groupData.get(holder.getAdapterPosition()));
+                        FirebaseHandler.RemoveGroup(groupData.get(holder.getAdapterPosition()));
                         return true;
                     }
 

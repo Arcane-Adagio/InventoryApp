@@ -47,7 +47,7 @@ import java.util.concurrent.Callable;
 
 public class FirebaseHandler {
     private static final String TAG = "Firebase Handler";
-    private DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
+    private static DatabaseReference mRootRef = FirebaseDatabase.getInstance().getReference();
 
     /* Interface to handle disconnnect that occurs when
     * a user is interacting with a recently deleted object */
@@ -187,7 +187,7 @@ public class FirebaseHandler {
     }
 
 
-    public void AddGroup(Group group){
+    public static void AddGroup(Group group){
         /* By using a runTransaction method on this function,
         * a race condition is introduced. Dont do it. */
         DatabaseReference groupsRef = mRootRef.child(FIREBASE_KEY_GROUPS);
@@ -197,7 +197,7 @@ public class FirebaseHandler {
         newGroupRef.runTransaction(PerformAddGroupTransaction(newGroupRef, group, user.getUid(), user.getDisplayName()));
     }
 
-    public void RemoveGroup(Group group){
+    public static void RemoveGroup(Group group){
         /* If the user owns the group, delete the group,
         * if the user does not own the group, leave the group
         * */
@@ -213,7 +213,7 @@ public class FirebaseHandler {
         }
     }
 
-    public void AddMemberToGroup(String groupID, FirebaseUser currentUser){
+    public static void AddMemberToGroup(String groupID, FirebaseUser currentUser){
         /* Behavior for when a user presses join group */
         DatabaseReference groupsRef = mRootRef.child(FIREBASE_KEY_GROUPS);
         DatabaseReference groupRef = groupsRef.child(groupID);
@@ -223,7 +223,7 @@ public class FirebaseHandler {
         membersRef.runTransaction(PerformSetKeyValueTransaction(membersRef, currentUser.getUid(),displayName));
     }
 
-    public void RenameGroup(String groupID, String newName, FirebaseUser currentUser, OnlineFragmentBehavior callback){
+    public static void RenameGroup(String groupID, String newName, FirebaseUser currentUser, OnlineFragmentBehavior callback){
         /* Uses unique group ID to change sub-key group name */
         DatabaseReference groupsRef = mRootRef.child(FIREBASE_KEY_GROUPS);
         groupsRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -248,7 +248,7 @@ public class FirebaseHandler {
         });
     }
 
-    public void RenameInventory(String groupID, String inventoryID, String newName, FirebaseUser currentUser, OnlineFragmentBehavior callback){
+    public static void RenameInventory(String groupID, String inventoryID, String newName, FirebaseUser currentUser, OnlineFragmentBehavior callback){
         /* Uses unique inventory ID to change sub-key inventory name */
         DatabaseReference groupsRef = mRootRef.child(FIREBASE_KEY_GROUPS);
         groupsRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -283,7 +283,7 @@ public class FirebaseHandler {
         });
     }
 
-    public <T> void AddInventoryToGroup(String groupID, Inventory inventory, OnlineFragmentBehavior callback){
+    public static <T> void AddInventoryToGroup(String groupID, Inventory inventory, OnlineFragmentBehavior callback){
         /* uses unique firebase group ID / key to add inventory object to sub tree */
         DatabaseReference groupsRef = mRootRef.child(FIREBASE_KEY_GROUPS);
         groupsRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -308,7 +308,7 @@ public class FirebaseHandler {
         });
     }
 
-    public void RemoveInventoryFromGroup(String groupID, String inventoryID){
+    public static void RemoveInventoryFromGroup(String groupID, String inventoryID){
         /* Deletes inventory sub-tree in firebase via unique group ID */
         DatabaseReference groupsRef = mRootRef.child(FIREBASE_KEY_GROUPS);
         DatabaseReference groupRef = groupsRef.child(groupID);
@@ -317,7 +317,7 @@ public class FirebaseHandler {
         inventoryRef.runTransaction(PerformDeletionTransaction(inventoryRef));
     }
 
-    public void AddInventoryItemToInventory(String groupID, String inventoryID, InventoryItem item, OnlineFragmentBehavior callback){
+    public static void AddInventoryItemToInventory(String groupID, String inventoryID, InventoryItem item, OnlineFragmentBehavior callback){
         /* adds item to firebase tree via unique group ID and inventory ID */
         DatabaseReference groupsRef = mRootRef.child(FIREBASE_KEY_GROUPS);
         groupsRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -351,7 +351,7 @@ public class FirebaseHandler {
         });
     }
 
-    public void RemoveInventoryItemFromInventory(String groupID, String inventoryID, String inventoryItemID){
+    public static void RemoveInventoryItemFromInventory(String groupID, String inventoryID, String inventoryItemID){
         /* deletes reference to firebase tree leaf with the corresponding unique ID*/
         DatabaseReference groupsRef = mRootRef.child(FIREBASE_KEY_GROUPS);
         DatabaseReference groupRef = groupsRef.child(groupID);
@@ -362,7 +362,7 @@ public class FirebaseHandler {
         inventoryItemRef.runTransaction(PerformDeletionTransaction(inventoryItemRef));
     }
 
-    public void UpdateInventoryItem(String groupID, String inventoryID, InventoryItem item, OnlineFragmentBehavior callback){
+    public static void UpdateInventoryItem(String groupID, String inventoryID, InventoryItem item, OnlineFragmentBehavior callback){
         /* Note, each change to a part of the tree is a transaction because there is a possibility for multiple users
         * to edit the same component at the same time, so concurrency must be accounted for */
         DatabaseReference groupsRef = mRootRef.child(FIREBASE_KEY_GROUPS);
@@ -395,7 +395,7 @@ public class FirebaseHandler {
         });
     }
 
-    private <T> Transaction.Handler PerformSetValueTransaction(DatabaseReference ref, T value){
+    private static <T> Transaction.Handler PerformSetValueTransaction(DatabaseReference ref, T value){
         //Firebase Built-in method to prevent corruption from simultaneous accesses
         //Note: transactions have a potential to run more than once
         return new Transaction.Handler(){
@@ -413,7 +413,7 @@ public class FirebaseHandler {
         };
     }
 
-    private <T> Transaction.Handler PerformSetKeyValueTransaction(DatabaseReference ref, String key, T value){
+    private static <T> Transaction.Handler PerformSetKeyValueTransaction(DatabaseReference ref, String key, T value){
         //Firebase Built-in method to prevent corruption from simultaneous accesses
         //Note: transactions have a potential to run more than once
         return new Transaction.Handler(){
@@ -431,7 +431,7 @@ public class FirebaseHandler {
         };
     }
 
-    private Transaction.Handler PerformDeletionTransaction(DatabaseReference ref){
+    private static Transaction.Handler PerformDeletionTransaction(DatabaseReference ref){
         //Firebase Built-in method to prevent corruption from simultaneous accesses
         //Note: transactions have a potential to run more than once
         return new Transaction.Handler(){
@@ -449,7 +449,7 @@ public class FirebaseHandler {
         };
     }
 
-    private <T> Transaction.Handler PerformAddGroupTransaction(DatabaseReference groupRef, T groupObj, String uID, String displayName){
+    private static <T> Transaction.Handler PerformAddGroupTransaction(DatabaseReference groupRef, T groupObj, String uID, String displayName){
         //Firebase Built-in method to prevent corruption from simultaneous accesses
         //Note: transactions have a potential to run more than once
         return new Transaction.Handler(){
@@ -512,7 +512,7 @@ public class FirebaseHandler {
                 });
     }
 
-    public void ReauthenticateUser(Context context, String email, String password){
+    public static void ReauthenticateUser(Context context, String email, String password){
         AuthCredential credential = EmailAuthProvider.getCredential(email, password);
         FirebaseAuth.getInstance().getCurrentUser().reauthenticate(credential)
                 .addOnCompleteListener(task -> {
@@ -521,7 +521,7 @@ public class FirebaseHandler {
                 });
     }
 
-    public OnCompleteListener getDefaultOnCompleteListener(Context context, String successString, String failureString){
+    public static OnCompleteListener getDefaultOnCompleteListener(Context context, String successString, String failureString){
         return task -> {
             if(task.isSuccessful())
                 Toast.makeText(context, successString, Toast.LENGTH_SHORT).show();
@@ -530,7 +530,7 @@ public class FirebaseHandler {
         };
     }
 
-    public DatabaseReference.CompletionListener getDefaultOnCompletionListener(Context context, String successString, String failureString) {
+    public static DatabaseReference.CompletionListener getDefaultOnCompletionListener(Context context, String successString, String failureString) {
         return (error, ref) -> {
             if (error != null)
                 Toast.makeText(context, successString, Toast.LENGTH_SHORT).show();
@@ -539,7 +539,7 @@ public class FirebaseHandler {
         };
     }
 
-    public void UpdateUserEmail(Context context, String propsedEmail){
+    public static void UpdateUserEmail(Context context, String propsedEmail){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if(user==null)
             return;
@@ -553,7 +553,7 @@ public class FirebaseHandler {
                         makeToast(context, R.string.updateemailfailed));
     }
 
-    public void UpdateUserProfile(Context context, String newDisplayName){
+    public static void UpdateUserProfile(Context context, String newDisplayName){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if(user==null)
             return;
@@ -568,7 +568,7 @@ public class FirebaseHandler {
                 }));
     }
 
-    public void SendVerificationEmail(Context context){
+    public static void SendVerificationEmail(Context context){
         FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification()
                 .addOnCompleteListener(task -> {
                     if(task.isSuccessful()){
@@ -577,14 +577,14 @@ public class FirebaseHandler {
                 });
     }
 
-    public boolean isUserEmailVerified(){
+    public static boolean isUserEmailVerified(){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user==null)
             return false;
         return user.isEmailVerified();
     }
 
-    public FirebaseAuth.AuthStateListener getAuthVerifiedListener(Context context){
+    public static FirebaseAuth.AuthStateListener getAuthVerifiedListener(Context context){
         //register the listener to make sure user cant login without being verified
         //example: user.addAuthStateListener(getAuthVerifiedListener);
 
