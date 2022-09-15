@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.inventoryapp.GlobalActions;
 import com.example.inventoryapp.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -30,6 +31,7 @@ import java.util.Objects;
 public class OnlineFragment extends Fragment implements FirebaseHandler.OnlineFragmentBehavior{
     private final String TAG = "Base Online Fragment Class";
     public static FirebaseUser currentUser;
+    public static FirebaseAuth mAuth;
     public static String currentGroupID;
     public static String currentInventoryID;
     public static String currentGroupName;
@@ -63,7 +65,6 @@ public class OnlineFragment extends Fragment implements FirebaseHandler.OnlineFr
                 getLayoutInflater(), getContext(), requireView(),
                 R.layout.toast_inventorydeleted, R.id.toast_inventoryDisconnect);
         NavController navController = NavHostFragment.findNavController(this);
-        //navController.navigate(R.id.action_onlineItemFragment_to_onlineInventoryFragment);
         navController.popBackStack();
     }
 

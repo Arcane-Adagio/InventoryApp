@@ -82,8 +82,8 @@ public class ItemRVAOnline extends  RecyclerView.Adapter<ItemRVAOnline.ViewHolde
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
                 executor.execute(() -> {
                     String changedItemID = snapshot.getKey().toString();
-                    int position = getPositionInRecyclerViewByID(changedItemID);
                     handler.post(() -> {
+                        int position = getPositionInRecyclerViewByID(changedItemID);
                         if(position != OUT_OF_BOUNDS){
                             itemData.remove(position);
                             ItemRVAOnline.this.notifyItemRemoved(position);

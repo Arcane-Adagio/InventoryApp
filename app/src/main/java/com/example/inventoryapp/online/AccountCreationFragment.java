@@ -19,14 +19,15 @@ import com.example.inventoryapp.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 
-public class AccountCreationFragment extends Fragment {
+public class AccountCreationFragment extends OnlineFragment {
 
     private static final String TAG = "Account Creation Activity";
     Button createBtn;
     Fragment _this;
-    FirebaseAuth mAuth;
+    UserProfileChangeRequest.Builder request;
 
     public AccountCreationFragment() {
         // Required empty public constructor
@@ -47,28 +48,29 @@ public class AccountCreationFragment extends Fragment {
         SetupBottomNav();
     }
 
+    private void SetupUI(){
+        createBtn = (Button) requireActivity().findViewById(R.id.btn_createaccount);
+        createBtn.setOnClickListener(view -> CreateAccountBehavior(view));
+    }
+
     public void CreateAccountBehavior(View view){
         /* Reads input from textbox and creates user account in database */
         EditText email = (EditText) requireActivity().findViewById(R.id.email_editText);
+        EditText displayName = (EditText) requireActivity().findViewById(R.id.displayName_edittext);
         EditText password = (EditText) requireActivity().findViewById(R.id.password_edittext);
         EditText passwordDup = (EditText) requireActivity().findViewById(R.id.retypePassword_edittext);
-
         if(!isEmailValid(email)){
             Toast.makeText(getContext(), R.string.error_invalidEmail, Toast.LENGTH_SHORT).show();
             return;
         }
-        if(!isPasswordValid(password))
+        if(!arePasswordsValid(password, passwordDup) || !isDisplayNameValid(displayName))
             return;
-        if(!isPasswordValid(passwordDup))
-            return;
-        if(!password.getText().toString().equals(passwordDup.getText().toString())){
-            Toast.makeText(getContext(), "Retyped password does not match", Toast.LENGTH_SHORT).show();
-            return;
-        }
         String validEmail = email.getText().toString();
         String pass = password.getText().toString();
+        String name = displayName.getText().toString();
+        request = new UserProfileChangeRequest.Builder().setDisplayName(name);
         mAuth.createUserWithEmailAndPassword(validEmail, pass)
-                .addOnSuccessListener(this::onLoginSuccess)
+                .addOnSuccessListener(this::onCreationSuccess)
                 .addOnFailureListener(this::onCreationFailure);
     }
 
@@ -79,42 +81,68 @@ public class AccountCreationFragment extends Fragment {
         return inflater.inflate(R.layout.frag_online_acc_creation, container, false);
     }
 
-    private void SetupUI(){
-        createBtn = (Button) requireActivity().findViewById(R.id.btn_createaccount);
-        createBtn.setOnClickListener(view -> CreateAccountBehavior(view));
-    }
 
     boolean isEmailValid(EditText email_et) {
         CharSequence emailInput = email_et.getText().toString();
         return android.util.Patterns.EMAIL_ADDRESS.matcher(emailInput).matches();
     }
 
-    boolean isPasswordValid(EditText password_et) {
-        boolean isValid = true;
-        String passwordInput;
-        String dialogResponse = "";
-
-        if(password_et.getText() == null){
-            dialogResponse = getString(R.string.error_emptytextbox);
+    boolean arePasswordsValid(EditText password_et, EditText retypedPassword_ET) {
+        if(isTextboxNullorEmpty(password_et)){
+            Toast.makeText(getContext(), getString(R.string.error_emptytextbox), Toast.LENGTH_SHORT).show();
             return false;
         }
-        passwordInput = password_et.getText().toString();
-        if(passwordInput.length() < 6){
-            dialogResponse = getString(R.string.error_shortpassword);
-            isValid = false;
+        if(isTextboxTextTooShort(password_et, 6)){
+            Toast.makeText(getContext(), getString(R.string.error_shortpassword), Toast.LENGTH_SHORT).show();
+            return false;
         }
-        if(!dialogResponse.isEmpty())
-            Toast.makeText(getContext(), dialogResponse, Toast.LENGTH_SHORT).show();
-        return isValid;
+        if(isTextboxNullorEmpty(retypedPassword_ET)){
+            Toast.makeText(getContext(), "Please re-enter your password", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if(!password_et.getText().toString().equals(retypedPassword_ET.getText().toString())){
+            Toast.makeText(getContext(), "The passwords do not match", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        return true;
     }
+
+    boolean isDisplayNameValid(EditText displayName_ET){
+        if(isTextboxNullorEmpty(displayName_ET)){
+            Toast.makeText(getContext(), "Please enter a display name", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if(isTextboxTextTooShort(displayName_ET, 3)){
+            Toast.makeText(getContext(), "Display name is too short", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
+    boolean isTextboxNullorEmpty(EditText textbox){
+        if (textbox.getText() == null)
+            return true;
+        return textbox.getText().toString().isEmpty();
+    }
+
+    boolean isTextboxTextTooShort(EditText textbox, int maxLength){
+        try{ // an exception can be thrown if the textbox is null
+            return textbox.getText().toString().length() < maxLength;}
+        catch (Exception e){
+            return true;
+        }
+    }
+
 
     private void onCreationFailure(Exception e) {
         Log.d(TAG, "createAccount: failure");
         Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
     }
 
-    private void onLoginSuccess(AuthResult authResult) {
+    private void onCreationSuccess(AuthResult authResult) {
         Log.d(TAG, "createAccount: success");
+        mAuth.getCurrentUser().updateProfile(request.build());
         NavController navController = NavHostFragment.findNavController(this);
         navController.navigate(R.id.action_accountCreationFragment_to_onlineLoginFragment);
         Toast.makeText(getContext(), getContext().getString(R.string.toast_accountcreated), Toast.LENGTH_SHORT).show();

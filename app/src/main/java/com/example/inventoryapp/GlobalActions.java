@@ -53,18 +53,7 @@ public class GlobalActions {
                 FirebaseHandler.LogoutBehavior(callingFragment);
                 return true;
             case R.id.online_deleteaccount:
-                Dialogs.AreYouSureDialog(context, new Dialogs.DialogListener() {
-                    @Override
-                    public boolean submissionCallabck(String[] args) {
-                        Toast.makeText(context, "online account deletion not implemented", Toast.LENGTH_SHORT).show();
-                        return true;
-                    }
-
-                    @Override
-                    public void cancelCallback() {
-
-                    }
-                });
+                FirebaseHandler.DeleteAccountBehavior(context, callingFragment);
                 return true;
             case R.id.menu_user_save:
                 OfflineInventoryManager.SaveUserInventory(context);

@@ -1,5 +1,6 @@
 package com.example.inventoryapp.online;
 
+import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -10,6 +11,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.inventoryapp.R;
+import com.example.inventoryapp.data.Dialogs;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -178,16 +180,7 @@ public class FirebaseHandler {
         DatabaseReference newGroupRef = groupsRef.push();
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         group.setGroupID(newGroupRef.getKey());
-
-        String test = group.getGroupID();
-        Log.d(TAG, "AddGroup: "+test);
-
-        //new
-        newGroupRef.setValue(group);
-        DatabaseReference membersRef = newGroupRef.child(FIREBASE_KEY_MEMBERS);
-        membersRef.child(user.getUid()).setValue(user.getDisplayName());
-
-        //newGroupRef.runTransaction(PerformAddGroupTransaction(newGroupRef, group, user.getUid(), user.getDisplayName()));
+        newGroupRef.runTransaction(PerformAddGroupTransaction(newGroupRef, group, user.getUid(), user.getDisplayName()));
     }
 
     public void RemoveGroup(Group group){
@@ -211,7 +204,6 @@ public class FirebaseHandler {
         DatabaseReference groupRef = groupsRef.child(groupID);
         DatabaseReference membersRef = groupRef.child(FIREBASE_KEY_MEMBERS);
         membersRef.runTransaction(PerformSetKeyValueTransaction(membersRef, currentUser.getUid(),currentUser.getDisplayName()));
-
     }
 
     public void RenameGroup(String groupID, String newName, FirebaseUser currentUser, OnlineFragmentBehavior callback){
@@ -457,6 +449,28 @@ public class FirebaseHandler {
         catch (Exception e){
             Log.d(TAG, "LogoutBehaviorException: "+e.toString());
         }
+    }
+
+    public static void DeleteAccountBehavior(Context context, Fragment callingFragment){
+        Dialogs.AreYouSureDialog(context, new Dialogs.DialogListener() {
+            @Override
+            public boolean submissionCallabck(String[] args) {
+                FirebaseAuth.getInstance().getCurrentUser().delete(); //to remove from firebase
+                FirebaseAuth.getInstance().signOut(); //to remove local account info
+                Toast.makeText(context, "Account Deleted", Toast.LENGTH_SHORT).show();
+                try {
+                    NavController navController = NavHostFragment.findNavController(callingFragment);
+                    navController.navigate(R.id.action_onlineFragment_to_onlineLoginFragment);
+                }
+                catch (Exception e){ Log.d(TAG, "submissionCallabck: "+e.getMessage()); }
+                return true;
+            }
+
+            @Override
+            public void cancelCallback() {
+
+            }
+        });
     }
 
 }
