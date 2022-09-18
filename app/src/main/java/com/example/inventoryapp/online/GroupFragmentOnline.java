@@ -115,16 +115,31 @@ public class GroupFragmentOnline extends OnlineFragment{
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         layoutManager.scrollToPosition(0);
         rv.setLayoutManager(layoutManager);
-        group_rva =new GroupRVAOnline(getContext(), args -> NavigateToInventoryFragment(args[0], args[1]));
+        group_rva =new GroupRVAOnline(getContext(), args -> NavigateToInventoryFragment(args[0], args[1], args[2]),
+                args -> NavigateToMemberFragment(args[0], args[1], args[2]));
         rv.setAdapter(group_rva);
     }
 
-    private void NavigateToInventoryFragment(String groupID, String groupName){
+    private void NavigateToInventoryFragment(String groupID, String groupName, String groupOwner){
         try{ // potential: java.lang.IllegalStateException: Fragment OfflineInventoryFragment{52a50fc} (d1f88a5a-919c-4574-9e0d-7f8606eb1559) not associated with a fragment manager.
             currentGroupID = groupID;
             currentGroupName = groupName;
+            currentGroupOwner = groupOwner;
             NavController navController = NavHostFragment.findNavController(this);
             navController.navigate(R.id.action_onlineGroupFragment_to_onlineInventoryFragment);
+        }
+        catch (Exception e){
+            Log.d(TAG, "NavigateToInventoryFragment: "+e.getMessage());
+        }
+    }
+
+    private void NavigateToMemberFragment(String groupID, String groupName, String groupOwner){
+        try{ // potential: java.lang.IllegalStateException: Fragment OfflineInventoryFragment{52a50fc} (d1f88a5a-919c-4574-9e0d-7f8606eb1559) not associated with a fragment manager.
+            currentGroupID = groupID;
+            currentGroupName = groupName;
+            currentGroupOwner = groupOwner;
+            NavController navController = NavHostFragment.findNavController(this);
+            navController.navigate(R.id.action_onlineGroupFragment_to_groupMembersFragment);
         }
         catch (Exception e){
             Log.d(TAG, "NavigateToInventoryFragment: "+e.getMessage());

@@ -50,6 +50,9 @@
         <action
             android:id="@+id/action_onlineFragment_to_onlineLoginFragment"
             app:destination="@id/onlineLoginFragment" />
+        <action
+            android:id="@+id/action_onlineGroupFragment_to_groupMembersFragment"
+            app:destination="@id/groupMembersFragment" />
     </fragment>
     <fragment
         android:id="@+id/onlineInventoryFragment"
@@ -99,6 +102,17 @@
         tools:layout="@layout/frag_online_acc_reset" >
         <action
             android:id="@+id/action_accountResetFragment_to_onlineLoginFragment"
+            app:destination="@id/onlineLoginFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/groupMembersFragment"
+        android:name="com.example.inventoryapp.online.GroupMembersFragment"
+        android:label="GroupMembersFragment" >
+        <action
+            android:id="@+id/action_groupMembersFragment_to_onlineGroupFragment"
+            app:destination="@id/onlineGroupFragment" />
+        <action
+            android:id="@+id/action_onlineFragment_to_onlineLoginFragment"
             app:destination="@id/onlineLoginFragment" />
     </fragment>
 </navigation>

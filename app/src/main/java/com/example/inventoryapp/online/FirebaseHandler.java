@@ -14,7 +14,6 @@ import static com.example.inventoryapp.GlobalConstants.FIREBASE_SUBKEY_ITEMQUANT
 
 import android.content.Context;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -43,7 +42,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.Callable;
 
 public class FirebaseHandler {
     private static final String TAG = "Firebase Handler";
@@ -186,6 +184,31 @@ public class FirebaseHandler {
         public void setItemNeedful(boolean ItemNeedful) {itemNeedful = ItemNeedful;}
     }
 
+    public static class User{
+        private String userID;
+        private String userDisplayName;
+
+        public User(String id, String displayName){
+            userID = id; userDisplayName = displayName;
+        }
+
+        public String getUserID() {
+            return userID;
+        }
+
+        public String getUserDisplayName() {
+            return userDisplayName;
+        }
+
+        public void setUserID(String userID) {
+            this.userID = userID;
+        }
+
+        public void setUserDisplayName(String userDisplayName) {
+            this.userDisplayName = userDisplayName;
+        }
+    }
+
 
     public static void AddGroup(Group group){
         /* By using a runTransaction method on this function,
@@ -248,6 +271,33 @@ public class FirebaseHandler {
         });
     }
 
+    public static void RemoveUser(String groupID, User member, FirebaseUser currentUser, OnlineFragmentBehavior callback){
+        /* If the user owns the group, delete the group,
+         * if the user does not own the group, leave the group
+         * */
+        DatabaseReference groupsRef = mRootRef.child(FIREBASE_KEY_GROUPS);
+        groupsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.hasChild(groupID)){
+                    DataSnapshot groupSnap = snapshot.child(groupID);
+                    if(groupSnap.child("groupOwner").equals(currentUser.getUid())){
+                        DatabaseReference memberRef = groupSnap.child("Members").child(member.getUserID()).getRef();
+                        memberRef.runTransaction(PerformDeletionTransaction(memberRef));
+                    }
+                }
+                else{
+                    //means group got deleted
+                    callback.HandleFragmentInvalidation();
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
     public static void RenameInventory(String groupID, String inventoryID, String newName, FirebaseUser currentUser, OnlineFragmentBehavior callback){
         /* Uses unique inventory ID to change sub-key inventory name */
         DatabaseReference groupsRef = mRootRef.child(FIREBASE_KEY_GROUPS);
@@ -283,7 +333,7 @@ public class FirebaseHandler {
         });
     }
 
-    public static <T> void AddInventoryToGroup(String groupID, Inventory inventory, OnlineFragmentBehavior callback){
+    public static void AddInventoryToGroup(String groupID, Inventory inventory, OnlineFragmentBehavior callback){
         /* uses unique firebase group ID / key to add inventory object to sub tree */
         DatabaseReference groupsRef = mRootRef.child(FIREBASE_KEY_GROUPS);
         groupsRef.addListenerForSingleValueEvent(new ValueEventListener() {

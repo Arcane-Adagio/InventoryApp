@@ -32,6 +32,7 @@ public class GlobalConstants {
     public static final String FIREBASE_SUBKEY_GROUPOWNER = "groupOwner";
     public static final String FIREBASE_SUBKEY_INVENTORYNAME = "inventoryName";
     public static final String FIREBASE_SUBKEY_GROUPCODE = "groupCode";
+    public static final String FIREBASE_SUBKEY_MEMBERS = "Members";
     public static final String FIREBASE_SUBKEY_GROUPNAME = "groupName";
     public static final String FIREBASE_SUBKEY_ITEMDATE = "itemDate";
     public static final String FIREBASE_SUBKEY_ITEMNEEDFUL = "itemNeedful";

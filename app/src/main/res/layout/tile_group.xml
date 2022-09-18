@@ -66,6 +66,18 @@
 
 
     <ImageButton
+        android:id="@+id/group_members_btn"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:src="@drawable/ic_member_default"
+        android:layout_gravity="center"
+        android:background="@null"
+        android:scaleType="fitCenter"
+        app:tint="@color/tile_color"
+        />
+
+    <ImageButton
         android:id="@+id/group_edit_btn"
         android:layout_width="0dp"
         android:layout_weight="1"

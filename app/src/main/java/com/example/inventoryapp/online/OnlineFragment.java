@@ -34,9 +34,10 @@ public class OnlineFragment extends InventoryFragment implements FirebaseHandler
     public static String currentInventoryID;
     public static String currentGroupName;
     public static String currentInventoryName;
+    public static String currentGroupOwner;
     public static DatabaseReference mRootReference = FirebaseDatabase.getInstance().getReference();
     public static DatabaseReference groupsRef = mRootReference.child(GlobalConstants.FIREBASE_KEY_GROUPS);
-    public interface SimpleCallback{ void CallableFunction(String[] args);}
+    public interface SimpleCallback{ void CallableFunction(String[] args); int func = 0;}
 
     public void SetupBottomNav(){
         BottomNavigationView nav = getActivity().findViewById(R.id.bottomnav_app);

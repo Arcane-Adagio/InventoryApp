@@ -1,5 +1,7 @@
 package com.example.inventoryapp.online;
 
+import static com.example.inventoryapp.GlobalConstants.FIREBASE_KEY_GROUPS;
+import static com.example.inventoryapp.GlobalConstants.FIREBASE_KEY_INVENTORIES;
 import static com.example.inventoryapp.GlobalConstants.FIREBASE_SUBKEY_INVENTORYNAME;
 import static com.example.inventoryapp.GlobalConstants.OUT_OF_BOUNDS;
 import static com.example.inventoryapp.online.OnlineFragment.currentGroupID;
@@ -43,9 +45,9 @@ import java.util.concurrent.Executors;
 public class InventoryRVAOnline extends RecyclerView.Adapter<InventoryRVAOnline.ViewHolder>{
     DatabaseReference mRootReference = FirebaseDatabase.getInstance().getReference();
     public final String TAG = "Inventory Recyclerview Adaptor - Online";
-    DatabaseReference groupsRef = mRootReference.child("Groups");
+    DatabaseReference groupsRef = mRootReference.child(FIREBASE_KEY_GROUPS);
     DatabaseReference groupRef = groupsRef.child(currentGroupID);
-    DatabaseReference mInventoriesReference = groupRef.child("Inventories");
+    DatabaseReference mInventoriesReference = groupRef.child(FIREBASE_KEY_INVENTORIES);
     List<FirebaseHandler.Inventory> inventoryData = new ArrayList<FirebaseHandler.Inventory>();
     Context mContext;
     RecyclerView rv;

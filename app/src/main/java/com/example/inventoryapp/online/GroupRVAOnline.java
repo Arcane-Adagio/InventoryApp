@@ -58,16 +58,18 @@ public class GroupRVAOnline extends RecyclerView.Adapter<GroupRVAOnline.ViewHold
     Drawable delete_draw;
     Drawable exit_draw;
     RecyclerView rv;
-    OnlineFragment.SimpleCallback navigationCallback;
+    OnlineFragment.SimpleCallback editBtnCallback;
+    OnlineFragment.SimpleCallback membersBtnCallback;
     ExecutorService executor = Executors.newSingleThreadExecutor();
     Handler handler = new Handler(Looper.getMainLooper());
 
-    public GroupRVAOnline(Context context, OnlineFragment.SimpleCallback navCallback){
+    public GroupRVAOnline(Context context, OnlineFragment.SimpleCallback editCallback, OnlineFragment.SimpleCallback memberCallback){
         mContext = context;
         rv = (RecyclerView) ((AppCompatActivity)context).findViewById(R.id.recyclerview_group);
         delete_draw = AppCompatResources.getDrawable(context, R.drawable.ic_delete_default);
         exit_draw = AppCompatResources.getDrawable(context, R.drawable.ic_exit_default);
-        navigationCallback = navCallback;
+        editBtnCallback = editCallback;
+        membersBtnCallback = memberCallback;
         mGroupsReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
@@ -176,9 +178,10 @@ public class GroupRVAOnline extends RecyclerView.Adapter<GroupRVAOnline.ViewHold
         /* Connects the data to the view based on position every time a tile is reconstructed */
         holder.groupName_et.setText(groupData.get(position).getGroupName());
         holder.groupCode_tv.setText(groupData.get(position).getGroupCode());
-        holder.edit_btn.setOnClickListener(view -> navigationCallback.CallableFunction(new String[] {
-                groupData.get(holder.getAdapterPosition()).getGroupID(),
-                groupData.get(holder.getAdapterPosition()).getGroupName()}));
+        holder.members_btn.setOnClickListener(view -> membersBtnCallback.CallableFunction(
+                convertGroupToStringArray(groupData.get(holder.getAdapterPosition()))));
+        holder.edit_btn.setOnClickListener(view -> editBtnCallback.CallableFunction(
+                convertGroupToStringArray(groupData.get(holder.getAdapterPosition()))));
         holder.delete_btn.setOnClickListener(view -> {
             try {
                 //potential runtime exception if user presses button too fast
@@ -204,6 +207,10 @@ public class GroupRVAOnline extends RecyclerView.Adapter<GroupRVAOnline.ViewHold
         holder.delete_btn.setImageDrawable(
                 (Objects.equals(groupData.get(holder.getAdapterPosition()).getGroupOwner(), currentUser.getUid())) ? delete_draw : exit_draw
         );
+    }
+
+    String[] convertGroupToStringArray(FirebaseHandler.Group obj){
+        return new String[] {obj.getGroupID(), obj.getGroupName(), obj.getGroupOwner(), obj.getGroupCode()};
     }
 
     @Override
@@ -238,12 +245,14 @@ public class GroupRVAOnline extends RecyclerView.Adapter<GroupRVAOnline.ViewHold
         /* Data container for the recyclerview */
         public TextView groupName_et;
         public TextView groupCode_tv;
+        public ImageButton members_btn;
         public ImageButton edit_btn;
         public ImageButton delete_btn;
         public ViewHolder(View view){
             super(view);
             groupName_et = (TextView) view.findViewById(R.id.edittext_groupName);
             groupCode_tv = (TextView) view.findViewById(R.id.textview_groupCode);
+            members_btn = (ImageButton) view.findViewById(R.id.group_members_btn);
             edit_btn = (ImageButton) view.findViewById(R.id.group_edit_btn);
             delete_btn = (ImageButton) view.findViewById(R.id.group_delete_btn);
         }
