@@ -29,6 +29,8 @@ import com.example.inventoryapp.data.Dialogs;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.Objects;
+
 // This file handles the logic of the fragment containing the inventory recycler view
 
 public class InventoryFragmentOnline extends OnlineFragment {
@@ -81,8 +83,16 @@ public class InventoryFragmentOnline extends OnlineFragment {
 
     private void ToggleFABMenu(){
         /* Minimizes or Expands sub-menu of FABs */
-        isOpen_FABMenu = ExpandableFABDefaultBehavior(isOpen_FABMenu, moreOptions_fab,
-                new FloatingActionButton[] {addition_fab, edit_fab}, getContext());
+        // function uses:
+        //     a boolean to keep track of the fragment's menu status
+        // function takes:
+        //     the main FAB and a sub menu of FABs to be displayed
+
+        //only the owner should be allow to rename the inventory with the edit FAB
+        FloatingActionButton[] submenu = (currentGroupOwner.equals(currentUser.getUid())) ?
+                new FloatingActionButton[] {addition_fab, edit_fab} :
+                new FloatingActionButton[] {addition_fab} ;
+        isOpen_FABMenu = ExpandableFABDefaultBehavior(isOpen_FABMenu, moreOptions_fab, submenu, getContext());
     }
 
     private void NavigateToItemFragment(String inventoryID, String inventoryName){
