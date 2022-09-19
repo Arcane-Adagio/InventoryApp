@@ -1,14 +1,10 @@
 package com.example.inventoryapp.online;
 
 import static com.example.inventoryapp.GlobalConstants.FIREBASE_KEY_GROUPS;
-import static com.example.inventoryapp.GlobalConstants.FIREBASE_KEY_MEMBERS;
-import static com.example.inventoryapp.GlobalConstants.FIREBASE_SUBKEY_GROUPCODE;
-import static com.example.inventoryapp.GlobalConstants.FIREBASE_SUBKEY_GROUPNAME;
-import static com.example.inventoryapp.GlobalConstants.FIREBASE_SUBKEY_GROUPOWNER;
-import static com.example.inventoryapp.GlobalConstants.FIREBASE_SUBKEY_HASHEDPASSWORD;
 import static com.example.inventoryapp.GlobalConstants.FIREBASE_SUBKEY_MEMBERS;
 import static com.example.inventoryapp.GlobalConstants.OUT_OF_BOUNDS;
 import static com.example.inventoryapp.online.OnlineFragment.currentGroupID;
+import static com.example.inventoryapp.online.OnlineFragment.currentGroupOwner;
 import static com.example.inventoryapp.online.OnlineFragment.currentUser;
 
 import android.content.Context;
@@ -19,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -27,7 +24,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.inventoryapp.R;
-import com.example.inventoryapp.data.Dialogs;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -36,7 +32,6 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -47,7 +42,8 @@ public class MembersRVAOnline extends RecyclerView.Adapter<MembersRVAOnline.View
     DatabaseReference mGroupsReference = mRootReference.child(FIREBASE_KEY_GROUPS);
     DatabaseReference groupRef = mGroupsReference.child(currentGroupID);
     DatabaseReference membersRef = groupRef.child(FIREBASE_SUBKEY_MEMBERS);
-    boolean groupOwner = false;
+    boolean isGroupOwner = false;
+
 
     //Data
     List<FirebaseHandler.User> memberData = new ArrayList<>();
@@ -59,10 +55,10 @@ public class MembersRVAOnline extends RecyclerView.Adapter<MembersRVAOnline.View
     ExecutorService executor = Executors.newSingleThreadExecutor();
     Handler handler = new Handler(Looper.getMainLooper());
 
-    public MembersRVAOnline(Context context, OnlineFragment.SimpleCallback deletionCallback, boolean isGroupOwner){
+    public MembersRVAOnline(Context context, OnlineFragment.SimpleCallback deletionCallback){
         mContext = context;
         deletionBtnCallback = deletionCallback;
-        groupOwner = isGroupOwner;
+        isGroupOwner = currentGroupOwner.equals(currentUser.getUid());
         rv = (RecyclerView) ((AppCompatActivity)context).findViewById(R.id.recyclerview_members);
         membersRef.addChildEventListener(new ChildEventListener() {
             @Override
@@ -136,13 +132,26 @@ public class MembersRVAOnline extends RecyclerView.Adapter<MembersRVAOnline.View
         /* Connects the data to the view based on position every time a tile is reconstructed */
         holder.userName_tv.setText(memberData.get(position).getUserDisplayName());
         holder.userID_tv.setText(memberData.get(position).getUserID());
-        if(groupOwner && !holder.userID_tv.getText().toString().equals(currentUser.getUid())){
-            /* Only the group owner should be able to remove a member from the group.
-            * The group owner should not be able to remove themselves */
-            holder.remove_btn.setVisibility(View.VISIBLE);
+        if(isGroupOwner){ //How the group owner views the members list
+            if(!holder.userID_tv.getText().toString().equals(currentUser.getUid())){
+                /* Only the group owner should be able to remove a member from the group.
+                 * The group owner should not be able to remove themselves */
+                holder.remove_btn.setVisibility(View.VISIBLE);
+            }
+            else{
+                holder.remove_btn.setVisibility(View.GONE);
+                holder.ownerStatus.setVisibility(View.VISIBLE);
+            }
         }
-        else {
-            holder.remove_btn.setVisibility(View.GONE);
+        else { // How everyone else views the members list
+            holder.remove_btn.setVisibility(View.GONE); //only the owner can kick people
+            if(holder.userID_tv.getText().toString().equals(currentUser.getUid())){
+                //the tile for the current signed in user is shown
+            }
+            else if (holder.userID_tv.getText().toString().equals(currentGroupOwner)){
+                //the tile for the group owner is shown
+                holder.ownerStatus.setVisibility(View.VISIBLE);
+            }
         }
         holder.remove_btn.setOnClickListener(view -> {
             try {
@@ -189,11 +198,13 @@ public class MembersRVAOnline extends RecyclerView.Adapter<MembersRVAOnline.View
         /* Data container for the recyclerview */
         public TextView userName_tv;
         public TextView userID_tv;
+        public ImageView ownerStatus;
         public ImageButton remove_btn;
         public ViewHolder(View view){
             super(view);
             userName_tv = (TextView) view.findViewById(R.id.userName_tv);
             userID_tv = (TextView) view.findViewById(R.id.userID_tv);
+            ownerStatus = (ImageView) view.findViewById(R.id.icon_groupOwner);
             remove_btn = (ImageButton) view.findViewById(R.id.inv_remove_btn);
         }
     }
