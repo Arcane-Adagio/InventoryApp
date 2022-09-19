@@ -38,7 +38,7 @@ public class GroupMembersFragment extends OnlineFragment {
     public void onStart() {
         super.onStart();
         SetupMembersRecyclerView();
-        RenameAppBar("Members");
+        RenameAppBar(currentGroupName+" Members");
         SetupBottomNav();
     }
 
