@@ -36,6 +36,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
@@ -535,10 +536,15 @@ public class FirebaseHandler {
     }
 
     public static void DeleteAccountBehavior(Context context, Fragment callingFragment){
+        /* Deletes user account, signs user out, removes user from database */
         Dialogs.AreYouSureDialog(context, new Dialogs.DialogListener() {
             @Override
             public boolean submissionCallback(String[] args) {
+                FirebaseAuth mAuth = FirebaseAuth.getInstance();
+                //Remove user from database
+                NukeUserFromDatabase(new User(mAuth.getCurrentUser().getUid(), mAuth.getCurrentUser().getDisplayName()));
                 FirebaseAuth.getInstance().getCurrentUser().delete(); //to remove from firebase
+                //Update App
                 FirebaseAuth.getInstance().signOut(); //to remove local account info
                 makeToast(context, R.string.toast_accountdeleted);
                 try {
@@ -554,6 +560,24 @@ public class FirebaseHandler {
 
             }
         });
+    }
+
+    private static void NukeUserFromDatabase(User user){
+        /* Removes every group the user is a part of, and deletes user from
+        * member roster for each group the member is a part of */
+        DatabaseReference groupsRef = mRootRef.child(FIREBASE_KEY_GROUPS);
+        groupsRef.orderByChild(FIREBASE_SUBKEY_GROUPOWNER).equalTo(user.userID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot snap : snapshot.getChildren())
+                    snap.getRef().runTransaction(PerformDeletionTransaction(snap.getRef()));
+            } @Override public void onCancelled(@NonNull DatabaseError error) {}});
+        groupsRef.orderByChild(FIREBASE_KEY_MEMBERS+"/"+user.getUserID()).equalTo(user.getUserDisplayName()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot snap : snapshot.getChildren()) {
+                    DatabaseReference memberRef = snap.getRef().child(FIREBASE_KEY_MEMBERS).child(user.getUserID());
+                    memberRef.runTransaction(PerformDeletionTransaction(memberRef));
+                }
+            } @Override public void onCancelled(@NonNull DatabaseError error) {}});
     }
 
     public static void UpdateUserPassword(Context context, String password){
