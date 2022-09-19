@@ -69,8 +69,9 @@ public class LoginFragmentOnline extends OnlineFragment {
         login_btn.setOnClickListener(view -> Login());
         createAccount_tbtn = (TextView) requireView().findViewById(R.id.textbtn_createAccount);
         createAccount_tbtn.setOnClickListener(view -> NavigateToAccountCreationFragment());
-        if(mCurrentUser != null)
+        if(mCurrentUser != null && FirebaseAuth.getInstance().getCurrentUser() != null){
             AutoLogin();
+        }
         RenameAppBar("");
     }
 

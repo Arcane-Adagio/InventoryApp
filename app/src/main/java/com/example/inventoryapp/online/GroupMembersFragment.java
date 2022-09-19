@@ -48,7 +48,7 @@ public class GroupMembersFragment extends OnlineFragment {
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         layoutManager.scrollToPosition(0);
         rv.setLayoutManager(layoutManager);
-        members_rva =new MembersRVAOnline(getContext(), args -> RemoveUser(new FirebaseHandler.User(args[0], args[1])),
+        members_rva =new MembersRVAOnline(getContext(), args -> RemoveUser(new FirebaseHandler.User(args[1], args[0])),
                 currentGroupOwner.equals(currentUser.getUid()));
         rv.setAdapter(members_rva);
     }

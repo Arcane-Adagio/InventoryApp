@@ -242,7 +242,7 @@ public class FirebaseHandler {
         DatabaseReference groupRef = groupsRef.child(groupID);
         DatabaseReference membersRef = groupRef.child(FIREBASE_KEY_MEMBERS);
         // If a display name is not assigned, firebase will ignore the request
-        String displayName = (currentUser.getDisplayName() != null) ? "" : currentUser.getDisplayName();
+        String displayName = (currentUser.getDisplayName() == null) ? "Demo User" : currentUser.getDisplayName();
         membersRef.runTransaction(PerformSetKeyValueTransaction(membersRef, currentUser.getUid(),displayName));
     }
 
@@ -281,7 +281,10 @@ public class FirebaseHandler {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.hasChild(groupID)){
                     DataSnapshot groupSnap = snapshot.child(groupID);
-                    if(groupSnap.child("groupOwner").equals(currentUser.getUid())){
+                    String userID = currentUser.getUid();
+                    String groupOwnerID = groupSnap.child("groupOwner").getValue().toString();
+                    if(groupOwnerID.equals(userID) && !member.getUserID().equals(groupOwnerID)){
+                        String memberID = member.getUserID();
                         DatabaseReference memberRef = groupSnap.child("Members").child(member.getUserID()).getRef();
                         memberRef.runTransaction(PerformDeletionTransaction(memberRef));
                     }
