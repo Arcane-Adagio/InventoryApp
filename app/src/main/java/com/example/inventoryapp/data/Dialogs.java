@@ -11,14 +11,17 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.text.InputFilter;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
 import com.example.inventoryapp.GlobalConstants;
 import com.example.inventoryapp.R;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -270,10 +273,20 @@ public class Dialogs {
         dialog.show();
     }
 
-    public static void ProfileDialog(Context context, DialogListener callbackObj){
+    public static void ProfileDialog(Context context, FirebaseUser user){
         final Dialog dialog = new Dialog(context);
         dialog.setContentView(R.layout.dlog_profile);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        Button closeBtn = (Button) dialog.findViewById(R.id.btn_close);
+        TextView  emailText = (TextView) dialog.findViewById(R.id.text_email);
+        TextView  displayNameText = (TextView) dialog.findViewById(R.id.text_displayName);
+        TextView  idText = (TextView) dialog.findViewById(R.id.text_userID);
+        TextView  verifiedText = (TextView) dialog.findViewById(R.id.text_verified);
+        emailText.setText(user.getEmail());
+        displayNameText.setText(user.getDisplayName().isEmpty() ? "null" : user.getDisplayName());
+        idText.setText(user.getUid());
+        verifiedText.setText(user.isEmailVerified() ? "true" : "false");
+        closeBtn.setOnClickListener(view -> dialog.dismiss());
         dialog.show();
     }
 

@@ -30,6 +30,7 @@ import com.example.inventoryapp.StorageHandler;
 import com.example.inventoryapp.offline.OfflineInventoryManager;
 import com.example.inventoryapp.online.FirebaseHandler;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.net.InetAddress;
 import java.util.Objects;
@@ -43,17 +44,7 @@ public class InventoryFragment extends Fragment {
         // This function is called when an icon is selected in the Actionbar
         switch (item.getItemId()){
             case R.id.online_viewaccount:
-                Dialogs.ProfileDialog(context, new Dialogs.DialogListener() {
-                    @Override
-                    public boolean submissionCallback(String[] args) {
-                        return false;
-                    }
-
-                    @Override
-                    public void cancelCallback() {
-
-                    }
-                });
+                Dialogs.ProfileDialog(context, FirebaseAuth.getInstance().getCurrentUser());
                 return true;
             case R.id.online_logout:
                 FirebaseHandler.LogoutBehavior(callingFragment);
