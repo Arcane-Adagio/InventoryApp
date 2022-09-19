@@ -115,4 +115,9 @@
     <string name="nav_onlinebtn_text">Online</string>
     <string name="menu_online_logout">Logout</string>
     <string name="menu_online_deleteaccount">Delete Account</string>
+    <string name="btn_close">close</string>
+    <string name="label_profile">Profile</string>
+    <string name="profile_label_email">Email</string>
+    <string name="profile_label_displayname">Display Name:</string>
+    <string name="profile_label_id">User ID:</string>
 </resources>

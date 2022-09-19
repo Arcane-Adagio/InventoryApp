@@ -42,6 +42,19 @@ public class InventoryFragment extends Fragment {
     public static boolean DefaultMenuOptionSelection(@NonNull MenuItem item, Context context, Fragment callingFragment) {
         // This function is called when an icon is selected in the Actionbar
         switch (item.getItemId()){
+            case R.id.online_viewaccount:
+                Dialogs.ProfileDialog(context, new Dialogs.DialogListener() {
+                    @Override
+                    public boolean submissionCallback(String[] args) {
+                        return false;
+                    }
+
+                    @Override
+                    public void cancelCallback() {
+
+                    }
+                });
+                return true;
             case R.id.online_logout:
                 FirebaseHandler.LogoutBehavior(callingFragment);
                 return true;

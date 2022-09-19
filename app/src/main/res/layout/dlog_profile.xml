@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:minWidth="300dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dlog_background"
+    >
+
+    <TextView
+        android:id="@+id/textview_label_email"
+        style="@style/headerText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:foregroundGravity="center"
+        android:gravity="center"
+        android:text="@string/label_profile"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:layout_marginTop="10dp"
+
+        android:layout_marginHorizontal="10dp"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/label_email"
+        style="@style/labelText"
+        android:layout_gravity="center_vertical"
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginTop="10dp"
+        android:text="@string/profile_label_email"
+        android:textSize="10sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textview_label_email" />
+
+    <TextView
+        android:id="@+id/label_displayName"
+        style="@style/labelText"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="10dp"
+        android:text="@string/profile_label_displayname"
+        android:textSize="10sp"
+        app:layout_constraintStart_toStartOf="@+id/label_email"
+        app:layout_constraintTop_toBottomOf="@+id/label_email" />
+
+    <TextView
+        android:id="@+id/label_id"
+        style="@style/labelText"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="10dp"
+        android:text="@string/profile_label_id"
+        android:textSize="10sp"
+        app:layout_constraintStart_toStartOf="@+id/label_displayName"
+        app:layout_constraintTop_toBottomOf="@+id/label_displayName" />
+
+    <TextView
+        android:id="@+id/label_Verified"
+        style="@style/labelText"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="10dp"
+        android:text="Verified:"
+        android:textSize="10sp"
+        app:layout_constraintStart_toStartOf="@+id/label_id"
+        app:layout_constraintTop_toBottomOf="@+id/label_id" />
+
+    <TextView
+        android:id="@+id/text_email"
+        style="@style/labelDisplay.oneLine"
+        android:layout_marginHorizontal="30dp"
+        android:ems="15"
+        android:hint="Email goes here"
+        android:textAlignment="textEnd"
+        android:textSize="10sp"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintBottom_toBottomOf="@+id/label_email"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/label_email"
+        app:layout_constraintTop_toTopOf="@+id/label_email" />
+
+    <TextView
+        android:id="@+id/text_displayName"
+        style="@style/labelDisplay.oneLine"
+        android:layout_marginHorizontal="30dp"
+        android:ems="15"
+        app:layout_constraintHorizontal_bias="1"
+        android:hint="Display name goes here"
+        android:textAlignment="textEnd"
+        android:textSize="10sp"
+        app:layout_constraintBottom_toBottomOf="@+id/label_displayName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/label_displayName"
+        app:layout_constraintTop_toTopOf="@+id/label_displayName" />
+
+    <TextView
+        android:id="@+id/text_userID"
+        style="@style/labelDisplay.oneLine"
+        android:layout_marginHorizontal="30dp"
+        android:ems="15"
+        android:hint="User ID goes Here"
+        android:textAlignment="textEnd"
+        android:textSize="10sp"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintBottom_toBottomOf="@+id/label_id"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/label_id"
+        app:layout_constraintTop_toTopOf="@+id/label_id" />
+
+    <TextView
+        android:id="@+id/text_verified"
+        style="@style/labelDisplay.oneLine"
+        android:layout_marginHorizontal="30dp"
+        android:ems="15"
+        android:hint="Verified Status Goes here"
+        android:textAlignment="textEnd"
+        android:textSize="10sp"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintBottom_toBottomOf="@+id/label_Verified"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/label_Verified"
+        app:layout_constraintTop_toTopOf="@+id/label_Verified" />
+
+    <Button
+        android:id="@+id/btn_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="@android:color/transparent"
+        android:maxWidth="70dp"
+        android:maxHeight="40dp"
+        android:minWidth="65dp"
+        android:minHeight="35dp"
+        android:padding="5dp"
+        android:stateListAnimator="@null"
+        android:text="@string/btn_close"
+        android:textColor="@color/tile_color"
+        android:textSize="11sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintEnd_toEndOf="@+id/text_verified"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_verified"
+        app:strokeColor="@color/white"
+        app:strokeWidth="1dp" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

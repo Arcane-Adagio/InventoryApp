@@ -270,6 +270,13 @@ public class Dialogs {
         dialog.show();
     }
 
+    public static void ProfileDialog(Context context, DialogListener callbackObj){
+        final Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.dlog_profile);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
+    }
+
 
     private static boolean isTextboxValid(EditText textbox){
         if(textbox.getText() == null)
