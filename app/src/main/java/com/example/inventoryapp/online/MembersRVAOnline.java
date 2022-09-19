@@ -43,6 +43,7 @@ public class MembersRVAOnline extends RecyclerView.Adapter<MembersRVAOnline.View
     DatabaseReference groupRef = mGroupsReference.child(currentGroupID);
     DatabaseReference membersRef = groupRef.child(FIREBASE_SUBKEY_MEMBERS);
     boolean isGroupOwner = false;
+    static String demoText = "Sample Account";
 
 
     //Data
@@ -130,7 +131,8 @@ public class MembersRVAOnline extends RecyclerView.Adapter<MembersRVAOnline.View
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         /* Connects the data to the view based on position every time a tile is reconstructed */
-        holder.userName_tv.setText(memberData.get(position).getUserDisplayName());
+        String displayName = memberData.get(position).getUserDisplayName();
+        holder.userName_tv.setText(displayName.isEmpty() ? demoText : displayName);
         holder.userID_tv.setText(memberData.get(position).getUserID());
         if(isGroupOwner){ //How the group owner views the members list
             if(!holder.userID_tv.getText().toString().equals(currentUser.getUid())){
